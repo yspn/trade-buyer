@@ -1,0 +1,2676 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>api.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-size: 14px;
+	padding: 0 12px;
+	line-height: 22px;
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+	font-size: inherit;
+	line-height: auto;
+}
+
+a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+.mac code {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+/** Theming */
+
+.vscode-light,
+.vscode-light pre code {
+	color: rgb(30, 30, 30);
+}
+
+.vscode-dark,
+.vscode-dark pre code {
+	color: #DDD;
+}
+
+.vscode-high-contrast,
+.vscode-high-contrast pre code {
+	color: white;
+}
+
+.vscode-light code {
+	color: #A31515;
+}
+
+.vscode-dark code {
+	color: #D7BA7D;
+}
+
+.vscode-light pre:not(.hljs),
+.vscode-light code > div {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre:not(.hljs),
+.vscode-dark code > div {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre:not(.hljs),
+.vscode-high-contrast code > div {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vscode-light blockquote,
+.vscode-dark blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.vscode-high-contrast blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family:  "Meiryo", "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+</head>
+<body>
+<h1 id="tao11-buyertrade-api-%E8%AF%B4%E6%98%8E">Tao11 BuyerTrade API 说明</h1>
+<h2 id="users%E6%9C%8D%E5%8A%A1">Users服务</h2>
+<h3 id="%E7%99%BB%E9%99%86">登陆</h3>
+<ul>
+<li>接口： <code>/api/users/auth</code></li>
+<li>方法： <code>POST</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>微信登陆code</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    &quot;id&quot; : &quot;5ae1f103067459001126071c&quot;,
+    &quot;user_id&quot; : 5311,
+    &quot;name&quot; : &quot;用户5311&quot;,
+    &quot;role&quot; : &quot;boss&quot;,
+    &quot;group&quot; : 1,
+    &quot;session&quot; : &quot;yulwew9e6z7thyjdgorixr5u5urln9zndf5fsroykeccr85ckf3vn6ksju87io&quot;,
+    &quot;username&quot; : null,
+    &quot;mobile&quot; : null,
+    &quot;email&quot; : null,
+    &quot;sex&quot; : &quot;男&quot;,
+    &quot;cardid&quot; : null,
+    &quot;powers&quot; : 0,
+    &quot;msg_revice_method&quot; : 0,
+    &quot;service&quot; : &quot;users&quot;,
+    &quot;action&quot; : &quot;add-inner&quot;,
+    &quot;token&quot; : &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhZTFmMTAzMDY3NDU5MDAxMTI2MDcxYyIsInVzZXJfaWQiOjUzMTEsIm5hbWUiOiLnlKjmiLc1MzExIiwicm9sZSI6ImJvc3MiLCJncm91cCI6MSwic2Vzc2lvbiI6Inl1bHdldzllNno3dGh5amRnb3JpeHI1dTV1cmxuOXpuZGY1ZnNyb3lrZWNjcjg1Y2tmM3ZuNmtzanU4N2lvIiwiaWF0IjoxNTMzNDQwMjMyfQ.cttjBEAmRlNIUXJfwvlI7ptb24Hgt0PoEgIeeDy-O_M&quot;,
+    &quot;token_create_time&quot; : 1533476842209.0
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E9%AA%8C%E8%AF%81%E7%99%BB%E9%99%86%E7%8A%B6%E6%80%81">验证登陆状态</h3>
+<ul>
+<li>接口： <code>/api/users/renew</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参： 无</li>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    &quot;id&quot; : &quot;5ae1f103067459001126071c&quot;,
+    &quot;user_id&quot; : 5311,
+    &quot;name&quot; : &quot;用户5311&quot;,
+    &quot;role&quot; : &quot;boss&quot;,
+    &quot;group&quot; : 1,
+    &quot;session&quot; : &quot;yulwew9e6z7thyjdgorixr5u5urln9zndf5fsroykeccr85ckf3vn6ksju87io&quot;,
+    &quot;username&quot; : null,
+    &quot;mobile&quot; : null,
+    &quot;email&quot; : null,
+    &quot;sex&quot; : &quot;男&quot;,
+    &quot;cardid&quot; : null,
+    &quot;powers&quot; : 0,
+    &quot;msg_revice_method&quot; : 0,
+    &quot;service&quot; : &quot;users&quot;,
+    &quot;action&quot; : &quot;add-inner&quot;,
+    &quot;token&quot; : &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhZTFmMTAzMDY3NDU5MDAxMTI2MDcxYyIsInVzZXJfaWQiOjUzMTEsIm5hbWUiOiLnlKjmiLc1MzExIiwicm9sZSI6ImJvc3MiLCJncm91cCI6MSwic2Vzc2lvbiI6Inl1bHdldzllNno3dGh5amRnb3JpeHI1dTV1cmxuOXpuZGY1ZnNyb3lrZWNjcjg1Y2tmM3ZuNmtzanU4N2lvIiwiaWF0IjoxNTMzNDQwMjMyfQ.cttjBEAmRlNIUXJfwvlI7ptb24Hgt0PoEgIeeDy-O_M&quot;,
+    &quot;token_create_time&quot; : 1533476842209.0
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<p>若登陆信息无效则返回401状态</p>
+<h3 id="%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E9%80%89%E6%8B%A9%E5%88%97%E8%A1%A8">获取用户选择列表</h3>
+<ul>
+<li>
+<p>接口： <code>/api/users/selectlist</code></p>
+</li>
+<li>
+<p>方法： <code>POST</code> | <code>GET</code></p>
+</li>
+<li>
+<p>是否必须登陆： <code>true</code></p>
+</li>
+<li>
+<p>入参： 无</p>
+</li>
+<li>
+<p>返回：</p>
+</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [
+    {
+      &quot;id&quot; : &quot;5ae830cedXXXXXXXXXXXXXXXXX&quot;,
+      &quot;group&quot; : 1,
+      &quot;name&quot; : &quot;张XX&quot;,
+      &quot;role&quot; : &quot;employer&quot;
+    },
+    {...},
+    ...
+  ],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h2 id="shops%E6%9C%8D%E5%8A%A1">Shops服务</h2>
+<h3 id="%E8%8E%B7%E5%8F%96%E5%BA%97%E9%93%BA%E9%80%89%E6%8B%A9%E5%88%97%E8%A1%A8">获取店铺选择列表</h3>
+<ul>
+<li>
+<p>接口： <code>/api/shops/selectlist</code></p>
+</li>
+<li>
+<p>方法： <code>POST</code> | <code>GET</code></p>
+</li>
+<li>
+<p>是否必须登陆： <code>true</code></p>
+</li>
+<li>
+<p>入参： 无</p>
+</li>
+<li>
+<p>返回：</p>
+</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [
+    {
+      &quot;id&quot; : &quot;5ae830cedXXXXXXXXXXXXXXXXX&quot;,
+      &quot;group&quot; : 1,
+      &quot;name&quot; : &quot;店铺昵称&quot;
+    },
+    {...},
+    ...
+  ],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E4%B8%8B%E5%8D%95%E5%BA%97%E9%93%BA%E9%BB%91%E5%90%8D%E5%8D%95%E5%88%97%E8%A1%A8">获取下单店铺黑名单列表</h3>
+<ul>
+<li>接口： <code>/api/shops/getblacklist</code></li>
+<li>方法： <code>GET</code>|<code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参： 无</li>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [...],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E6%96%B0%E5%A2%9E%E4%B8%8B%E5%8D%95%E5%BA%97%E9%93%BA%E9%BB%91%E5%90%8D%E5%8D%95">新增下单店铺黑名单</h3>
+<ul>
+<li>接口： <code>/api/shops/addblacklist</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>店铺ID</td>
+</tr>
+<tr>
+<td><code>group</code></td>
+<td><code>true</code></td>
+<td><code>int</code></td>
+<td>店群ID</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {...},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E5%88%A0%E9%99%A4%E4%B8%8B%E5%8D%95%E5%BA%97%E9%93%BA%E9%BB%91%E5%90%8D%E5%8D%95">删除下单店铺黑名单</h3>
+<ul>
+<li>接口： <code>/api/shops/deleteblacklist</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>黑名单记录id序号</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {...},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E6%A3%80%E6%9F%A5%E5%BA%97%E9%93%BA%E6%98%AF%E5%90%A6%E5%9C%A8%E9%BB%91%E5%90%8D%E5%8D%95">检查店铺是否在黑名单</h3>
+<ul>
+<li>接口： <code>/api/shops/checkblacklist</code></li>
+<li>方法： <code>GET</code>|<code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>待查询的店铺ID</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    &quot;in&quot; : true|false
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h2 id="buyers%E6%9C%8D%E5%8A%A1">Buyers服务</h2>
+<h3 id="%E4%B9%B0%E6%89%8B%E5%88%97%E8%A1%A8">买手列表</h3>
+<ul>
+<li>接口： <code>/api/buyers/listall</code></li>
+<li>方法： <code>POST</code> | <code>GET</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>search</code></td>
+<td><code>false</code></td>
+<td><code>array</code></td>
+<td>条件查询，例<code>[{id:'xxx'}]</code></td>
+</tr>
+<tr>
+<td><code>filterShop</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>根据店铺id检索，例<code>5ae129d6bb8c0800113836e4</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [
+    {
+      &quot;id&quot; : &quot;5ae830cedXXXXXXXXXXXXXXXXX&quot;,
+      &quot;group&quot; : 1,
+      &quot;name&quot; : &quot;张XX&quot;,
+      &quot;userid&quot; : &quot;5ae33XXXXXXXXXXXXXXXXXXX&quot;,
+      &quot;shopid&quot; : &quot;5ae12XXXXXXXXXXXXXXXXXXX&quot;,
+      &quot;weight&quot; : 0,
+      &quot;is_enable&quot; : true,
+      &quot;today_assigned&quot; : 0,
+      &quot;total_assigned&quot; : 108,
+      &quot;monthly_assigned&quot; : 5,
+      &quot;today_finished&quot; : 0,
+      &quot;today_ordered&quot; : 0,
+      &quot;today_failed&quot; : 0,
+      &quot;total_finished&quot; : 0,
+      &quot;total_ordered&quot; : 33,
+      &quot;total_failed&quot; : 69,
+      &quot;monthly_finished&quot; : 0,
+      &quot;monthly_ordered&quot; : 0,
+      &quot;monthly_failed&quot; : 5,
+      &quot;today_dismissed&quot; : 0,
+      &quot;monthly_dismissed&quot; : 0
+    },
+    {...},
+    ...
+  ],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E6%96%B0%E5%A2%9E%E4%B9%B0%E6%89%8B">新增买手</h3>
+<ul>
+<li>接口： <code>/api/buyers/add</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>group</code></td>
+<td><code>true</code></td>
+<td><code>int</code></td>
+<td>店群ID</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>买手姓名</td>
+</tr>
+<tr>
+<td><code>userid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>买手对应的userid,例<code>5ae33XXXXXXXXXXXXXXXXXXX</code></td>
+</tr>
+<tr>
+<td><code>shopid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>店铺id，例<code>5ae33XXXXXXXXXXXXXXXXXXX</code></td>
+</tr>
+<tr>
+<td><code>weight</code></td>
+<td><code>false</code></td>
+<td><code>number</code></td>
+<td>买手配单权重（取值范围0-1）</td>
+</tr>
+<tr>
+<td><code>is_enable</code></td>
+<td><code>false</code></td>
+<td><code>boolean</code></td>
+<td>是否接单（默认<code>true</code>）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    &quot;id&quot; : &quot;5ae830cedXXXXXXXXXXXXXXXXX&quot;,
+    &quot;group&quot; : 1,
+    &quot;name&quot; : &quot;张XX&quot;,
+    &quot;userid&quot; : &quot;5ae33XXXXXXXXXXXXXXXXXXX&quot;,
+    &quot;shopid&quot; : &quot;5ae12XXXXXXXXXXXXXXXXXXX&quot;,
+    &quot;weight&quot; : 0,
+    &quot;is_enable&quot; : true,
+    &quot;today_assigned&quot; : 0,
+    &quot;total_assigned&quot; : 108,
+    &quot;monthly_assigned&quot; : 5,
+    &quot;today_finished&quot; : 0,
+    &quot;today_ordered&quot; : 0,
+    &quot;today_failed&quot; : 0,
+    &quot;total_finished&quot; : 0,
+    &quot;total_ordered&quot; : 33,
+    &quot;total_failed&quot; : 69,
+    &quot;monthly_finished&quot; : 0,
+    &quot;monthly_ordered&quot; : 0,
+    &quot;monthly_failed&quot; : 5,
+    &quot;today_dismissed&quot; : 0,
+    &quot;monthly_dismissed&quot; : 0
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E4%BF%AE%E6%94%B9%E4%B9%B0%E6%89%8B">修改买手</h3>
+<ul>
+<li>接口： <code>/api/buyers/edit</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>买手id</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>买手姓名</td>
+</tr>
+<tr>
+<td><code>userid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>买手对应的userid,例<code>5ae33XXXXXXXXXXXXXXXXXXX</code></td>
+</tr>
+<tr>
+<td><code>shopid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>店铺id，例<code>5ae33XXXXXXXXXXXXXXXXXXX</code></td>
+</tr>
+<tr>
+<td><code>weight</code></td>
+<td><code>false</code></td>
+<td><code>number</code></td>
+<td>买手配单权重（取值范围0-1）</td>
+</tr>
+<tr>
+<td><code>is_enable</code></td>
+<td><code>false</code></td>
+<td><code>boolean</code></td>
+<td>是否接单（默认<code>true</code>）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    &quot;id&quot; : &quot;5ae830cedXXXXXXXXXXXXXXXXX&quot;,
+    &quot;group&quot; : 1,
+    &quot;name&quot; : &quot;张XX&quot;,
+    &quot;userid&quot; : &quot;5ae33XXXXXXXXXXXXXXXXXXX&quot;,
+    &quot;shopid&quot; : &quot;5ae12XXXXXXXXXXXXXXXXXXX&quot;,
+    &quot;weight&quot; : 0,
+    &quot;is_enable&quot; : true,
+    &quot;today_assigned&quot; : 0,
+    &quot;total_assigned&quot; : 108,
+    &quot;monthly_assigned&quot; : 5,
+    &quot;today_finished&quot; : 0,
+    &quot;today_ordered&quot; : 0,
+    &quot;today_failed&quot; : 0,
+    &quot;total_finished&quot; : 0,
+    &quot;total_ordered&quot; : 33,
+    &quot;total_failed&quot; : 69,
+    &quot;monthly_finished&quot; : 0,
+    &quot;monthly_ordered&quot; : 0,
+    &quot;monthly_failed&quot; : 5,
+    &quot;today_dismissed&quot; : 0,
+    &quot;monthly_dismissed&quot; : 0
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E5%88%A0%E9%99%A4%E4%B9%B0%E6%89%8B">删除买手</h3>
+<ul>
+<li>接口： <code>/api/buyers/delete</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>买手id</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    ...
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E4%B9%B0%E6%89%8B%E6%9B%B4%E5%90%8D">买手更名</h3>
+<ul>
+<li>接口： <code>/api/buyers/rename</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>买手id</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>买手姓名</td>
+</tr>
+</tbody>
+</table>
+<p>此接口将同时修改users表姓名</p>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    ...
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h2 id="trades%E6%9C%8D%E5%8A%A1">Trades服务</h2>
+<h3 id="%E8%AE%A2%E5%8D%95%E5%88%97%E8%A1%A8">订单列表</h3>
+<ul>
+<li>接口： <code>/api/trades/list</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>search</code></td>
+<td><code>false</code></td>
+<td><code>array</code></td>
+<td>条件查询，例<code>[{id:'xxx'}]</code></td>
+</tr>
+<tr>
+<td><code>filterShop</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>根据店铺id检索，例<code>5ae129d6bb8c0800113836e4</code></td>
+</tr>
+<tr>
+<td><code>order_status</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>订单状态<code>['ORDERED':'已下单', 'PARTLY_ORDERED':'部分下单', 'FINISHED':'已完成', 'PARTLY_FINISHED':'部分完成', 'ASSIGNED':'已派单', 'RESIGNED':'已撤销', 'UNASSIGNED':'未指派']</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>淘宝订单状态<code>['WAIT_BUYER_PAY':'待付款', 'WAIT_SELLER_SEND_GOODS':'待发货', 'WAIT_BUYER_CONFIRM_GOODS':'已发货', 'TRADE_FINISHED':'已完成', 'TRADE_CLOSED':'用户退款', 'TRADE_CLOSED_BY_TAOBAO':'交易关闭']</code></td>
+</tr>
+<tr>
+<td><code>shops</code></td>
+<td><code>false</code></td>
+<td><code>array</code></td>
+<td>按店铺检索，string[] shopid</td>
+</tr>
+<tr>
+<td><code>limit$</code></td>
+<td><code>false</code></td>
+<td><code>int</code></td>
+<td>每页条数，默认10条</td>
+</tr>
+<tr>
+<td><code>skip$</code></td>
+<td><code>false</code></td>
+<td><code>int</code></td>
+<td>跳过条数（翻页用）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [trade_fullinfo],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E5%8E%86%E5%8F%B2%E4%B8%8B%E5%8D%95%E5%88%97%E8%A1%A8">获取历史下单列表</h3>
+<ul>
+<li>接口： <code>/api/trades/gethistoryboughts</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>numiid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>商品ID（淘宝ID）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [
+    {
+      &quot;id&quot; : &quot;5ae7c95e9d21d10017840c81&quot;,
+      &quot;oid_str&quot; : &quot;153132921433379215&quot;,
+      &quot;post_fee&quot; : 0, // 邮费，分
+      &quot;buyer_fee&quot; : 4800, // 购买支付总额，分
+      &quot;buy_url&quot; : &quot;https://item.taobao.com/item.htm?id=558448281748&quot;,
+      &quot;order_number&quot; : &quot;140792851571823149&quot;,
+      &quot;name&quot; : &quot;陈xx&quot;,
+      &quot;buyer_nick&quot; : &quot;甜xxxx&quot;, // 买手旺旺id
+      &quot;userid&quot; : &quot;5ae28383xxxxxxxxxxxxxxxx&quot;,
+      &quot;time&quot; : &quot;2018-05-01T01:56:46.256Z&quot;,
+      &quot;tradeid&quot; : &quot;5ae779c05f014000178eae76&quot;,
+      &quot;tid&quot; : &quot;153132921433379215&quot;,
+      &quot;group&quot; : 1.0
+    },
+    {...},
+    ...
+  ],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%A7%A3%E5%AF%86%E4%B9%B0%E5%AE%B6%E4%BF%A1%E6%81%AF">解密买家信息</h3>
+<ul>
+<li>接口： <code>/api/tao11/decrypt</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tradeid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>订单id</td>
+</tr>
+<tr>
+<td><code>nick</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>卖家旺旺昵称</td>
+</tr>
+<tr>
+<td><code>ciopher</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>待解密密文</td>
+</tr>
+<tr>
+<td><code>session</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>tao11 session</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {同tao11相关接口},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E4%B9%B0%E5%AE%B6%E6%94%B6%E8%B4%A7%E5%9C%B0%E5%9D%80">获取买家收货地址</h3>
+<ul>
+<li>接口： <code>/api/tao11/receiver</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tradeid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>订单id</td>
+</tr>
+<tr>
+<td><code>tid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>淘宝订单编号</td>
+</tr>
+<tr>
+<td><code>nick</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>卖家旺旺</td>
+</tr>
+<tr>
+<td><code>session</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>tao11 session</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {同tao11相关接口},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E7%89%A9%E6%B5%81%E5%95%86%E5%88%97%E8%A1%A8">获取物流商列表</h3>
+<ul>
+<li>接口： <code>/api/tao11/logiscompanies</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>tao11 session</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {同tao11相关接口},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E5%A4%87%E6%B3%A8%E8%AE%A2%E5%8D%95">备注订单</h3>
+<ul>
+<li>接口： <code>/api/tao11/setmemo</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>memo</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>备注内容</td>
+</tr>
+<tr>
+<td><code>tid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>淘宝订单编号</td>
+</tr>
+<tr>
+<td><code>flag</code></td>
+<td><code>false</code></td>
+<td><code>int</code></td>
+<td>备注颜色0-5,灰红黄绿蓝粉</td>
+</tr>
+<tr>
+<td><code>session</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>tao11 session</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {同tao11相关接口},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%A7%A3%E9%99%A4%E8%AE%A2%E5%8D%95%E5%85%B3%E8%81%94">解除订单关联</h3>
+<ul>
+<li>接口： <code>/api/trades/dismiss</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tradeid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>订单id</td>
+</tr>
+<tr>
+<td><code>tid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>淘宝主订单编号</td>
+</tr>
+<tr>
+<td><code>oid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>淘宝子订单编号</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>解除原因</td>
+</tr>
+<tr>
+<td><code>reason_other</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>解除原因（其他）</td>
+</tr>
+<tr>
+<td><code>session</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>tao11 session</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {trade_fullinfo},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E9%80%80%E5%9B%9E%E9%85%8D%E5%8D%95">退回配单</h3>
+<ul>
+<li>接口： <code>/api/trades/resign</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tradeid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>订单id</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>解除原因</td>
+</tr>
+<tr>
+<td><code>reason_other</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>解除原因（其他）</td>
+</tr>
+<tr>
+<td><code>session</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>tao11 session</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {trade_fullinfo},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E6%89%8B%E5%8A%A8%E5%88%86%E9%85%8D%E8%AE%A2%E5%8D%95%E7%BB%99%E4%B9%B0%E6%89%8B">手动分配订单给买手</h3>
+<ul>
+<li>接口： <code>/api/trades/assigntobuyer</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tradeid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>订单id</td>
+</tr>
+<tr>
+<td><code>buyerid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>买手id</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {trade_fullinfo},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E6%89%8B%E5%8A%A8%E5%85%B3%E8%81%94%E8%AE%A2%E5%8D%95">手动关联订单</h3>
+<ul>
+<li>接口： <code>/api/trades/joinorder</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tradeid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>订单id</td>
+</tr>
+<tr>
+<td><code>oid_str</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>子订单oid</td>
+</tr>
+<tr>
+<td><code>orderBought</code></td>
+<td><code>true</code></td>
+<td><code>object</code></td>
+<td>``` {</td>
+</tr>
+</tbody>
+</table>
+<pre><code>    tradeid: null,
+    tid: null,
+    oid: null,
+    buyer: '',
+    buyerTid: null,
+    buyerOid: null,
+    buyerFee: 0,
+    buyUrl: '',
+    buyerPostFee: 0
+  } ```
+</code></pre>
+<p><code>session</code>|<code>true</code>|<code>string</code>|tao11 session</p>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {trade_fullinfo},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E4%B8%8B%E5%8D%95%E6%88%90%E5%8A%9F">下单成功</h3>
+<ul>
+<li>接口： <code>/api/trades/success</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>num_iid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>商品淘宝id</td>
+</tr>
+<tr>
+<td><code>tradeid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>订单id</td>
+</tr>
+<tr>
+<td><code>oid_str</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>子订单oid</td>
+</tr>
+<tr>
+<td><code>orderBought</code></td>
+<td><code>true</code></td>
+<td><code>object</code></td>
+<td>``` {</td>
+</tr>
+</tbody>
+</table>
+<pre><code>    tradeid: null,
+    tid: null,
+    oid: null,
+    buyer: '',
+    buyerTid: null,
+    buyerOid: null,
+    buyerFee: 0,
+    buyUrl: '',
+    buyerPostFee: 0
+  } ```
+</code></pre>
+<p><code>session</code>|<code>true</code>|<code>string</code>|tao11 session</p>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {trade_fullinfo},
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E5%8F%91%E8%B4%A7%E6%88%90%E5%8A%9F">发货成功</h3>
+<ul>
+<li>接口： <code>/api/trades/finish</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>logisNumber</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>物流单号</td>
+</tr>
+<tr>
+<td><code>companyCode</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>物流商编码</td>
+</tr>
+<tr>
+<td><code>tradeid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>订单id</td>
+</tr>
+<tr>
+<td><code>tid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>主订单tid</td>
+</tr>
+<tr>
+<td><code>oid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>子订单oid</td>
+</tr>
+<tr>
+<td><code>session</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>tao11 session</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    trade: trade_fullinfo
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E8%BD%AC%E9%93%BE%E9%93%BE%E6%8E%A5">获取转链链接</h3>
+<ul>
+<li>接口： <code>/api/trades/gettranslink</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>numiid</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>淘宝商品id</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    num_iid: numiid,
+    data: {
+      {
+        &quot;max_commission_rate&quot;:&quot;12.00&quot;,&quot;coupon_total_count&quot;:&quot;&quot;,
+        &quot;item_id&quot;:561031594621,&quot;coupon_start_time&quot;:&quot;&quot;,
+        &quot;coupon_type&quot;:&quot;&quot;,
+        &quot;coupon_remain_count&quot;:&quot;&quot;,
+        &quot;category_id&quot;:21,
+        &quot;coupon_info&quot;:&quot;&quot;,&quot;url&quot;:&quot;https://uland.taobao.com/coupon/edetail?e=Bx1CBs093AkGQASttHIRqcAIN22j5PtNtgCWEpM%2FFK1CPhzX0bLqkwuNIpiz8s1Nd8Z2pi%2BfNp3zPRetHQmKcJQ5wfGz%2Fu%2BNJzbB7ddzPNkFjaZhgpTjjWuFqp8TFaHMx5Q7%2FvT%2FZtDTZU%2FIHinq3Q%3D%3D&amp;traceId=0ab2507a15335441499758621&amp;src=lxs_lxsweb&amp;tj1=0&amp;tj2=0&amp;tjrank=0&quot;,
+        &quot;coupon_end_time&quot;:&quot;&quot;
+      }
+    },
+    created_time: timestamp
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E5%8F%AF%E5%8F%96%E5%8D%95%E9%87%8F">获取可取单量</h3>
+<ul>
+<li>接口： <code>/api/trades/assignables</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+<li></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session</code></td>
+<td><code>true</code></td>
+<td><code>string</code></td>
+<td>tao11 session</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [{trade_fullinfo}],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E5%8F%96%E5%8D%95">取单</h3>
+<ul>
+<li>
+<p>接口： <code>/api/trades/assignbatch</code></p>
+</li>
+<li>
+<p>方法： <code>POST</code></p>
+</li>
+<li>
+<p>是否必须登陆： <code>true</code></p>
+</li>
+<li>
+<p>入参： 无</p>
+</li>
+<li>
+<p>返回：</p>
+</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    data: [{trade_fullinfo}],
+    length: int
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h2 id="%E7%BB%9F%E8%AE%A1%E7%9B%B8%E5%85%B3">统计相关</h2>
+<h3 id="%E8%8E%B7%E5%8F%96%E4%BB%8A%E6%97%A5%E3%80%81%E6%98%A8%E6%97%A5%E5%85%A8%E9%83%A8%E6%B1%87%E6%80%BB%E6%95%B0%E6%8D%AE">获取今日、昨日全部汇总数据</h3>
+<ul>
+<li>接口： <code>/api/sys/getDetailedStats</code></li>
+<li>方法： <code>POST</code> | <code>GET</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参： 无</li>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [
+    {
+      &quot;id&quot; : &quot;5af3c3c02146be780d524777&quot;,
+      &quot;time&quot; : &quot;2018-05-10T04:00:00.200Z&quot;, // 统计时间
+      &quot;group&quot; : 1,
+      &quot;newTradeCount&quot; : 154, // 新订单
+      &quot;finishTradeCount&quot; : 75, // 完成订单数量（发货）
+      &quot;orderedTradeCount&quot; : 147, // 下单订单数量
+      &quot;resignedTradeCount&quot; : 14 // 退单数量
+    },
+    ...
+  ],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E6%9C%80%E8%BF%91%E4%B8%83%E6%97%A5%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE">获取最近七日统计数据</h3>
+<ul>
+<li>接口： <code>/api/sys/getRecentDailyStats</code></li>
+<li>方法： <code>POST</code> | <code>GET</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参： 无</li>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [
+    {
+      &quot;id&quot; : &quot;5af3c3c02146be780d524777&quot;,
+      &quot;time&quot; : &quot;2018-05-10T16:00:00.200Z&quot;, // 统计时间
+      &quot;group&quot; : 1,
+      &quot;newTradeCount&quot; : 154, // 新订单
+      &quot;finishTradeCount&quot; : 75, // 完成订单数量（发货）
+      &quot;orderedTradeCount&quot; : 147, // 下单订单数量
+      &quot;resignedTradeCount&quot; : 14 // 退单数量
+    },
+    ...
+  ],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E6%98%A8%E6%97%A5%E4%B9%B0%E6%89%8B%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE">获取昨日买手统计数据</h3>
+<ul>
+<li>接口： <code>/api/buyerStats/getYesterdayRank</code></li>
+<li>方法： <code>POST</code> | <code>GET</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参： 无</li>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [
+    {
+      &quot;id&quot; : &quot;5af5cd7dff0cec0011d2da54&quot;,
+      &quot;year&quot; : 2018,
+      &quot;month&quot; : 4, // 4=5月
+      &quot;day&quot; : 11,
+      &quot;name&quot; : &quot;李xx&quot;,
+      &quot;userid&quot; : &quot;5ae28302aa9e9000112b73b1&quot;,
+      &quot;group&quot; : 1,
+      &quot;assigned&quot; : 0,
+      &quot;dismissed&quot; : 0,
+      &quot;failed&quot; : 0,
+      &quot;finished&quot; : 0,
+      &quot;ordered&quot; : 0
+  },
+    ...
+  ],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%9C%80%E6%96%B0%E6%B6%88%E6%81%AF">获取消息队列最新消息</h3>
+<ul>
+<li>
+<p>接口： <code>/api/trades/readfromqueue</code></p>
+</li>
+<li>
+<p>方法： <code>POST</code></p>
+</li>
+<li>
+<p>是否必须登陆： <code>true</code></p>
+</li>
+<li>
+<p>入参： 无</p>
+</li>
+<li>
+<p>返回：</p>
+</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [
+    {
+      &quot;action&quot;: &quot;trade-new&quot;, // &quot;trade-new&quot;-最新订单，&quot;ordered-new&quot;-最新下单，&quot;shipped-new&quot;-最新发货
+      &quot;value&quot;: {
+        &quot;group&quot;: 1,
+        &quot;tid_str&quot;: &quot;12345677890&quot;,
+        &quot;seller_nick&quot;: &quot;卖家旺旺&quot;,
+        &quot;payment&quot;: 123.12,
+        &quot;buyer_area&quot;: &quot;买家所在地区&quot;,
+        &quot;title&quot;: &quot;商品标题&quot;,
+        &quot;is_daixiao&quot;: false, // 是否代销宝贝
+        &quot;num&quot;: 1,
+        &quot;created&quot;: &quot;订单创建时间&quot;,
+        &quot;pushtime&quot;: &quot;订单推送时间&quot;
+      },
+      &quot;pushtime&quot;: &quot;订单推送时间&quot;
+    }
+  ],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E5%B7%B2%E6%88%90%E4%BA%A4%E8%AE%A2%E5%8D%95%EF%BC%88%E8%AE%A1%E7%AE%97%E5%88%B0%E8%B4%A6%E5%88%A9%E6%B6%A6%E7%94%A8%EF%BC%89">获取已成交订单（计算到账利润用）</h3>
+<ul>
+<li>接口： <code>/api/trades/listfinished</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timespan</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询周期[<code>today</code>今日</td>
+</tr>
+<tr>
+<td><code>startdate</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询起始日期（仅当<code>timespan</code>为<code>daterange</code>时生效）</td>
+</tr>
+<tr>
+<td><code>enddate</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询截止日期（仅当<code>timespan</code>为<code>daterange</code>时生效）</td>
+</tr>
+<tr>
+<td><code>byshop</code></td>
+<td><code>false</code></td>
+<td><code>boolean</code></td>
+<td>是否输出按店铺统计结果</td>
+</tr>
+<tr>
+<td><code>bybuyer</code></td>
+<td><code>false</code></td>
+<td><code>boolean</code></td>
+<td>是否输出按买手统计结果</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    &quot;tradeCount&quot;: 356,
+    &quot;orderCount&quot;: 351,
+    &quot;daixiaoTradeCount&quot;: 5,
+    &quot;tradePaymentTotal&quot;: 12095.610000000002,
+    &quot;orderPaymentTotal&quot;: 8274.509999999997,
+    &quot;daixiaoPaymentTotal&quot;: 338.59000000000003,
+    &quot;shops&quot;: [
+      {
+        &quot;name&quot;: &quot;xxxx1&quot;,
+        &quot;tradeCount&quot;: 20,
+        &quot;tradeAmount&quot;: 571.23,
+        &quot;orderCount&quot;: 20,
+        &quot;orderAmount&quot;: 407.47,
+        &quot;daixiaoCount&quot;: 0,
+        &quot;daixiaoAmount&quot;: 0
+      },
+      {
+        &quot;name&quot;: &quot;xxxxx2&quot;,
+        &quot;tradeCount&quot;: 117,
+        &quot;tradeAmount&quot;: 3705.0800000000017,
+        &quot;orderCount&quot;: 117,
+        &quot;orderAmount&quot;: 2380.950000000001,
+        &quot;daixiaoCount&quot;: 0,
+        &quot;daixiaoAmount&quot;: 0
+      },
+      ...
+    ],
+    &quot;buyers&quot;: [
+      {
+        &quot;name&quot;: &quot;XXX雨&quot;,
+        &quot;userid&quot;: &quot;5ae3ecb75c499b001132daea&quot;,
+        &quot;tradeCount&quot;: 251,
+        &quot;tradeAmount&quot;: 8319.529999999995,
+        &quot;orderCount&quot;: 250,
+        &quot;orderAmount&quot;: 5786.010000000002
+      },
+      ...
+    ]
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E5%B7%B2%E5%8F%91%E8%B4%A7%E8%AE%A2%E5%8D%95%EF%BC%88%E8%AE%A1%E7%AE%97%E5%85%A5%E8%B4%A6%E5%88%A9%E6%B6%A6%E7%94%A8%EF%BC%89">获取已发货订单（计算入账利润用）</h3>
+<ul>
+<li>接口： <code>/api/trades/listshipped</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timespan</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询周期[<code>today</code>今日</td>
+</tr>
+<tr>
+<td><code>startdate</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询起始日期（仅当<code>timespan</code>为<code>daterange</code>时生效）</td>
+</tr>
+<tr>
+<td><code>enddate</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询截止日期（仅当<code>timespan</code>为<code>daterange</code>时生效）</td>
+</tr>
+<tr>
+<td><code>byshop</code></td>
+<td><code>false</code></td>
+<td><code>boolean</code></td>
+<td>是否输出按店铺统计结果</td>
+</tr>
+<tr>
+<td><code>bybuyer</code></td>
+<td><code>false</code></td>
+<td><code>boolean</code></td>
+<td>是否输出按买手统计结果</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    &quot;tradeCount&quot;: 356,
+    &quot;orderCount&quot;: 351,
+    &quot;daixiaoTradeCount&quot;: 5,
+    &quot;tradePaymentTotal&quot;: 12095.610000000002,
+    &quot;orderPaymentTotal&quot;: 8274.509999999997,
+    &quot;daixiaoPaymentTotal&quot;: 338.59000000000003,
+    &quot;shops&quot;: [
+      {
+        &quot;name&quot;: &quot;xxxx1&quot;,
+        &quot;tradeCount&quot;: 20,
+        &quot;tradeAmount&quot;: 571.23,
+        &quot;orderCount&quot;: 20,
+        &quot;orderAmount&quot;: 407.47,
+        &quot;daixiaoCount&quot;: 0,
+        &quot;daixiaoAmount&quot;: 0
+      },
+      {
+        &quot;name&quot;: &quot;xxxxx2&quot;,
+        &quot;tradeCount&quot;: 117,
+        &quot;tradeAmount&quot;: 3705.0800000000017,
+        &quot;orderCount&quot;: 117,
+        &quot;orderAmount&quot;: 2380.950000000001,
+        &quot;daixiaoCount&quot;: 0,
+        &quot;daixiaoAmount&quot;: 0
+      },
+      ...
+    ],
+    &quot;buyers&quot;: [
+      {
+        &quot;name&quot;: &quot;XXX雨&quot;,
+        &quot;userid&quot;: &quot;5ae3ecb75c499b001132daea&quot;,
+        &quot;tradeCount&quot;: 251,
+        &quot;tradeAmount&quot;: 8319.529999999995,
+        &quot;orderCount&quot;: 250,
+        &quot;orderAmount&quot;: 5786.010000000002
+      },
+      ...
+    ]
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E5%B7%B2%E4%B8%8B%E5%8D%95%E8%AE%A2%E5%8D%95%EF%BC%88%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%97%B6%E5%88%A9%E6%B6%A6%E7%94%A8%EF%BC%89">获取已下单订单（计算实时利润用）</h3>
+<ul>
+<li>接口： <code>/api/trades/listordered</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timespan</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询周期[<code>today</code>今日</td>
+</tr>
+<tr>
+<td><code>startdate</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询起始日期（仅当<code>timespan</code>为<code>daterange</code>时生效）</td>
+</tr>
+<tr>
+<td><code>enddate</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询截止日期（仅当<code>timespan</code>为<code>daterange</code>时生效）</td>
+</tr>
+<tr>
+<td><code>byshop</code></td>
+<td><code>false</code></td>
+<td><code>boolean</code></td>
+<td>是否输出按店铺统计结果</td>
+</tr>
+<tr>
+<td><code>bybuyer</code></td>
+<td><code>false</code></td>
+<td><code>boolean</code></td>
+<td>是否输出按买手统计结果</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: {
+    &quot;tradeCount&quot;: 356,
+    &quot;orderCount&quot;: 351,
+    &quot;daixiaoTradeCount&quot;: 5,
+    &quot;tradePaymentTotal&quot;: 12095.610000000002,
+    &quot;orderPaymentTotal&quot;: 8274.509999999997,
+    &quot;daixiaoPaymentTotal&quot;: 338.59000000000003,
+    &quot;shops&quot;: [
+      {
+        &quot;name&quot;: &quot;xxxx1&quot;,
+        &quot;tradeCount&quot;: 20,
+        &quot;tradeAmount&quot;: 571.23,
+        &quot;orderCount&quot;: 20,
+        &quot;orderAmount&quot;: 407.47,
+        &quot;daixiaoCount&quot;: 0,
+        &quot;daixiaoAmount&quot;: 0
+      },
+      {
+        &quot;name&quot;: &quot;xxxxx2&quot;,
+        &quot;tradeCount&quot;: 117,
+        &quot;tradeAmount&quot;: 3705.0800000000017,
+        &quot;orderCount&quot;: 117,
+        &quot;orderAmount&quot;: 2380.950000000001,
+        &quot;daixiaoCount&quot;: 0,
+        &quot;daixiaoAmount&quot;: 0
+      },
+      ...
+    ],
+    &quot;buyers&quot;: [
+      {
+        &quot;name&quot;: &quot;XXX雨&quot;,
+        &quot;userid&quot;: &quot;5ae3ecb75c499b001132daea&quot;,
+        &quot;tradeCount&quot;: 251,
+        &quot;tradeAmount&quot;: 8319.529999999995,
+        &quot;orderCount&quot;: 250,
+        &quot;orderAmount&quot;: 5786.010000000002
+      },
+      ...
+    ]
+  },
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+<h3 id="%E8%8E%B7%E5%8F%96%E5%88%A9%E6%B6%A6%E5%88%97%E8%A1%A8%EF%BC%88%E4%BA%8F%E6%8D%9F%E6%A3%80%E6%9F%A5%EF%BC%8C%E8%BF%90%E8%90%A5%E7%94%A8%EF%BC%89">获取利润列表（亏损检查，运营用）</h3>
+<ul>
+<li>接口： <code>/api/trades/losscheck</code></li>
+<li>方法： <code>POST</code></li>
+<li>是否必须登陆： <code>true</code></li>
+<li>入参：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>入参</th>
+<th>必填</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timespan</code></td>
+<td><code>false</code></td>
+<td><code>string</code></td>
+<td>查询周期[<code>today</code>今日</td>
+</tr>
+<tr>
+<td><code>profitstart</code></td>
+<td><code>false</code></td>
+<td><code>number</code></td>
+<td>查询利润起始额</td>
+</tr>
+<tr>
+<td><code>profitend</code></td>
+<td><code>false</code></td>
+<td><code>number</code></td>
+<td>查询利润截止额</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  code: 0,
+  data: [
+    {
+      &quot;_id&quot;: &quot;5b67e9c273433f00174fc6ce&quot;,
+      &quot;shop&quot;: {
+        &quot;id&quot;: &quot;5ae0a7be550c960011dd0b2a&quot;,
+        &quot;name&quot;: &quot;xxxxxxxx&quot;,
+        &quot;group&quot;: 1
+      },
+      &quot;shopid&quot;: &quot;5ae0a7be550c960011dd0b2a&quot;,
+      &quot;tid_str&quot;: &quot;196076085034242859&quot;,
+      &quot;orders&quot;: {
+        &quot;order&quot;: [
+          {
+            &quot;adjust_fee&quot;: -15.58,
+            &quot;buyer_rate&quot;: false,
+            &quot;cid&quot;: 50000671,
+            &quot;discount_fee&quot;: 77.62,
+            &quot;divide_order_fee&quot;: &quot;59.00&quot;,
+            &quot;is_daixiao&quot;: false,
+            &quot;is_oversold&quot;: false,
+            &quot;nr_outer_iid&quot;: &quot;572013962176&quot;,
+            &quot;num&quot;: 1,
+            &quot;num_iid&quot;: 574612203672,
+            &quot;oid&quot;: 196076085034242850,
+            &quot;oid_str&quot;: &quot;196076085034242859&quot;,
+            &quot;order_from&quot;: &quot;WAP,WAP&quot;,
+            &quot;outer_iid&quot;: &quot;572013962176&quot;,
+            &quot;payment&quot;: 59,
+            &quot;pic_path&quot;: &quot;https://img.alicdn.com/bao/uploaded/i1/3357622617/TB2fwOoy5CYBuNkHFCcXXcHtVXa_!!3357622617.jpg&quot;,
+            &quot;price&quot;: 152.2,
+            &quot;refund_status&quot;: &quot;NO_REFUND&quot;,
+            &quot;seller_rate&quot;: false,
+            &quot;seller_type&quot;: &quot;C&quot;,
+            &quot;sku_id&quot;: &quot;3759761869413&quot;,
+            &quot;sku_properties_name&quot;: &quot;主要颜色:爱心手势白 心花怒放粉;尺码:XL&quot;,
+            &quot;snapshot_url&quot;: &quot;n:196076085034242859_1&quot;,
+            &quot;status&quot;: &quot;WAIT_SELLER_SEND_GOODS&quot;,
+            &quot;title&quot;: &quot;【2件59元】夏装短袖t恤女纯棉2018新款学生上衣服修身白色半袖衫&quot;,
+            &quot;total_fee&quot;: 59
+          }
+        ]
+      },
+      &quot;payment&quot;: 59,
+      &quot;last_assignbuyer&quot;: {
+        &quot;buyerid&quot;: &quot;5ae9a8552f449d00116b58f2&quot;,
+        &quot;group&quot;: 1,
+        &quot;name&quot;: &quot;陈xxxx&quot;,
+        &quot;shopid&quot;: &quot;5ae0a7be550c960011dd0b2a&quot;,
+        &quot;userid&quot;: &quot;5ae28383aa9e9000112b73d8&quot;,
+        &quot;time&quot;: &quot;2018-08-06T08:40:13.373Z&quot;,
+        &quot;is_passive&quot;: true
+      },
+      &quot;lastorder_time&quot;: &quot;2018-08-06T08:49:08.605Z&quot;,
+      &quot;ordered_temp&quot;: {
+        &quot;oid_str&quot;: &quot;196076085034242859&quot;,
+        &quot;post_fee&quot;: 0,
+        &quot;buyer_fee&quot;: 5900,
+        &quot;buy_url&quot;: &quot;https://detail.tmall.com/item.htm?id=567185679411&quot;,
+        &quot;num&quot;: &quot;1&quot;,
+        &quot;order_number&quot;: &quot;175072691195823149&quot;,
+        &quot;name&quot;: &quot;陈xxxx&quot;,
+        &quot;buyer_nick&quot;: &quot;甜xxxxx&quot;,
+        &quot;userid&quot;: &quot;5ae28383aa9e9000112b73d8&quot;,
+        &quot;time&quot;: &quot;2018-08-06T08:49:08.605Z&quot;
+      },
+      &quot;ordered_sum&quot;: 5900,
+      &quot;profit&quot;: 0,
+      &quot;profit_ratio&quot;: 0
+    },
+    ...
+  ],
+  status: &quot;ok&quot;,
+  success: true
+}
+</div></code></pre>
+<ul>
+<li>错误返回：</li>
+</ul>
+<pre class="hljs"><code><div>{
+  status: &quot;fail&quot;,
+  success: false,
+  code: 0,
+  message: &quot;错误信息&quot;
+}
+</div></code></pre>
+
+</body>
+</html>

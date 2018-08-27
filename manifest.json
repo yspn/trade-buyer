@@ -1,0 +1,100 @@
+{
+  "name": "一键下单2.0(dev)",
+  "manifest_version": 2,
+  "version": "2.0",
+  "description": "淘宝店群一键下单插件",
+  "icons": {
+    "16": "./static/logo.png",
+    "48": "./static/logo.png",
+    "128": "./static/logo.png"
+  },
+  "browser_action": {
+    "default_icon": "./static/logo.png"
+  },
+  "permissions": [
+    "cookies",
+    "webRequest",
+    "webRequestBlocking",
+    "tabs",
+    "storage",
+    "notifications",
+    "*://*.alipay.com/*",
+    "*://*.taobao.com/*",
+    "*://*.tmall.com/*",
+    "*://store.tao11.la/*",
+    "*://192.168.99.1:3000/*",
+    "*://read-trade.wgkyz.com/*"
+  ],
+  "background": {
+    "scripts": [
+      "./static/common.js",
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.taobao.com/*", "*://*.tmall.com/*"
+      ],
+      "js": [
+        "./static/common.js",
+        "./static/js/jquery.js",
+        "./static/js/FloatWindow.js"
+      ],
+      "css": [
+        "./static/css/onekey.css",
+        "./static/css/font-awesome.min.css"
+      ]
+    },
+    {
+      "matches": [
+        "*://item.taobao.com/item.htm*", "*://detail.tmall.com/item.htm*", "*://www.taobao.com/"
+      ],
+      "js": [
+        "./static/common.js",
+        "./static/js/gbk.js",
+        "./static/js/md5.js",
+        "./static/js/Item.js"
+      ]
+    },
+    {
+      "matches": [
+        "*://buy.taobao.com/auction/buy_now.jhtml*",
+        "*://buy.taobao.com/auction/order/confirm_order.htm*",
+        "*://buy.tmall.com/order/confirm_order.htm*",
+        "*://buy.tmall.com/order/confirmOrder.htm*"
+      ],
+      "js": [
+        "./static/common.js",
+        "./static/js/gbk.js",
+        "./static/js/Order.js"
+      ]
+    },
+    {
+      "matches": [
+        "*://buyertrade.taobao.com/trade/itemlist/list_bought_items.htm*"
+      ],
+      "js": [
+        "./static/common.js",
+        "./static/js/gbk.js",
+        "./static/js/TraceLogistics.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://msg.taobao.com/json/hover_message.htm*"
+      ],
+      "js": [
+        "./static/js/TraceUCLogistics.js"
+      ]
+    }
+  ],
+  "options_page": "controls.html",
+  "content_security_policy": "script-src 'self' http://localhost:8080 'unsafe-eval'; object-src 'self'",
+  "web_accessible_resources": [
+    "controls.html",
+    "./static/fonts/ionicons.ttf",
+    "./static/fonts/ionicons.woff",
+    "./static/fonts/img/logo.png"
+  ]
+}

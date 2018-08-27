@@ -1,0 +1,13 @@
+{
+    "api": "mtop.taobao.mbis.getdeliveraddrlist",
+    "data": {
+        "code": "0",
+        "message": "操作成功",
+        "returnValue": "[{\"active\":false,\"addressDetail\":\"高桥镇贵州省 遵义市 汇川区 西安路 高架桥 邻桥花园 A区\",\"area\":\"汇川区\",\"areaDivisionCode\":520303,\"buidFromChindIframe\":true,\"chinaLand\":true,\"city\":\"遵义市\",\"cityDivisionCode\":520300,\"country\":\"\",\"countryDivisionCode\":1,\"defaultAddress\":true,\"defaultCode\":1,\"deliverId\":8444416264,\"divisionCode\":\"520303\",\"forgin\":false,\"fullAddress\":\"贵州省/遵义市/汇川区/高桥镇\",\"fullName\":\"焦小敏\",\"gAT\":false,\"gmtCreate\":1531721774000,\"gmtModified\":1531721955000,\"guoguoAddress\":false,\"hKOrMacauOrTW\":false,\"illegalCunTaoAddress\":false,\"kinshipDeliverAddress\":false,\"mobile\":\"15121266064\",\"mobileCode\":\"86\",\"needUpgrade\":false,\"overSea\":false,\"post\":\"000000\",\"provDivisionCode\":520000,\"province\":\"贵州省\",\"tAIWAN\":false,\"town\":\"高桥镇\",\"townDivisionCode\":520303100,\"userNumId\":1920496417,\"x\":\"27.703435\",\"y\":\"106.896454\"},{\"active\":false,\"addressDetail\":\"维新镇维新街道上\",\"area\":\"纳雍县\",\"areaDivisionCode\":522426,\"buidFromChindIframe\":true,\"chinaLand\":true,\"city\":\"毕节市\",\"cityDivisionCode\":522400,\"country\":\"\",\"countryDivisionCode\":1,\"defaultAddress\":false,\"defaultCode\":0,\"deliverId\":8440442809,\"divisionCode\":\"522426\",\"forgin\":false,\"fullAddress\":\"贵州省/毕节市/纳雍县/维新镇\",\"fullName\":\"陈浪\",\"gAT\":false,\"gmtCreate\":1531713118000,\"gmtModified\":1531721774000,\"guoguoAddress\":false,\"hKOrMacauOrTW\":false,\"illegalCunTaoAddress\":false,\"kinshipDeliverAddress\":false,\"mobile\":\"13157878969\",\"mobileCode\":\"86\",\"needUpgrade\":false,\"overSea\":false,\"post\":\"000000\",\"provDivisionCode\":520000,\"province\":\"贵州省\",\"tAIWAN\":false,\"town\":\"维新镇\",\"townDivisionCode\":520525103,\"userNumId\":1920496417,\"x\":\"27.00418\",\"y\":\"105.193347\"}]",
+        "success": "true"
+    },
+    "ret": [
+        "SUCCESS::调用成功"
+    ],
+    "v": "1.0"
+}
