@@ -138,11 +138,27 @@
           </div>
         </div>
         <div class="module-normal half buyer-yesterday-rank">
-          <div class="title">
+          <!-- <div class="title">
             昨日最佳
           </div>
           <div class="content">
             <div id="buyerYesterdayRankChart"></div>
+          </div> -->
+          <div class="title">
+            榜单排名
+          </div>
+          <div class="content">
+            <div id="buyerRankList">
+              <marquee behavior="scroll" direction="up" height="100%">
+                <ul>
+                  <li v-for="(buyer, index) in buyersToday.buyers" :key="`buyer-rank-${index}`">
+                    <div class="buyer-rank">{{index+1}}.</div>
+                    <div class="buyer-name">{{buyer}}</div>
+                    <div class="buyer-figure">{{buyersToday.today[index]}}</div>
+                  </li>
+                </ul>
+              </marquee>
+            </div>
           </div>
         </div>
       </div>
@@ -312,9 +328,9 @@ export default {
           this.drawResignmentChart()
         })
       }, 1000 * 60 * 30) // 30分钟刷新一次系统统计
-      this.syncYesterdayBuyerStats().then((stats) => {
-        this.drawBuyerYesterdayRankChart()
-      })
+      // this.syncYesterdayBuyerStats().then((stats) => {
+      //   this.drawBuyerYesterdayRankChart()
+      // })
       this.syncRecentDailyStats().then(stats => {
         this.drawRecentDailyTrendChart()
       })
@@ -416,9 +432,11 @@ export default {
       if (this.buyersStat.length) {
         let buyers = []
         let today = []
-        this.buyersStat.sort((a, b) => {
+        this.buyersStat.filter((item) => {
+          return item.todayOrdered
+        }).sort((a, b) => {
           return b.todayOrdered - a.todayOrdered
-        }).forEach((item) => {
+        }).forEach((item, index) => {
           buyers.push(item.name)
           today.push(item.todayOrdered)
         })
@@ -445,7 +463,13 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.buyersToday.buyers
+          data: this.buyersToday.buyers.filter((item, index) => {
+            return index < 10 // 取前十名
+          }),
+          axisLabel: {
+            interval: 0,
+            rotate: 40
+          }
         },
         yAxis: {
           type: 'value',
@@ -464,7 +488,9 @@ export default {
           symbolRepeat: true,
           symbolSize: ['60%', '5%'],
           symbolMargin: '20%',
-          data: this.buyersToday.today,
+          data: this.buyersToday.today.filter((item, index) => {
+            return index < 10 // 取前十名
+          }),
           label: {
             show: true,
             position: 'top',
@@ -480,10 +506,10 @@ export default {
     async drawTodayNewTradesChart () {
       if (this.sysStats.length) {
         let cats = [
-          '00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30',
+          '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30',
           '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
           '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
-          '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'
+          '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00'
         ]
         let yesterday = []
         let today = []
@@ -792,14 +818,15 @@ export default {
           if (new Date().getUTCHours() < 16 || i > 0) {
             yesterday.setUTCHours(-24)
           }
-          yesterday.setUTCHours(15)
-          yesterday.setUTCMinutes(30)
+          yesterday.setUTCHours(16)
+          yesterday.setUTCMinutes(0)
+          // console.log(yesterday)
           cats.push(leftPad((yesterday.getUTCMonth() + 1), 2, '0') + '/' + leftPad(yesterday.getUTCDate(), 2, '0'))
         }
-        if (this.sysStatsData.today.length) {
-          cats.push((new Date().getMonth() + 1) + '/' + new Date().getDate())
-        }
-        cats = cats.sort()
+        cats = cats.reverse()
+        // if (this.sysStatsData.today.length) {
+        //   cats.push((new Date().getMonth() + 1) + '/' + new Date().getDate())
+        // }
         // console.log(cats)
         let data = []
         for (let i = 0; i < cats.length; i++) {
@@ -834,17 +861,18 @@ export default {
             })
           })(i)
         }
-        if (this.sysStatsData.today.length) {
-          let todayStat = this.sysStats.filter((item) => {
-            return new Date(item.time).getUTCMonth() === new Date().getUTCMonth() && new Date(item.time).getUTCDate() === new Date().getUTCDate()
-          })
-          data[data.length - 1] = {
-            newTradeCount: todayStat.length ? todayStat[todayStat.length - 1].newTradeCount : 0,
-            finishTradeCount: todayStat.length ? todayStat[todayStat.length - 1].finishTradeCount : 0,
-            orderedTradeCount: todayStat.length ? todayStat[todayStat.length - 1].orderedTradeCount : 0,
-            resignedTradeCount: todayStat.length ? todayStat[todayStat.length - 1].resignedTradeCount : 0
-          }
-        }
+        // if (this.sysStatsData.today.length) {
+        //   let todayStat = this.sysStats.filter((item) => {
+        //     return new Date(item.time).getUTCMonth() === new Date().getUTCMonth() && new Date(item.time).getUTCDate() === new Date().getUTCDate()
+        //   })
+        //   // console.log(todayStat)
+        //   data[data.length - 1] = {
+        //     newTradeCount: todayStat.length ? todayStat[todayStat.length - 1].newTradeCount : 0,
+        //     finishTradeCount: todayStat.length ? todayStat[todayStat.length - 1].finishTradeCount : 0,
+        //     orderedTradeCount: todayStat.length ? todayStat[todayStat.length - 1].orderedTradeCount : 0,
+        //     resignedTradeCount: todayStat.length ? todayStat[todayStat.length - 1].resignedTradeCount : 0
+        //   }
+        // }
         // console.log(cats)
         // console.log(data.map((item) => {
         //   return item.newTradeCount
@@ -1608,6 +1636,19 @@ export default {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, .6);
+  }
+}
+#buyerRankList {
+  height: 100%;
+  ul {
+    li {
+      padding: 5px 30px;
+      font-size: 16px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 }
 .unit-table {

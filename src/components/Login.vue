@@ -1,84 +1,65 @@
 <template>
-  <Layout class="login-main">
-    <Content>
-      <Spin size="large"></Spin>
+  <Layout class="login-main" style="height:100%;">
+    <Content class="login-content">
+      <div class="login-box">
+        <div class="login-title">
+          <h2>欢迎使用淘易易订单管理系统</h2>
+          <div class="padding-top-10"></div>
+          <div class="padding-top-10"></div>
+          <h1>系统检测到你还没有登录</h1>
+        </div>
+        <div class="login-form">
+          <div class="padding-top-10"></div>
+          <div class="padding-top-10"></div>
+          <div class="padding-top-10"></div>
+          <div class="padding-top-10"></div>
+          <p class="font-grey">点击下方按钮并使用微信登录</p>
+          <div class="padding-top-10"></div>
+          <div class="padding-top-10"></div>
+          <Button type="success" @click="LoginSubmit" long>点击登陆系统</Button>
+        </div>
+      </div>
     </Content>
   </Layout>
 </template>
 
 <script>
-import {
-  getQueryString
-} from '../../static/common'
+// import {
+//   focusOrCreateTab
+// } from '../../static/common'
 export default {
   name: 'login-main',
   data () {
     return {
-      apiItem: {
-        apiHost: '',
-        apiService: 'zztAuth',
-        apiAction: 'Login',
-        apiQuery: {}
-      },
-      apiData: null,
-      loginInCode: ''
+      appKey: '17'
     }
   },
   watch: {
-    loginInCode: function (val) {
-      if (val) {
-        this.auth(val)
-      }
-    }
   },
   mounted () {
-    this.loginInCode = getQueryString('code')
   },
   methods: {
-    auth (code) {
-      if (code) {
-        this.apiItem = {
-          apiHost: '',
-          apiService: 'users',
-          apiAction: 'auth', // this.$store.getters.token
-          apiQuery: {}
-        }
-        this.apiData = {
-          code: code
-        }
-        this.$store.dispatch('setAPIStore', this.apiItem)
-        var apiUrl = this.$store.getters.apiUrl
-        this.$http.post(apiUrl, this.apiData).then(res => {
-          console.log(res)
-          if (res.data.status === 'ok') {
-            this.$Message.success('登陆成功！')
-            this.$store.dispatch('setUserStore', res.data.data)
-            if (this.$store.getters.sysIsExtension) {
-              // this.$router.push({path: '/'})
-              window.location.href = '/controls.html'
-              window.chrome.cookies.set({
-                url: 'http://192.168.99.1:3000/',
-                name: 'tao11_buyer_token',
-                value: res.data.data.token
-              })
-            } else {
-              window.location.href = '/'
-            }
-          } else {
-            this.$Message.error('登陆失败！(' + res.data.message + ')')
-          }
-        }).catch(err => {
-          console.log(err)
-          this.$Message.error('登陆失败，请重试。')
-        })
-      } else {
-        this.$Message.error('登陆失败，请重试。')
-      }
+    LoginSubmit () {
+      let localUrl = window.chrome.extension ? window.chrome.extension.getURL('/') + 'controls.html' : 'http://localhost:8080/'
+      var url = window.encodeURIComponent(localUrl + '#/loggedin')
+      window.location.href = 'http://login.tao11.la/login.html?redirect_uri=' + url + '&appkey=' + this.appKey
+      // if (window.chrome.extension) {
+      //   focusOrCreateTab('http://login.tao11.la/login.html?redirect_uri=' + url + '&appkey=' + this.appKey)
+      // } else {
+      //   window.open('http://login.tao11.la/login.html?redirect_uri=' + url + '&appkey=' + this.appKey, '_blank')
+      // }
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-
+.login-main {}
+.login-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
 </style>

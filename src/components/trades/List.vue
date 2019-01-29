@@ -91,6 +91,7 @@
                         </span>
                       </b>)
                     </span>
+                    <a :href="detailedItem.ordered[detailedItem.ordered.length - 1].buy_url" target="_blank">下单链接</a>
                   </td>
                 </tr>
                 <tr>
@@ -123,7 +124,7 @@
                 <tr v-if="detailedItem.seller_memo">
                   <th>订单备注</th>
                   <td colspan="5">
-                    <div style="font-weight: bold; color: red">
+                    <div style="font-weight: bold;" :style="{color: getMemoColor(detailedItem.seller_flag)}">
                       {{detailedItem.seller_memo}}
                     </div>
                   </td>
@@ -166,17 +167,18 @@
                         (优惠:{{item.discount_fee}})
                       </p>
                     </td>
-                    <td>
+                    <td v-if="['service'].indexOf($store.getters.user.role) < 0">
                       <Button size="large" type="warning" @click.prevent.stop="goJoin(item)" v-if="!item.is_daixiao && (getSubOrderStatus(item).text === '待下单' || getSubOrderStatus(item).text === '已退单') && ['boss', 'manager'].indexOf($store.getters.user.role) > -1 && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1">关联订单</Button>
                       <Button size="large" type="success" @click.prevent.stop="goBuying(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '待下单' && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1 ">去下单</Button>
                       <Button size="large" type="success" @click.prevent.stop="goBuying(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已退单' && ['boss', 'manager'].indexOf($store.getters.user.role) > -1 && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1">去下单</Button>
                       <Button size="large" type="error" @click.prevent.stop="goDismiss(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已下单'">撤销关联</Button>
                     </td>
+                    <td v-else></td>
                   </tr>
-                  <tr v-if="(item.history_purchase && item.history_purchase.length) || item.outer_iid ||
+                  <tr v-if="['service'].indexOf($store.getters.user.role) < 0 && ((item.history_purchase && item.history_purchase.length) || item.outer_iid ||
                             (getSubOrderStatus(item).text === '待下单' ||
                             (getSubOrderStatus(item).text === '已退单' &&
-                            ['boss', 'manager'].indexOf($store.getters.user.role) > -1))" class="history-purchase">
+                            ['boss', 'manager'].indexOf($store.getters.user.role) > -1)))" class="history-purchase">
                     <td>
                       历史下单
                     </td>
@@ -226,7 +228,7 @@
       </div>
       <div slot="footer">
         <Button size="large" type="warning" @click="assignModal=true" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1&&['UNASSIGNED', 'RESIGNED', 'ASSIGNED'].indexOf(detailedItem.order_status) >= 0">分配给...</Button>
-        <Button size="large" type="error" @click="goResign" v-if="['ORDERED', 'PARTLY_ORDERED', 'RESIGNED', 'PARTLY_FINISHED', 'FINISHED'].indexOf(detailedItem.order_status) < 0">退单</Button>
+        <Button size="large" type="error" @click="goResign" v-if="['service'].indexOf($store.getters.user.role) < 0 && ['ORDERED', 'PARTLY_ORDERED', 'RESIGNED', 'PARTLY_FINISHED', 'FINISHED'].indexOf(detailedItem.order_status) < 0">退单</Button>
         <Button size="large" type="default" @click="setMemoModal">订单备注</Button>
         <Button size="large" @click="closeDetailed">关闭</Button>
       </div>
@@ -440,6 +442,7 @@ export default {
       cityList: [],
       areaList: [],
       townList: [],
+      seller_flag: 3,
       buyingItem: null,
       buyingModal: false,
       dismissModal: false,
@@ -542,9 +545,9 @@ export default {
       this.calcTableHeight()
       if (this.$route.params.status === 'ASSIGNED') {
         this.getAssignableTrades()
-        this.updateHistoryPurchase()
+        // this.updateHistoryPurchase()
       } else if (this.$route.params.status === 'RESIGNED') {
-        this.updateHistoryPurchase()
+        // this.updateHistoryPurchase()
       }
     })
     // 监听window.resize事件
@@ -607,12 +610,12 @@ export default {
     },
     'detailedItem': {
       handler: async function (newVal, oldVal) {
-        if (newVal.id) {
+        if (newVal._id) {
           if (!newVal.buyer_nick_decrypted) {
             await this.updateDecrypted(newVal)
           }
           if (!newVal.receiver_address_sync) {
-            await this.getReceiverAddress(newVal.id, newVal.tid_str, newVal.seller_nick).then(receiver => {
+            await this.getReceiverAddress(newVal._id, newVal.tid_str, newVal.seller_nick).then(receiver => {
               newVal = Object.assign(newVal, receiver)
             })
           }
@@ -701,7 +704,8 @@ export default {
           this.$set(trade, 'order_status', finalStatus)
           this.detailedItem = trade
           this.$emit('on-addorderbuyermessage', this.$store.getters.orderBought.buyerTid) // 写入订单留言
-          this.$emit('on-addordermemo', this.$store.getters.orderBought.buyerTid, this.$store.getters.orderInfo.sellernick + ':' + this.$store.getters.orderInfo.tid) // 原始订单 sellernick：tid
+          let memo = trade.seller_memo ? trade.seller_memo + ':' + this.$store.getters.orderInfo.tid : this.$store.getters.orderInfo.sellernick + ':' + this.$store.getters.orderInfo.tid
+          this.$emit('on-addordermemo', this.$store.getters.orderBought.buyerTid, memo) // 原始订单 sellernick：tid
           this.$Message.success('一键下单成功!')
           window.chrome.notifications.create(this.notificationId, {
             type: 'basic',
@@ -715,9 +719,10 @@ export default {
             }, 5000)
           })
         }).catch(err => {
+          console.log(err)
           this.$Modal.error({
             title: '数据上传失败，下单失败！',
-            content: err.message
+            content: err
           })
           window.chrome.notifications.create(this.notificationId, {
             type: 'basic',
@@ -734,7 +739,7 @@ export default {
         setTimeout(() => {
           this.$store.dispatch('clearOrderInfo')
           this.$store.dispatch('clearOrderBought')
-        }, 5000)
+        }, 2000)
         this.buyingModal = false
       }
     },
@@ -757,9 +762,9 @@ export default {
     '$route.params.status': function (newVal) {
       this.refreshList()
       if (newVal === 'ASSIGNED') {
-        this.updateHistoryPurchase()
+        // this.updateHistoryPurchase()
       } else if (newVal === 'RESIGNED') {
-        this.updateHistoryPurchase()
+        // this.updateHistoryPurchase()
       }
     },
     'sort': function (newVal) {
@@ -819,7 +824,7 @@ export default {
       this.apiItem = {
         apiHost: '',
         apiService: 'trades',
-        apiAction: 'list',
+        apiAction: 'listnew',
         apiQuery: {}
       }
       this.apiData = {}
@@ -1019,35 +1024,13 @@ export default {
           }
         },
         {
-          title: '买家淘宝',
-          key: 'buyer_nick_decrypted',
-          width: 160,
+          title: '商品标题',
+          key: 'orders',
           ellipsis: true,
           searchable: true,
           render: (h, params) => {
-            return h('span', {}, params.row.buyer_nick_decrypted || '待加载...')
+            return h('span', {}, params.row.orders.order[0].title)
           }
-        },
-        {
-          title: '买家姓名',
-          key: 'receiver_name',
-          width: 120,
-          ellipsis: true,
-          searchable: true
-        },
-        {
-          title: '收货地址',
-          key: 'receiver_address',
-          width: 160,
-          ellipsis: true,
-          searchable: true
-        },
-        {
-          title: '买家电话',
-          key: 'receiver_mobile',
-          width: 120,
-          ellipsis: true,
-          searchable: true
         },
         { title: '订单金额',
           key: 'total_fee',
@@ -1092,6 +1075,37 @@ export default {
           }
         },
         {
+          title: '买家淘宝',
+          key: 'buyer_nick_decrypted',
+          width: 160,
+          ellipsis: true,
+          searchable: true,
+          render: (h, params) => {
+            return h('span', {}, params.row.buyer_nick_decrypted || '待加载...')
+          }
+        },
+        // {
+        //   title: '买家姓名',
+        //   key: 'receiver_name',
+        //   width: 120,
+        //   ellipsis: true,
+        //   searchable: true
+        // },
+        // {
+        //   title: '收货地址',
+        //   key: 'receiver_address',
+        //   width: 160,
+        //   ellipsis: true,
+        //   searchable: true
+        // },
+        {
+          title: '买家电话',
+          key: 'receiver_mobile',
+          width: 120,
+          ellipsis: true,
+          searchable: true
+        },
+        {
           title: '操作',
           key: 'action',
           fixed: 'right',
@@ -1117,6 +1131,7 @@ export default {
         }
       ]
       if (this.$route.params.status === 'ASSIGNED') {
+        this.columns.splice(4, 1)
         this.columns.splice(1, 0, {
           title: '分配给',
           key: 'last_assignbuyer',
@@ -1147,17 +1162,53 @@ export default {
             return h('span', {}, ordered.length + '/' + params.row.orders.order.length)
           }
         })
+        this.columns.splice(9, 0, {
+          title: '收货人',
+          key: 'receiver_name',
+          width: 80,
+          ellipsis: true,
+          searchable: true,
+          sortable: true,
+          sortMethod: (a, b, type) => {
+            if (type === 'asc') {
+              return a.localeCompare(b, 'zh-CN')
+            } else {
+              return b.localeCompare(a, 'zh-CN')
+            }
+          },
+          render: (h, params) => {
+            return h('span', {}, params.row.receiver_name)
+          }
+        })
       } else if (this.$route.params.status === 'RESIGNED') {
         this.columns.splice(2, 0, {
           title: '原因',
-          key: 'lastresigned',
+          key: 'resigned',
           width: 120,
           ellipsis: true,
           sortable: true,
           searchable: true,
           render: (h, params) => {
-            let lastResign = params.row.lastresigned ? params.row.lastresigned : null
+            let lastResign = params.row.resigned ? params.row.resigned[params.row.resigned.length - 1] : null
             return h('span', {}, lastResign ? lastResign.reason : '')
+          }
+        })
+        this.columns.splice(9, 0, {
+          title: '收货人',
+          key: 'receiver_name',
+          width: 80,
+          ellipsis: true,
+          searchable: true,
+          sortable: true,
+          sortMethod: (a, b, type) => {
+            if (type === 'asc') {
+              return a.localeCompare(b, 'zh-CN')
+            } else {
+              return b.localeCompare(a, 'zh-CN')
+            }
+          },
+          render: (h, params) => {
+            return h('span', {}, params.row.receiver_name)
           }
         })
       } else if (['ORDEREDALL', 'ORDERED', 'PARTLY_ORDERED', 'FINISHEDALL', 'FINISHED', 'PARTLY_FINISHED'].indexOf(this.$route.params.status) > -1) {
@@ -1184,6 +1235,24 @@ export default {
             })
             let profit = (parseFloat(params.row.payment) - orderPaymentTotal).toFixed(2)
             return h('span', {style: {color: profit > 0 ? 'forestgreen' : 'red'}}, profit)
+          }
+        })
+        this.columns.splice(10, 0, {
+          title: '收货人',
+          key: 'receiver_name',
+          width: 80,
+          ellipsis: true,
+          searchable: true,
+          sortable: true,
+          sortMethod: (a, b, type) => {
+            if (type === 'asc') {
+              return a.localeCompare(b, 'zh-CN')
+            } else {
+              return b.localeCompare(a, 'zh-CN')
+            }
+          },
+          render: (h, params) => {
+            return h('span', {}, params.row.receiver_name)
           }
         })
       }
@@ -1213,7 +1282,7 @@ export default {
           if (trade) {
             let decrypted = ''
             if (!trade.buyer_nick_decrypted) {
-              await this.decryptCipher(trade.id, trade.seller_nick, trade.buyer_nick)
+              await this.decryptCipher(trade._id, trade.seller_nick, trade.buyer_nick)
                 .then(plain => {
                   decrypted = plain
                 })
@@ -1226,7 +1295,7 @@ export default {
             this.data.forEach(async (item, index) => {
               let decrypted = ''
               if (!item.buyer_nick_decrypted) {
-                await this.decryptCipher(item.id, item.seller_nick, item.buyer_nick)
+                await this.decryptCipher(item._id, item.seller_nick, item.buyer_nick)
                   .then(plain => {
                     decrypted = plain
                   })
@@ -1435,6 +1504,25 @@ export default {
           return 'default'
       }
     },
+    getMemoColor (flag) {
+      // 0-5 灰、红、黄、绿、蓝、紫
+      switch (flag) {
+        case 0:
+          return '#666'
+        case 1:
+          return 'red'
+        case 2:
+          return 'orange'
+        case 3:
+          return 'forestgreen'
+        case 4:
+          return 'blue'
+        case 5:
+          return 'deeppink'
+        default:
+          return '#666'
+      }
+    },
     toggleDetail (row, index) {
       this.detailed = true
       this.detailedItem = row
@@ -1495,7 +1583,7 @@ export default {
       cols.forEach((item) => {
         let by = {}
         let key = item.subKey ? item.key + '.' + item.subKey : item.key
-        by[key] = this.keyword
+        by[key] = this.keyword ? this.keyword.trim() : ''
         this.searchModel.push(by)
       })
       this.pageCurrent = 0
@@ -1598,25 +1686,93 @@ export default {
     setMemoModal () {
       this.$Modal.confirm({
         render: (h) => {
-          return h('Input', {
-            props: {
-              value: this.detailedItem.seller_memo,
-              type: 'textarea',
-              autosize: { minRows: 2, maxRows: 5 },
-              autofocus: true,
-              placeholder: '请填写订单备注信息'
-            },
-            on: {
-              input: (val) => {
-                this.detailedItem.seller_memo = val
+          return h('div', {}, [
+            h('Input', {
+              props: {
+                value: this.detailedItem.seller_memo,
+                type: 'textarea',
+                autosize: { minRows: 2, maxRows: 5 },
+                autofocus: true,
+                placeholder: '请填写订单备注信息'
+              },
+              on: {
+                input: (val) => {
+                  this.detailedItem.seller_memo = val
+                }
               }
-            }
-          })
+            }),
+            h('RadioGroup', {
+              props: {
+                value: this.detailedItem.seller_flag
+              },
+              on: {
+                'on-change': (val) => {
+                  this.detailedItem.seller_flag = val
+                }
+              }
+            }, [
+              h('Radio', {
+                props: {
+                  label: 0
+                }
+              }, [h('span', {
+                style: {
+                  color: this.getMemoColor(0)
+                }
+              }, '灰色')]),
+              h('Radio', {
+                props: {
+                  label: 1
+                }
+              }, [h('span', {
+                style: {
+                  color: this.getMemoColor(1)
+                }
+              }, '红色')]),
+              h('Radio', {
+                props: {
+                  label: 2
+                }
+              }, [h('span', {
+                style: {
+                  color: this.getMemoColor(2)
+                }
+              }, '黄色')]),
+              h('Radio', {
+                props: {
+                  label: 3
+                }
+              }, [h('span', {
+                style: {
+                  color: this.getMemoColor(3)
+                }
+              }, '绿色')]),
+              h('Radio', {
+                props: {
+                  label: 4
+                }
+              }, [h('span', {
+                style: {
+                  color: this.getMemoColor(4)
+                }
+              }, '蓝色')]),
+              h('Radio', {
+                props: {
+                  label: 5
+                }
+              }, [h('span', {
+                style: {
+                  color: this.getMemoColor(5)
+                }
+              }, '粉色')])
+            ])
+          ])
         },
         onOk: async () => {
           let result = confirm('确认修改订单备注么？')
           if (result) {
-            await this.setTradeMemo(this.detailedItem.tid_str, this.detailedItem.seller_memo).then((res) => {
+            // 手动备注为红色
+            await this.setTradeMemo(this.detailedItem.tid_str, this.detailedItem.seller_memo, this.detailedItem.seller_flag).then((res) => {
               this.$Message.success('备注原始订单成功！')
             })
           }
@@ -1676,7 +1832,7 @@ export default {
               apiQuery: {}
             }
             this.apiData = {
-              tradeid: this.detailedItem.id,
+              tradeid: this.detailedItem._id,
               tid: this.detailedItem.tid_str,
               oid: sub.oid_str,
               session: this.$store.getters.session,
@@ -1691,7 +1847,7 @@ export default {
                 this.$Message.error('解除订单关联失败！(' + respBody.message + ')')
               } else {
                 let trade = this.data.filter((item) => { // this.data
-                  return item.id === this.detailedItem.id
+                  return item._id === this.detailedItem._id
                 })[0]
                 let dismissModel = {
                   oid: sub.oid_str,
@@ -1758,7 +1914,7 @@ export default {
             apiQuery: {}
           }
           this.apiData = {
-            tradeid: this.detailedItem.id,
+            tradeid: this.detailedItem._id,
             session: this.$store.getters.session,
             reason: this.resignModel.reason,
             reason_other: this.resignModel.other
@@ -1771,7 +1927,7 @@ export default {
               this.$Message.error('退回订单失败！(' + respBody.message + ')')
             } else {
               let trade = this.data.filter((item) => { // this.data
-                return item.id === this.detailedItem.id
+                return item._id === this.detailedItem._id
               })[0]
               let resignModel = {
                 reason: this.resignModel.reason,
@@ -1883,7 +2039,7 @@ export default {
             apiQuery: {}
           }
           this.apiData = {
-            tradeid: this.detailedItem.id,
+            tradeid: this.detailedItem._id,
             buyerid: this.assignModel.buyerid
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
@@ -1894,7 +2050,7 @@ export default {
               this.$Message.error('分配订单失败！(' + respBody.message + ')')
             } else {
               let trade = this.data.filter((item) => { // this.data
-                return item.id === this.detailedItem.id
+                return item._id === this.detailedItem._id
               })[0]
               let assignbuyerModel = {
                 buyerid: this.assignModel.buyerid,
@@ -1996,7 +2152,7 @@ export default {
           this.buyingItem = sub
           let numiid = sub.num_iid
           if (!this.detailedItem.receiver_address_sync) {
-            await this.getReceiverAddress(this.detailedItem.id, this.detailedItem.tid_str, this.detailedItem.seller_nick)
+            await this.getReceiverAddress(this.detailedItem._id, this.detailedItem.tid_str, this.detailedItem.seller_nick)
               .catch(err => {
                 this.$Message.error('获取收货人信息错误!' + err)
                 return false
@@ -2069,16 +2225,18 @@ export default {
           }
           try {
             town = this.townList.filter((p) => {
-              return p.name.indexOf(this.detailedItem.receiver_town.trim()) >= 0
+              return p.parent_code === area && p.name.indexOf(this.detailedItem.receiver_town.trim()) >= 0
             })[0].code.substr(0, 9)
           } catch (e) {
             console.log(e)
             this.$Message.error('街道/乡镇填写错误！')
           }
+          this.processReceiverPhone()
           let provName = this.detailedItem.receiver_state
           let cityName = this.detailedItem.receiver_city
           let areaName = this.detailedItem.receiver_district
           let townName = this.detailedItem.receiver_town
+          let addressOriginal = null
           await this.getAddressSuggestion(prov, city, this.detailedItem.receiver_address).then(async (addrLayer) => {
             await (() => {
               return new Promise((resolve, reject) => {
@@ -2093,7 +2251,19 @@ export default {
                     content: '地址是否改为：<br><b>' + provNameNew + ' / ' + cityNameNew + ' / ' + areaNameNew + ' / ' + townNameNew + '</b> ?',
                     okText: '确认修改',
                     cancelText: '不修改',
-                    onOk: function () {
+                    onOk: () => {
+                      addressOriginal = {
+                        fullName: this.detailedItem.receiver_name,
+                        prov: prov,
+                        city: city,
+                        area: area,
+                        town: town,
+                        provName: provName,
+                        cityName: cityName,
+                        areaName: areaName,
+                        townName: townName,
+                        addressDetail: this.detailedItem.receiver_address
+                      }
                       prov = addrLayer.prov
                       city = addrLayer.city
                       area = addrLayer.area
@@ -2118,6 +2288,7 @@ export default {
             this.$Message.error('获取建议地址失败')
           })
           let receiverModel = {
+            addressOriginal: addressOriginal,
             country: '',
             prov: prov,
             provName: provName,
@@ -2140,7 +2311,7 @@ export default {
           this.$emit('on-insertnewaddress', receiverModel)
           let orderInfo = {
             numiid: numiid,
-            tradeid: this.detailedItem.id,
+            tradeid: this.detailedItem._id,
             tid: this.detailedItem.tid_str,
             oid: sub.oid_str,
             sellernick: this.detailedItem.seller_nick,
@@ -2151,8 +2322,10 @@ export default {
           this.$store.dispatch('setOrderInfo', orderInfo)
           // console.log(this.$store.getters.orderInfo.buyerMessage)
           // console.log(this.$store.getters.orderInfo.numiid)
-          let oneKeyOrderInfo = Object.assign(this.detailedItem, {receiver: receiverModel})
-          window.chrome.storage.local.set({'one_key_order': oneKeyOrderInfo})
+          let oneKeyOrderInfo = Object.assign(this.detailedItem, {receiver: receiverModel, orderInfo: orderInfo})
+          window.chrome.storage.local.set({'one_key_order': oneKeyOrderInfo}, function () {
+            console.log('OneKeyOrder local storage stored.')
+          })
           this.buyingModal = true
           // 获取转链链接 sub.trans_link
           if (url) {
@@ -2170,6 +2343,86 @@ export default {
           }
         }
       }
+    },
+    /**
+     * 电话号码预处理程序
+     */
+    async processReceiverPhone () {
+      if (!this.checkReceiverPhone(this.detailedItem.receiver_mobile)) {
+        let section = ''
+        await this.getTelAreaCode(this.detailedItem.receiver_city).then((res) => {
+          section = res
+        })
+        // console.log(section, this.detailedItem.receiver_mobile, this.detailedItem.receiver_phone)
+        if (this.detailedItem.receiver_mobile && !this.detailedItem.receiver_phone) {
+          // console.log('1如果填写了错误的手机号码没填固话')
+          // 如果填写了错误的手机号码没填固话
+          if (this.detailedItem.receiver_mobile.indexOf(section) === 0) {
+            if (this.detailedItem.receiver_mobile[section.length] === '-') {
+              this.detailedItem.receiver_phone = this.detailedItem.receiver_mobile
+            } else {
+              this.detailedItem.receiver_phone = section + '-' + this.detailedItem.receiver_mobile.substr(section.length)
+            }
+          } else {
+            this.detailedItem.receiver_phone = section + '-' + this.detailedItem.receiver_mobile
+          }
+          this.detailedItem.receiver_mobile = null
+        } else if (this.detailedItem.receiver_mobile && this.detailedItem.receiver_phone) {
+          // console.log('2如果填写了错误的手机号码也填写了固话')
+          // 如果填写了错误的手机号码也填写了固话
+          if (this.detailedItem.receiver_phone.indexOf(section) !== 0) {
+            this.detailedItem.receiver_phone = section + '-' + this.detailedItem.receiver_phone
+          } else {
+            if (this.detailedItem.receiver_phone[section.length] !== '-') {
+              this.detailedItem.receiver_phone = section + '-' + this.detailedItem.receiver_phone.substr(section.length)
+            }
+          }
+          this.detailedItem.receiver_mobile = null
+        } else {
+          // 如果没填手机号，填写了固话
+          // console.log('3如果没填手机号，填写了固话')
+          if (this.detailedItem.receiver_phone.indexOf(section) !== 0) {
+            // console.log('未发现区号')
+            this.detailedItem.receiver_phone = section + '-' + this.detailedItem.receiver_phone
+          } else {
+            // console.log('发现区号')
+            if (this.detailedItem.receiver_phone[section.length] !== '-') {
+              // console.log('没有-号', this.detailedItem.receiver_phone.substr(section.length))
+              this.detailedItem.receiver_phone = section + '-' + this.detailedItem.receiver_phone.substr(section.length)
+            }
+          }
+        }
+      }
+    },
+    /**
+     * 检测是否是手机号
+     */
+    checkReceiverPhone (phone) {
+      let result = true
+      if (!phone) {
+        return false
+      }
+      let phoneRegx = /^(0|86|17951)?(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[57]|19[0-9]|16[0-9])[0-9]{8}$/
+      if (!phoneRegx.test(phone.trim())) {
+        result = false
+      }
+      console.log('检查手机号', result)
+      return result
+    },
+    /**
+     * 根据地市名获取区号
+     */
+    getTelAreaCode (area) {
+      return new Promise(async (resolve, reject) => {
+        let secRec = this.cityList.filter((item) => {
+          return item.name === area
+        })
+        if (secRec.length) {
+          resolve(secRec[0].section_code)
+        } else {
+          resolve('')
+        }
+      })
     },
     async getAddressList () {
       if (!this.addressList || !(this.addressList instanceof Array) || !this.addressList.length) {
@@ -2218,11 +2471,18 @@ export default {
     getOriginalNumiid (suborder) {
       if (suborder && suborder.outer_iid) {
         let numiid = ''
-        if (suborder.outer_iid.indexOf('-') > 0) {
-          numiid = suborder.outer_iid.split('-')[1]
+        let reg = /\d{6,}/
+        let matches = suborder.outer_iid.match(reg)
+        if (matches.length) {
+          numiid = matches[0]
         } else {
           numiid = suborder.outer_iid
         }
+        // if (suborder.outer_iid.indexOf('-') > 0) {
+        //   numiid = suborder.outer_iid.split('-')[1]
+        // } else {
+        //   numiid = suborder.outer_iid
+        // }
         return numiid
       } else {
         return ''
@@ -2244,7 +2504,7 @@ export default {
         let numiid = sub.num_iid
         let orderInfo = {
           numiid: numiid,
-          tradeid: this.detailedItem.id,
+          tradeid: this.detailedItem._id,
           tid: this.detailedItem.tid_str,
           oid: sub.oid_str,
           sellernick: this.detailedItem.seller_nick,
@@ -2255,7 +2515,7 @@ export default {
         this.$store.dispatch('setOrderInfo', orderInfo)
         // console.log(this.$store.getters.tbCookies)
         this.joinModel = {
-          tradeid: this.detailedItem.id,
+          tradeid: this.detailedItem._id,
           tid: this.detailedItem.tid_str,
           oid: sub.oid_str,
           buyer: this.$store.getters.tbNick,
@@ -2285,7 +2545,7 @@ export default {
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
           var apiUrl = this.$store.getters.apiUrl
-          await this.$http.post(apiUrl, this.apiData).then(response => {
+          await this.$http.post(apiUrl, this.apiData).then(async (response) => {
             var respBody = response.data
             if (respBody.status === 'fail') {
               this.$Message.error('关联订单失败！(' + respBody.message + ')')
@@ -2365,9 +2625,9 @@ export default {
       })
     },
     getShopTransLinkByURL (url, shopid) {
-      console.log(url)
+      // console.log(url)
       let numiid = getQueryString('id', url)
-      console.log(numiid)
+      // console.log(numiid)
       return new Promise((resolve, reject) => {
         this.apiItem = {
           apiHost: '',
@@ -2474,7 +2734,7 @@ export default {
           this.apiItem = {
             apiHost: '',
             apiService: 'trades',
-            apiAction: 'success',
+            apiAction: 'ordered', // success
             apiQuery: {}
           }
           this.apiData = {
@@ -2487,16 +2747,25 @@ export default {
           this.$store.dispatch('setAPIStore', this.apiItem)
           var apiUrl = this.$store.getters.apiUrl
           await this.$http.post(apiUrl, this.apiData)
-            .then(response => {
+            .then(async (response) => {
               var respBody = response.data
               if (respBody.status === 'fail') {
                 reject(new Error(respBody.message))
               } else {
-                // this.detailedItem = null
-                // this.detailed = false
-                this.refreshList()
-                // this.getAssignableTrades()
-                resolve(respBody.data)
+                this.$store.dispatch('setAPILastResponse', respBody)
+                if (!respBody.data.suc || !respBody.data.taskTraceId) {
+                  reject(new Error('关联订单失败！'))
+                } else {
+                  await this.traceOrderedTask(respBody.data.taskTraceId).then((resTrade) => {
+                    // this.detailedItem = null
+                    // this.detailed = false
+                    this.refreshList()
+                    // this.getAssignableTrades()
+                    resolve(resTrade)
+                  }).catch(err => {
+                    reject(new Error('关联订单失败！(' + err.message + ')'))
+                  })
+                }
               }
             })
             .catch(err => {
@@ -2513,10 +2782,79 @@ export default {
         // }
       })
     },
+    traceOrderedTask (taskTraceId) {
+      return new Promise(async (resolve, reject) => {
+        if (taskTraceId) {
+          let repeatTimeout = null
+          let timeoutSetting = setTimeout(() => {
+            // console.log('timeout')
+            clearTimeout(repeatTimeout)
+            reject(new Error('超时Timeout'))
+          }, 1000 * 30) // 30s timeout
+
+          let repeatFn = async () => {
+            // console.log('repeatFn triggered')
+            await this.traceOrderedTaskProc(taskTraceId).then((msg) => {
+              // console.log('repeatFn succeed')
+              clearTimeout(timeoutSetting)
+              if (typeof msg === 'object') {
+                resolve(msg)
+              } else {
+                reject(new Error(msg.substr(5)))
+              }
+            }).catch(() => {
+              // console.log('repeatFn failed')
+              repeatTimeout = setTimeout(repeatFn, 500)
+            })
+          }
+          repeatFn()
+        } else {
+          reject(new Error('TaskTraceId为空!'))
+        }
+      })
+    },
+    traceOrderedTaskProc (taskTraceId) {
+      return new Promise(async (resolve, reject) => {
+        if (taskTraceId) {
+          this.apiItem = {
+            apiHost: '',
+            apiService: 'trades',
+            apiAction: 'orderedtaskcheck',
+            apiQuery: {}
+          }
+          this.apiData = {
+            taskid: taskTraceId
+          }
+          this.$store.dispatch('setAPIStore', this.apiItem)
+          var apiUrl = this.$store.getters.apiUrl
+          await this.$http.post(apiUrl, this.apiData).then(response => {
+            var respBody = response.data
+            if (respBody.status === 'fail') {
+              reject(new Error(respBody.message))
+            } else {
+              this.$store.dispatch('setAPILastResponse', respBody)
+              if (!respBody.data.suc) {
+                if (!respBody.data.reason) {
+                  reject(new Error('UNKNOWN'))
+                } else {
+                  resolve('fail:' + respBody.data.reason)
+                }
+              } else {
+                resolve(respBody.data.trade)
+              }
+            }
+          }).catch(err => {
+            reject(err)
+          })
+        } else {
+          reject(new Error('TaskTraceId为空!'))
+        }
+      })
+    },
     finishOrder (logis) {
       if (logis) {
         let trade = this.data.filter((item) => {
-          return item.id === logis.tradeid
+          return item._id === logis.tradeid
         })[0]
         if (trade) {
           let orderedRecord = trade.ordered.sort((a, b) => {

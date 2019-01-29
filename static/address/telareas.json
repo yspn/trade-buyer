@@ -1,0 +1,1282 @@
+[
+  {
+    "city": "邯郸市",
+    "section": "0310"
+  },
+  {
+    "city": "石家庄",
+    "section": "0311"
+  },
+  {
+    "city": "保定市",
+    "section": "0312"
+  },
+  {
+    "city": "张家口",
+    "section": "0313"
+  },
+  {
+    "city": "承德市",
+    "section": "0314"
+  },
+  {
+    "city": "唐山市",
+    "section": "0315"
+  },
+  {
+    "city": "廊坊市",
+    "section": "0316"
+  },
+  {
+    "city": "沧州市",
+    "section": "0317"
+  },
+  {
+    "city": "衡水市",
+    "section": "0318"
+  },
+  {
+    "city": "邢台市",
+    "section": "0319"
+  },
+  {
+    "city": "秦皇岛",
+    "section": "0335"
+  },
+  {
+    "city": "衢州市",
+    "section": "0570"
+  },
+  {
+    "city": "杭州市",
+    "section": "0571"
+  },
+  {
+    "city": "湖州市",
+    "section": "0572"
+  },
+  {
+    "city": "嘉兴市",
+    "section": "0573"
+  },
+  {
+    "city": "宁波市",
+    "section": "0574"
+  },
+  {
+    "city": "绍兴市",
+    "section": "0575"
+  },
+  {
+    "city": "台州市",
+    "section": "0576"
+  },
+  {
+    "city": "温州市",
+    "section": "0577"
+  },
+  {
+    "city": "丽水市",
+    "section": "0578"
+  },
+  {
+    "city": "金华市",
+    "section": "0579"
+  },
+  {
+    "city": "舟山市",
+    "section": "0580"
+  },
+  {
+    "city": "沈阳市",
+    "section": "024"
+  },
+  {
+    "city": "铁岭市",
+    "section": "0410"
+  },
+  {
+    "city": "大连市",
+    "section": "0411"
+  },
+  {
+    "city": "鞍山市",
+    "section": "0412"
+  },
+  {
+    "city": "抚顺市",
+    "section": "0413"
+  },
+  {
+    "city": "本溪市",
+    "section": "0414"
+  },
+  {
+    "city": "丹东市",
+    "section": "0415"
+  },
+  {
+    "city": "锦州市",
+    "section": "0416"
+  },
+  {
+    "city": "营口市",
+    "section": "0417"
+  },
+  {
+    "city": "阜新市",
+    "section": "0418"
+  },
+  {
+    "city": "辽阳市",
+    "section": "0419"
+  },
+  {
+    "city": "朝阳市",
+    "section": "0421"
+  },
+  {
+    "city": "盘锦市",
+    "section": "0427"
+  },
+  {
+    "city": "葫芦岛",
+    "section": "0429"
+  },
+  {
+    "city": "武汉市",
+    "section": "027"
+  },
+  {
+    "city": "襄城市",
+    "section": "0710"
+  },
+  {
+    "city": "鄂州市",
+    "section": "0711"
+  },
+  {
+    "city": "孝感市",
+    "section": "0712"
+  },
+  {
+    "city": "黄州市",
+    "section": "0713"
+  },
+  {
+    "city": "黄石市",
+    "section": "0714"
+  },
+  {
+    "city": "咸宁市",
+    "section": "0715"
+  },
+  {
+    "city": "荆沙市",
+    "section": "0716"
+  },
+  {
+    "city": "宜昌市",
+    "section": "0717"
+  },
+  {
+    "city": "恩施市",
+    "section": "0718"
+  },
+  {
+    "city": "十堰市",
+    "section": "0719"
+  },
+  {
+    "city": "随枣市",
+    "section": "0722"
+  },
+  {
+    "city": "荆门市",
+    "section": "0724"
+  },
+  {
+    "city": "江汉市",
+    "section": "0728"
+  },
+  {
+    "city": "南京市",
+    "section": "025"
+  },
+  {
+    "city": "无锡市",
+    "section": "0510"
+  },
+  {
+    "city": "镇江市",
+    "section": "0511"
+  },
+  {
+    "city": "苏州市",
+    "section": "0512"
+  },
+  {
+    "city": "南通市",
+    "section": "0513"
+  },
+  {
+    "city": "扬州市",
+    "section": "0514"
+  },
+  {
+    "city": "盐城市",
+    "section": "0515"
+  },
+  {
+    "city": "徐州市",
+    "section": "0516"
+  },
+  {
+    "city": "淮阴市",
+    "section": "0517"
+  },
+  {
+    "city": "淮安市",
+    "section": "0517"
+  },
+  {
+    "city": "连云港",
+    "section": "0518"
+  },
+  {
+    "city": "常州市",
+    "section": "0519"
+  },
+  {
+    "city": "泰州市",
+    "section": "0523"
+  },
+  {
+    "city": "海拉尔",
+    "section": "0470"
+  },
+  {
+    "city": "呼和浩特",
+    "section": "0471"
+  },
+  {
+    "city": "包头市",
+    "section": "0472"
+  },
+  {
+    "city": "乌海市",
+    "section": "0473"
+  },
+  {
+    "city": "集宁市",
+    "section": "0474"
+  },
+  {
+    "city": "通辽市",
+    "section": "0475"
+  },
+  {
+    "city": "赤峰市",
+    "section": "0476"
+  },
+  {
+    "city": "东胜市",
+    "section": "0477"
+  },
+  {
+    "city": "临河市",
+    "section": "0478"
+  },
+  {
+    "city": "锡林浩特",
+    "section": "0479"
+  },
+  {
+    "city": "乌兰浩特",
+    "section": "0482"
+  },
+  {
+    "city": "阿拉善左旗",
+    "section": "0483"
+  },
+  {
+    "city": "新余市",
+    "section": "0790"
+  },
+  {
+    "city": "南昌市",
+    "section": "0791"
+  },
+  {
+    "city": "九江市",
+    "section": "0792"
+  },
+  {
+    "city": "上饶市",
+    "section": "0793"
+  },
+  {
+    "city": "临川市",
+    "section": "0794"
+  },
+  {
+    "city": "宜春市",
+    "section": "0795"
+  },
+  {
+    "city": "吉安市",
+    "section": "0796"
+  },
+  {
+    "city": "赣州市",
+    "section": "0797"
+  },
+  {
+    "city": "景德镇",
+    "section": "0798"
+  },
+  {
+    "city": "萍乡市",
+    "section": "0799"
+  },
+  {
+    "city": "鹰潭市",
+    "section": "0701"
+  },
+  {
+    "city": "忻州市",
+    "section": "0350"
+  },
+  {
+    "city": "太原市",
+    "section": "0351"
+  },
+  {
+    "city": "大同市",
+    "section": "0352"
+  },
+  {
+    "city": "阳泉市",
+    "section": "0353"
+  },
+  {
+    "city": "榆次市",
+    "section": "0354"
+  },
+  {
+    "city": "长治市",
+    "section": "0355"
+  },
+  {
+    "city": "晋城市",
+    "section": "0356"
+  },
+  {
+    "city": "临汾市",
+    "section": "0357"
+  },
+  {
+    "city": "离石市",
+    "section": "0358"
+  },
+  {
+    "city": "运城市",
+    "section": "0359"
+  },
+  {
+    "city": "临夏市",
+    "section": "0930"
+  },
+  {
+    "city": "兰州市",
+    "section": "0931"
+  },
+  {
+    "city": "定西市",
+    "section": "0932"
+  },
+  {
+    "city": "平凉市",
+    "section": "0933"
+  },
+  {
+    "city": "西峰市",
+    "section": "0934"
+  },
+  {
+    "city": "武威市",
+    "section": "0935"
+  },
+  {
+    "city": "张掖市",
+    "section": "0936"
+  },
+  {
+    "city": "酒泉市",
+    "section": "0937"
+  },
+  {
+    "city": "天水市",
+    "section": "0938"
+  },
+  {
+    "city": "甘南州",
+    "section": "0941"
+  },
+  {
+    "city": "白银市",
+    "section": "0943"
+  },
+  {
+    "city": "菏泽市",
+    "section": "0530"
+  },
+  {
+    "city": "济南市",
+    "section": "0531"
+  },
+  {
+    "city": "青岛市",
+    "section": "0532"
+  },
+  {
+    "city": "淄博市",
+    "section": "0533"
+  },
+  {
+    "city": "德州市",
+    "section": "0534"
+  },
+  {
+    "city": "烟台市",
+    "section": "0535"
+  },
+  {
+    "city": "淮坊市",
+    "section": "0536"
+  },
+  {
+    "city": "济宁市",
+    "section": "0537"
+  },
+  {
+    "city": "泰安市",
+    "section": "0538"
+  },
+  {
+    "city": "临沂市",
+    "section": "0539"
+  },
+  {
+    "city": "阿城市",
+    "section": "0450"
+  },
+  {
+    "city": "哈尔滨",
+    "section": "0451"
+  },
+  {
+    "city": "齐齐哈尔",
+    "section": "0452"
+  },
+  {
+    "city": "牡丹江",
+    "section": "0453"
+  },
+  {
+    "city": "佳木斯",
+    "section": "0454"
+  },
+  {
+    "city": "绥化市",
+    "section": "0455"
+  },
+  {
+    "city": "黑河市",
+    "section": "0456"
+  },
+  {
+    "city": "加格达奇",
+    "section": "0457"
+  },
+  {
+    "city": "伊春市",
+    "section": "0458"
+  },
+  {
+    "city": "大庆市",
+    "section": "0459"
+  },
+  {
+    "city": "福州市",
+    "section": "0591"
+  },
+  {
+    "city": "厦门市",
+    "section": "0592"
+  },
+  {
+    "city": "宁德市",
+    "section": "0593"
+  },
+  {
+    "city": "莆田市",
+    "section": "0594"
+  },
+  {
+    "city": "泉州市",
+    "section": "0595"
+  },
+  {
+    "city": "晋江市",
+    "section": "0595"
+  },
+  {
+    "city": "漳州市",
+    "section": "0596"
+  },
+  {
+    "city": "龙岩市",
+    "section": "0597"
+  },
+  {
+    "city": "三明市",
+    "section": "0598"
+  },
+  {
+    "city": "南平市",
+    "section": "0599"
+  },
+  {
+    "city": "广州市",
+    "section": "020"
+  },
+  {
+    "city": "韶关市",
+    "section": "0751"
+  },
+  {
+    "city": "惠州市",
+    "section": "0752"
+  },
+  {
+    "city": "梅州市",
+    "section": "0753"
+  },
+  {
+    "city": "汕头市",
+    "section": "0754"
+  },
+  {
+    "city": "深圳市",
+    "section": "0755"
+  },
+  {
+    "city": "珠海市",
+    "section": "0756"
+  },
+  {
+    "city": "佛山市",
+    "section": "0757"
+  },
+  {
+    "city": "肇庆市",
+    "section": "0758"
+  },
+  {
+    "city": "湛江市",
+    "section": "0759"
+  },
+  {
+    "city": "中山市",
+    "section": "0760"
+  },
+  {
+    "city": "河源市",
+    "section": "0762"
+  },
+  {
+    "city": "清远市",
+    "section": "0763"
+  },
+  {
+    "city": "顺德市",
+    "section": "0765"
+  },
+  {
+    "city": "云浮市",
+    "section": "0766"
+  },
+  {
+    "city": "潮州市",
+    "section": "0768"
+  },
+  {
+    "city": "东莞市",
+    "section": "0769"
+  },
+  {
+    "city": "汕尾市",
+    "section": "0660"
+  },
+  {
+    "city": "潮阳市",
+    "section": "0661"
+  },
+  {
+    "city": "阳江市",
+    "section": "0662"
+  },
+  {
+    "city": "揭西市",
+    "section": "0663"
+  },
+  {
+    "city": "成都市",
+    "section": "028"
+  },
+  {
+    "city": "涪陵市",
+    "section": "0810"
+  },
+  {
+    "city": "重庆市",
+    "section": "0811"
+  },
+  {
+    "city": "攀枝花",
+    "section": "0812"
+  },
+  {
+    "city": "自贡市",
+    "section": "0813"
+  },
+  {
+    "city": "永川市",
+    "section": "0814"
+  },
+  {
+    "city": "绵阳市",
+    "section": "0816"
+  },
+  {
+    "city": "南充市",
+    "section": "0817"
+  },
+  {
+    "city": "达县市",
+    "section": "0818"
+  },
+  {
+    "city": "万县市",
+    "section": "0819"
+  },
+  {
+    "city": "遂宁市",
+    "section": "0825"
+  },
+  {
+    "city": "广安市",
+    "section": "0826"
+  },
+  {
+    "city": "巴中市",
+    "section": "0827"
+  },
+  {
+    "city": "泸州市",
+    "section": "0830"
+  },
+  {
+    "city": "宜宾市",
+    "section": "0831"
+  },
+  {
+    "city": "内江市",
+    "section": "0832"
+  },
+  {
+    "city": "乐山市",
+    "section": "0833"
+  },
+  {
+    "city": "西昌市",
+    "section": "0834"
+  },
+  {
+    "city": "雅安市",
+    "section": "0835"
+  },
+  {
+    "city": "康定市",
+    "section": "0836"
+  },
+  {
+    "city": "马尔康",
+    "section": "0837"
+  },
+  {
+    "city": "德阳市",
+    "section": "0838"
+  },
+  {
+    "city": "广元市",
+    "section": "0839"
+  },
+  {
+    "city": "泸州市",
+    "section": "0840"
+  },
+  {
+    "city": "岳阳市",
+    "section": "0730"
+  },
+  {
+    "city": "长沙市",
+    "section": "0731"
+  },
+  {
+    "city": "湘潭市",
+    "section": "0732"
+  },
+  {
+    "city": "株州市",
+    "section": "0733"
+  },
+  {
+    "city": "衡阳市",
+    "section": "0734"
+  },
+  {
+    "city": "郴州市",
+    "section": "0735"
+  },
+  {
+    "city": "常德市",
+    "section": "0736"
+  },
+  {
+    "city": "益阳市",
+    "section": "0737"
+  },
+  {
+    "city": "娄底市",
+    "section": "0738"
+  },
+  {
+    "city": "邵阳市",
+    "section": "0739"
+  },
+  {
+    "city": "吉首市",
+    "section": "0743"
+  },
+  {
+    "city": "张家界",
+    "section": "0744"
+  },
+  {
+    "city": "怀化市",
+    "section": "0745"
+  },
+  {
+    "city": "永州冷",
+    "section": "0746"
+  },
+  {
+    "city": "商丘市",
+    "section": "0370"
+  },
+  {
+    "city": "郑州市",
+    "section": "0371"
+  },
+  {
+    "city": "安阳市",
+    "section": "0372"
+  },
+  {
+    "city": "新乡市",
+    "section": "0373"
+  },
+  {
+    "city": "许昌市",
+    "section": "0374"
+  },
+  {
+    "city": "平顶山",
+    "section": "0375"
+  },
+  {
+    "city": "信阳市",
+    "section": "0376"
+  },
+  {
+    "city": "南阳市",
+    "section": "0377"
+  },
+  {
+    "city": "开封市",
+    "section": "0378"
+  },
+  {
+    "city": "洛阳市",
+    "section": "0379"
+  },
+  {
+    "city": "焦作市",
+    "section": "0391"
+  },
+  {
+    "city": "鹤壁市",
+    "section": "0392"
+  },
+  {
+    "city": "濮阳市",
+    "section": "0393"
+  },
+  {
+    "city": "周口市",
+    "section": "0394"
+  },
+  {
+    "city": "漯河市",
+    "section": "0395"
+  },
+  {
+    "city": "驻马店",
+    "section": "0396"
+  },
+  {
+    "city": "三门峡",
+    "section": "0398"
+  },
+  {
+    "city": "昭通市",
+    "section": "0870"
+  },
+  {
+    "city": "昆明市",
+    "section": "0871"
+  },
+  {
+    "city": "大理市",
+    "section": "0872"
+  },
+  {
+    "city": "个旧市",
+    "section": "0873"
+  },
+  {
+    "city": "曲靖市",
+    "section": "0874"
+  },
+  {
+    "city": "保山市",
+    "section": "0875"
+  },
+  {
+    "city": "文山市",
+    "section": "0876"
+  },
+  {
+    "city": "玉溪市",
+    "section": "0877"
+  },
+  {
+    "city": "楚雄市",
+    "section": "0878"
+  },
+  {
+    "city": "思茅市",
+    "section": "0879"
+  },
+  {
+    "city": "景洪市",
+    "section": "0691"
+  },
+  {
+    "city": "潞西市",
+    "section": "0692"
+  },
+  {
+    "city": "东川市",
+    "section": "0881"
+  },
+  {
+    "city": "临沧市",
+    "section": "0883"
+  },
+  {
+    "city": "六库市",
+    "section": "0886"
+  },
+  {
+    "city": "中甸市",
+    "section": "0887"
+  },
+  {
+    "city": "丽江市",
+    "section": "0888"
+  },
+  {
+    "city": "滁州市",
+    "section": "0550"
+  },
+  {
+    "city": "合肥市",
+    "section": "0551"
+  },
+  {
+    "city": "蚌埠市",
+    "section": "0552"
+  },
+  {
+    "city": "芜湖市",
+    "section": "0553"
+  },
+  {
+    "city": "淮南市",
+    "section": "0554"
+  },
+  {
+    "city": "马鞍山",
+    "section": "0555"
+  },
+  {
+    "city": "安庆市",
+    "section": "0556"
+  },
+  {
+    "city": "宿州市",
+    "section": "0557"
+  },
+  {
+    "city": "阜阳市",
+    "section": "0558"
+  },
+  {
+    "city": "黄山市",
+    "section": "0559"
+  },
+  {
+    "city": "淮北市",
+    "section": "0561"
+  },
+  {
+    "city": "铜陵市",
+    "section": "0562"
+  },
+  {
+    "city": "宣城市",
+    "section": "0563"
+  },
+  {
+    "city": "六安市",
+    "section": "0564"
+  },
+  {
+    "city": "巢湖市",
+    "section": "0565"
+  },
+  {
+    "city": "贵池市",
+    "section": "0566"
+  },
+  {
+    "city": "银川市",
+    "section": "0951"
+  },
+  {
+    "city": "石嘴山",
+    "section": "0952"
+  },
+  {
+    "city": "吴忠市",
+    "section": "0953"
+  },
+  {
+    "city": "固原市",
+    "section": "0954"
+  },
+  {
+    "city": "长春市",
+    "section": "0431"
+  },
+  {
+    "city": "吉林市",
+    "section": "0432"
+  },
+  {
+    "city": "延吉市",
+    "section": "0433"
+  },
+  {
+    "city": "四平市",
+    "section": "0434"
+  },
+  {
+    "city": "通化市",
+    "section": "0435"
+  },
+  {
+    "city": "白城市",
+    "section": "0436"
+  },
+  {
+    "city": "辽源市",
+    "section": "0437"
+  },
+  {
+    "city": "松原市",
+    "section": "0438"
+  },
+  {
+    "city": "浑江市",
+    "section": "0439"
+  },
+  {
+    "city": "珲春市",
+    "section": "0440"
+  },
+  {
+    "city": "防城港",
+    "section": "0770"
+  },
+  {
+    "city": "南宁市",
+    "section": "0771"
+  },
+  {
+    "city": "柳州市",
+    "section": "0772"
+  },
+  {
+    "city": "桂林市",
+    "section": "0773"
+  },
+  {
+    "city": "梧州市",
+    "section": "0774"
+  },
+  {
+    "city": "玉林市",
+    "section": "0775"
+  },
+  {
+    "city": "百色市",
+    "section": "0776"
+  },
+  {
+    "city": "钦州市",
+    "section": "0777"
+  },
+  {
+    "city": "河池市",
+    "section": "0778"
+  },
+  {
+    "city": "北海市",
+    "section": "0779"
+  },
+  {
+    "city": "贵阳市",
+    "section": "0851"
+  },
+  {
+    "city": "遵义市",
+    "section": "0852"
+  },
+  {
+    "city": "安顺市",
+    "section": "0853"
+  },
+  {
+    "city": "都均市",
+    "section": "0854"
+  },
+  {
+    "city": "凯里市",
+    "section": "0855"
+  },
+  {
+    "city": "铜仁市",
+    "section": "0856"
+  },
+  {
+    "city": "毕节市",
+    "section": "0857"
+  },
+  {
+    "city": "六盘水",
+    "section": "0858"
+  },
+  {
+    "city": "兴义市",
+    "section": "0859"
+  },
+  {
+    "city": "西安市",
+    "section": "029"
+  },
+  {
+    "city": "咸阳市",
+    "section": "0910"
+  },
+  {
+    "city": "延安市",
+    "section": "0911"
+  },
+  {
+    "city": "榆林市",
+    "section": "0912"
+  },
+  {
+    "city": "渭南市",
+    "section": "0913"
+  },
+  {
+    "city": "商洛市",
+    "section": "0914"
+  },
+  {
+    "city": "安康市",
+    "section": "0915"
+  },
+  {
+    "city": "汉中市",
+    "section": "0916"
+  },
+  {
+    "city": "宝鸡市",
+    "section": "0917"
+  },
+  {
+    "city": "铜川市",
+    "section": "0919"
+  },
+  {
+    "city": "西宁市",
+    "section": "0971"
+  },
+  {
+    "city": "海东市",
+    "section": "0972"
+  },
+  {
+    "city": "同仁市",
+    "section": "0973"
+  },
+  {
+    "city": "共和市",
+    "section": "0974"
+  },
+  {
+    "city": "玛沁市",
+    "section": "0975"
+  },
+  {
+    "city": "玉树市",
+    "section": "0976"
+  },
+  {
+    "city": "德令哈",
+    "section": "0977"
+  },
+  {
+    "city": "儋州市",
+    "section": "0890"
+  },
+  {
+    "city": "海口市",
+    "section": "0898"
+  },
+  {
+    "city": "三亚市",
+    "section": "0899"
+  },
+  {
+    "city": "拉萨市",
+    "section": "0891"
+  },
+  {
+    "city": "日喀则",
+    "section": "0892"
+  },
+  {
+    "city": "山南市",
+    "section": "0893"
+  },
+  {
+    "city": "乌鲁木齐市",
+    "section": "0991"
+  },
+  {
+    "city": "克拉玛依市",
+    "section": "0990"
+  },
+  {
+    "city": "吐鲁番地区",
+    "section": "0995"
+  },
+  {
+    "city": "哈密地区",
+    "section": "0902"
+  },
+  {
+    "city": "昌吉回族自治州",
+    "section": "0994"
+  },
+  {
+    "city": "博尔塔拉蒙古自治州",
+    "section": "0909"
+  },
+  {
+    "city": "巴音郭楞蒙古自治州",
+    "section": "0996"
+  },
+  {
+    "city": "阿克苏地区",
+    "section": "0997"
+  },
+  {
+    "city": "克孜勒苏柯尔克孜自治州",
+    "section": "0908"
+  },
+  {
+    "city": "喀什地区",
+    "section": "0998"
+  },
+  {
+    "city": "和田地区",
+    "section": "0903"
+  },
+  {
+    "city": "伊犁哈萨克自治州",
+    "section": "0999"
+  },
+  {
+    "city": "塔城地区",
+    "section": "0901"
+  },
+  {
+    "city": "阿勒泰地区",
+    "section": "0906"
+  },
+  {
+    "city": "石河子市",
+    "section": "0993"
+  },
+  {
+    "city": "图木舒克市",
+    "section": "0998"
+  },
+  {
+    "city": "阿拉尔市",
+    "section": "0997"
+  },
+  {
+    "city": "五家渠市",
+    "section": "0994"
+  }
+]

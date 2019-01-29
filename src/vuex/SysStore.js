@@ -49,10 +49,14 @@ export const sysStore = {
       return state.tbCookies
     },
     tbNick: state => {
-      let tracknick = state.tbCookies.filter((item) => {
-        return item.name === 'tracknick'
-      })[0]
-      return common.decodeUnicode(decodeURI(tracknick.value))
+      try {
+        let tracknick = state.tbCookies.filter((item) => {
+          return item.name === 'tracknick'
+        })[0]
+        return common.decodeUnicode(decodeURI(tracknick.value))
+      } catch (err) {
+        return ''
+      }
     }
   }
 }

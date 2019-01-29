@@ -84,6 +84,9 @@ function getOneKeyOrderInfo (callback) {
           '<div class=\'oneKeyOrder_purchased\' data-oid=' + info.orders.order[i].oid_str + '>' +
           '</div>' +
           '</div>').data('order', info.orders.order[i]).appendTo($(orderSummary))
+        if (info.orderInfo.oid === info.orders.order[i].oid_str) {
+          orderedItem.addClass('current')
+        }
         if (info.orders.order[i].history_purchase) {
           for (var j = 0; j < info.orders.order[i].history_purchase.length; j++) {
             var insertData =
@@ -132,7 +135,7 @@ function getOneKeyOrderInfo (callback) {
         })
       })
       $('#oneKeyOrder_translinkBtn').on('click', function (e) {
-        getTransLink(window.location.href)
+        getTransLink(window.location.href, store.one_key_order.shopid)
       })
       $('.oneKeyOrder_purchaseLink').on('click', function (e) {
         e.preventDefault()

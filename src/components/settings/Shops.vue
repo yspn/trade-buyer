@@ -30,12 +30,24 @@
       :transfer="false">
       <div class="modal-content">
         <Form ref="translinkForm" :model="translinkModel" :rules="ruleValidateTransLink" :label-width="120">
-          <FormItem label="转链AppKey" prop="appkey">
+          <FormItem label="转链模式">
+            <i-switch v-model="translinkModel.transMode" size="large" true-value="normal" false-value="yitao">
+              <span slot="open">第三方</span>
+              <span slot="close">一淘</span>
+            </i-switch>
+            <p>
+              <span>一淘模式下系统将自动记录历史转链记录，为之后的下单提供转链服务。第三方转链服务提供在线实时转链服务。</span>
+            </p>
+          </FormItem>
+          <FormItem label="转链AppKey" prop="appkey" v-show="translinkModel.transMode==='normal'">
             <Input v-model="translinkModel.appkey"></Input>
             <a href="http://yun.yangsa.net/" target="_blank">申请账号</a>
           </FormItem>
-          <FormItem label="转链阿里妈妈" prop="pid">
-            <Input v-model="translinkModel.pid"></Input>
+          <FormItem label="转链阿里妈妈" prop="pid" v-show="translinkModel.transMode==='normal'">
+            <Input v-model="translinkModel.pid" placeholder="联盟授权对应的PID,需在六先生授权的联盟账号下"></Input>
+          </FormItem>
+          <FormItem label="淘宝联盟账号" prop="nickname" v-show="translinkModel.transMode==='normal'">
+            <Input v-model="translinkModel.nickname" placeholder="绑定了多个联盟账号需填,否则取第一个"></Input>
           </FormItem>
         </Form>
       </div>
@@ -54,12 +66,24 @@
           <FormItem label="店铺昵称" prop="name">
             <Input v-model="newModel.name"></Input>
           </FormItem>
-          <FormItem label="转链AppKey" prop="appkey">
+          <FormItem label="转链模式">
+            <i-switch v-model="newModel.transMode" size="large" true-value="normal" false-value="yitao">
+              <span slot="open">第三方</span>
+              <span slot="close">一淘</span>
+            </i-switch>
+            <p>
+              <span>一淘模式下系统将自动记录历史转链记录，为之后的下单提供转链服务。第三方转链服务提供在线实时转链服务。</span>
+            </p>
+          </FormItem>
+          <FormItem label="转链AppKey" prop="appkey" v-show="newModel.transMode==='normal'">
             <Input v-model="newModel.appkey"></Input>
             <a href="http://yun.yangsa.net/" target="_blank">申请账号</a>
           </FormItem>
-          <FormItem label="转链阿里妈妈" prop="pid">
+          <FormItem label="转链阿里妈妈" prop="pid" v-show="newModel.transMode==='normal'">
             <Input v-model="newModel.pid"></Input>
+          </FormItem>
+          <FormItem label="淘宝联盟账号" prop="nickname" v-show="newModel.transMode==='normal'">
+            <Input v-model="newModel.nickname" placeholder="绑定了多个联盟账号需填,否则取第一个"></Input>
           </FormItem>
           <!-- <FormItem label="店铺" prop="shopid">
             <RadioGroup v-model="newModel.assignMode" type="button">
@@ -84,12 +108,24 @@
           <FormItem label="店铺昵称" prop="name">
             <Input v-model="editModel.name"></Input>
           </FormItem>
-          <FormItem label="转链AppKey" prop="appkey">
+          <FormItem label="转链模式">
+            <i-switch v-model="editModel.transMode" size="large" true-value="normal" false-value="yitao">
+              <span slot="open">第三方</span>
+              <span slot="close">一淘</span>
+            </i-switch>
+            <p>
+              <span>一淘模式下系统将自动记录历史转链记录，为之后的下单提供转链服务。第三方转链服务提供在线实时转链服务。</span>
+            </p>
+          </FormItem>
+          <FormItem label="转链AppKey" prop="appkey" v-show="editModel.transMode==='normal'">
             <Input v-model="editModel.appkey"></Input>
             <a href="http://yun.yangsa.net/" target="_blank">申请账号</a>
           </FormItem>
-          <FormItem label="转链阿里妈妈" prop="pid">
+          <FormItem label="转链阿里妈妈" prop="pid" v-show="editModel.transMode==='normal'">
             <Input v-model="editModel.pid"></Input>
+          </FormItem>
+          <FormItem label="淘宝联盟账号" prop="nickname" v-show="editModel.transMode==='normal'">
+            <Input v-model="editModel.nickname" placeholder="绑定了多个联盟账号需填,否则取第一个"></Input>
           </FormItem>
           <!-- <FormItem label="店铺" prop="shopid">
             <RadioGroup v-model="editModel.assignMode" type="button">
@@ -229,6 +265,14 @@ export default {
         //     return h('span', {}, params.row.assign_mode === 'passive' ? '买手取单' : '自动分配')
         //   }
         // },
+        { title: '转链模式',
+          key: 'transMode',
+          sortable: true,
+          searchable: true,
+          render: (h, params) => {
+            return h('span', {}, params.row.transMode === 'yitao' ? '一淘' : params.row.transMode === 'normal' ? '第三方' : '未设置')
+          }
+        },
         { title: '转链AppKey',
           key: 'appkey',
           ellipsis: true,
@@ -268,6 +312,7 @@ export default {
                       name: params.row.name,
                       appkey: params.row.appkey,
                       pid: params.row.pid,
+                      nickname: params.row.nickname,
                       group: this.$store.getters.user.group,
                       assignMode: params.row.assign_mode || 'auto'
                     }
@@ -310,8 +355,10 @@ export default {
       newModal: false,
       newModel: {
         name: '',
+        transMode: 'normal',
         appkey: '',
         pid: '',
+        nickname: '',
         group: this.$store.getters.user.group
         // assignMode: 'auto'
       },
@@ -319,15 +366,19 @@ export default {
       editModel: {
         id: null,
         name: '',
+        transMode: 'normal',
         appkey: '',
         pid: '',
+        nickname: '',
         group: this.$store.getters.user.group
         // assignMode: 'auto'
       },
       translinkModal: false,
       translinkModel: {
+        transMode: 'normal',
         appkey: '',
         pid: '',
+        nickname: '',
         group: this.$store.getters.user.group
       },
       ruleValidate: {
@@ -665,8 +716,10 @@ export default {
           this.apiData = {
             name: this.newModel.name,
             group: this.newModel.group,
+            transMode: this.newModel.transMode,
             appkey: this.newModel.appkey,
             pid: this.newModel.pid,
+            nickname: this.newModel.nickname,
             assign_mode: this.newModel.assignMode
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
@@ -706,8 +759,10 @@ export default {
             id: this.editModel.id,
             name: this.editModel.name,
             group: this.editModel.group,
+            transMode: this.editModel.transMode,
             appkey: this.editModel.appkey,
             pid: this.editModel.pid,
+            nickname: this.editModel.nickname,
             assign_mode: this.editModel.assignMode
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
@@ -745,8 +800,10 @@ export default {
           }
           this.apiData = {
             group: this.translinkModel.group,
+            transMode: this.translinkModel.transMode,
             appkey: this.translinkModel.appkey,
-            pid: this.translinkModel.pid
+            pid: this.translinkModel.pid,
+            nickname: this.translinkModel.nickname
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
           var apiUrl = this.$store.getters.apiUrl

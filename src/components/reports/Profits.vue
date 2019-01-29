@@ -4,12 +4,12 @@
     <RadioGroup v-model="timespan" type="button" size="large">
       <Radio label="today">今日</Radio>
       <Radio label="monthly">本月</Radio>
-      <Radio label="yearly">年度</Radio>
+      <!-- <Radio label="yearly">年度</Radio> -->
       <Radio label="daterange">指定日期</Radio>
     </RadioGroup>
     <DatePicker v-if="timespan==='daterange'" v-model="daterange" format="yyyy/MM/dd" type="daterange" placement="bottom-end" placeholder="选择日期区间" style="width: 200px;" confirm clearable @on-ok="getFinishedTradesByDateRange"></DatePicker>
     <RadioGroup v-model="status" type="button" size="large">
-      <Radio label="finished">已完成（到账利润）</Radio>
+      <Radio label="received">已完成（到账利润）</Radio>
       <Radio label="shipped">已发货（入账利润）</Radio>
       <Radio label="ordered">已下单（实时利润）</Radio>
     </RadioGroup>
@@ -124,6 +124,7 @@
             <p slot="title">
               <Icon type="ios-person"></Icon>
               {{buyer.name}}
+              <!-- <a @click="buyerDetail=buyer.shops;buyerDetailModal=true">{{buyer.name}}</a> -->
             </p>
             <div class="card-content twin-cols">
               <ul>
@@ -177,6 +178,13 @@
         </div>
       </Panel>
     </Collapse>
+    <Modal
+      v-model="buyerDetailModal"
+      title="买手详情"
+      width="80%"
+      @on-ok="buyerDetailModal=false;buyerDetail=null">
+      <Table stripe :columns="buyerDetailColumns" :data="buyerDetail" v-if="buyerDetail"></Table>
+    </Modal>
   </div>
 </template>
 
@@ -193,7 +201,7 @@ export default {
       },
       apiData: null,
       colorSelections: ['#f2b98e', '#56bced', '#f4afcb', '#5fb985', '#e27719', '#0193de', '#dd1e6c', '#2ac56a'],
-      timespan: 'today',
+      timespan: 'monthly',
       daterange: null,
       finishedTrades: {
         tradeCount: 0,
@@ -205,9 +213,100 @@ export default {
         shops: [],
         buyers: []
       },
-      status: 'finished',
+      status: 'received',
       showPanel: ['1', '2'],
-      loading: false
+      loading: false,
+      buyerDetailModal: false,
+      buyerDetail: null,
+      buyerDetailColumns: [
+        { title: '店铺名称',
+          key: 'name',
+          ellipsis: true,
+          sortable: true,
+          searchable: true,
+          sortMethod: (a, b, type) => {
+            if (type === 'asc') {
+              return a.localeCompare(b, 'zh-CN')
+            } else {
+              return b.localeCompare(a, 'zh-CN')
+            }
+          },
+          render: (h, params) => {
+            return h('span', {}, params.row.name)
+          }
+        },
+        { title: '利润',
+          key: 'profit',
+          ellipsis: true,
+          // sortable: 'custom',
+          render: (h, params) => {
+            return h('span', {
+              style: {
+                fontWeight: '800',
+                color: (params.row.tradeAmount - params.row.orderAmount) > 0 ? '#19be6b' : '#ff4f4f'
+              }
+            }, params.row.tradeAmount ? (params.row.tradeAmount - params.row.orderAmount).toLocaleString() + '元' : 0 + '元')
+          }
+        },
+        { title: '单均损益',
+          key: 'profitAverage',
+          ellipsis: true,
+          // sortable: true,
+          render: (h, params) => {
+            return h('span', {
+              style: {
+                fontWeight: '800',
+                color: (params.row.tradeAmount - params.row.orderAmount) > 0 ? '#19be6b' : '#ff4f4f'
+              }
+            }, params.row.tradeAmount ? ((params.row.tradeAmount - params.row.orderAmount) / params.row.tradeCount).toLocaleString() + '元' : 0 + '元')
+          }
+        },
+        { title: '利润率',
+          key: 'profitRate',
+          ellipsis: true,
+          // sortable: true,
+          render: (h, params) => {
+            return h('span', {
+              style: {
+                fontWeight: '800',
+                color: (params.row.tradeAmount - params.row.orderAmount) > 0 ? '#19be6b' : '#ff4f4f'
+              }
+            }, params.row.tradeAmount ? ((params.row.tradeAmount - params.row.orderAmount) / params.row.tradeAmount * 100).toFixed(1) + '%' : 0 + '%')
+          }
+        },
+        { title: '订单',
+          key: 'tradeCount',
+          ellipsis: true,
+          sortable: true,
+          render: (h, params) => {
+            return h('span', {}, params.row.tradeCount)
+          }
+        },
+        { title: '收入',
+          key: 'tradeAmount',
+          ellipsis: true,
+          sortable: true,
+          render: (h, params) => {
+            return h('span', {}, (params.row.tradeAmount).toLocaleString() + '元')
+          }
+        },
+        { title: '下单',
+          key: 'orderCount',
+          ellipsis: true,
+          sortable: true,
+          render: (h, params) => {
+            return h('span', {}, params.row.orderCount)
+          }
+        },
+        { title: '支出',
+          key: 'orderAmount',
+          ellipsis: true,
+          sortable: true,
+          render: (h, params) => {
+            return h('span', {}, (params.row.orderAmount).toLocaleString() + '元')
+          }
+        }
+      ]
     }
   },
   watch: {
@@ -296,15 +395,11 @@ export default {
       this.apiItem = {
         apiHost: '',
         apiService: 'trades',
-        apiAction: 'listfinished',
+        apiAction: 'profitstat',
         apiQuery: {}
       }
-      if (status === 'shipped') {
-        this.apiItem.apiAction = 'listshipped'
-      } else if (status === 'ordered') {
-        this.apiItem.apiAction = 'listordered'
-      }
       this.apiData = {
+        mode: status,
         timespan: timespan,
         byshop: true,
         bybuyer: true
@@ -337,51 +432,51 @@ export default {
       if (this.daterange && this.daterange.length === 2) {
         let dateStart = this.daterange[0]
         let dateEnd = this.daterange[1]
-        let startdate = new Date(dateStart).toISOString()
-        let enddate = new Date(dateEnd).toISOString()
-        this.loading = true
-        this.apiItem = {
-          apiHost: '',
-          apiService: 'trades',
-          apiAction: 'listfinished',
-          apiQuery: {}
-        }
-        if (this.status === 'shipped') {
-          this.apiItem.apiAction = 'listshipped'
-        } else if (this.status === 'ordered') {
-          this.apiItem.apiAction = 'listordered'
-        }
-        this.apiData = {
-          timespan: 'daterange',
-          startdate: startdate,
-          enddate: enddate,
-          byshop: true,
-          bybuyer: true
-        }
-        console.log(this.apiData)
-        this.$store.dispatch('setAPIStore', this.apiItem)
-        var apiUrl = this.$store.getters.apiUrl
-        return new Promise(async (resolve, reject) => {
-          await this.$http.post(apiUrl, this.apiData).then(async (response) => {
-            var respBody = response.data
-            if (respBody.status === 'fail') {
-              this.$Message.error('订单列表获取失败！(' + respBody.message + ')')
+        if (new Date(dateEnd).getTime() - new Date(dateStart).getTime() > 1000 * 60 * 60 * 24 * 60) {
+          this.$Message.error('订单列表获取失败！(统计时间跨度不能大于60天)')
+        } else {
+          let startdate = new Date(dateStart).toISOString()
+          let enddate = new Date(dateEnd).toISOString()
+          this.loading = true
+          this.apiItem = {
+            apiHost: '',
+            apiService: 'trades',
+            apiAction: 'profitstat',
+            apiQuery: {}
+          }
+          this.apiData = {
+            mode: this.status,
+            timespan: 'daterange',
+            startdate: startdate,
+            enddate: enddate,
+            byshop: true,
+            bybuyer: true
+          }
+          // console.log(this.apiData)
+          this.$store.dispatch('setAPIStore', this.apiItem)
+          var apiUrl = this.$store.getters.apiUrl
+          return new Promise(async (resolve, reject) => {
+            await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+              var respBody = response.data
+              if (respBody.status === 'fail') {
+                this.$Message.error('订单列表获取失败！(' + respBody.message + ')')
+                this.loading = false
+                reject(new Error('订单列表获取失败！(' + respBody.message + ')'))
+              } else {
+                // this.$Message.success('列表载入成功!')
+                this.$store.dispatch('setAPILastResponse', respBody)
+                this.finishedTrades = respBody.data
+                // console.log(respBody.data)
+                this.loading = false
+                resolve(respBody.data)
+              }
+            }).catch(err => {
               this.loading = false
-              reject(new Error('订单列表获取失败！(' + respBody.message + ')'))
-            } else {
-              // this.$Message.success('列表载入成功!')
-              this.$store.dispatch('setAPILastResponse', respBody)
-              this.finishedTrades = respBody.data
-              // console.log(respBody.data)
-              this.loading = false
-              resolve(respBody.data)
-            }
-          }).catch(err => {
-            this.loading = false
-            this.$store.dispatch('setAPILastResponse', err)
-            reject(err)
+              this.$store.dispatch('setAPILastResponse', err)
+              reject(err)
+            })
           })
-        })
+        }
       }
     }
   }

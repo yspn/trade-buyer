@@ -1,71 +1,86 @@
 <template>
-  <div class="stat-today">
-    <ul>
-      <li :style="{background: colorSelections[1]}">
-        <span class="title">今日派单：</span>
-        <span class="num">{{today.today_assigned}}</span>
-      </li>
-      <li :style="{background: colorSelections[2]}">
-        <span class="title">今日完成：</span>
-        <span class="num">{{today.today_finished}}</span>
-      </li>
-      <li :style="{background: colorSelections[3]}">
-        <span class="title">今日下单：</span>
-        <span class="num">{{today.today_ordered}}</span>
-      </li>
-      <li :style="{background: colorSelections[4]}">
-        <span class="title">今日退单：</span>
-        <span class="num">{{today.today_failed}}</span>
-      </li>
-      <li :style="{background: colorSelections[5]}">
-        <span class="title">今日撤销：</span>
-        <span class="num">{{today.today_dismissed}}</span>
-      </li>
-    </ul>
-    <ul>
-      <li :style="{background: colorSelections[4]}">
-        <span class="title">本月派单：</span>
-        <span class="num">{{today.monthly_assigned}}</span>
-      </li>
-      <li :style="{background: colorSelections[3]}">
-        <span class="title">本月完成：</span>
-        <span class="num">{{today.monthly_finished}}</span>
-      </li>
-      <li :style="{background: colorSelections[6]}">
-        <span class="title">本月下单：</span>
-        <span class="num">{{today.monthly_ordered}}</span>
-      </li>
-      <li :style="{background: colorSelections[1]}">
-        <span class="title">本月退单：</span>
-        <span class="num">{{today.monthly_failed}}</span>
-      </li>
-      <li :style="{background: colorSelections[5]}">
-        <span class="title">本月撤销：</span>
-        <span class="num">{{today.monthly_dismissed}}</span>
-      </li>
-    </ul>
-    <ul>
-      <li :style="{background: colorSelections[6]}">
-        <span class="title">全部派单：</span>
-        <span class="num">{{today.total_assigned}}</span>
-      </li>
-      <li :style="{background: colorSelections[2]}">
-        <span class="title">全部完成：</span>
-        <span class="num">{{today.total_finished}}</span>
-      </li>
-      <li :style="{background: colorSelections[1]}">
-        <span class="title">全部下单：</span>
-        <span class="num">{{today.total_ordered}}</span>
-      </li>
-      <li :style="{background: colorSelections[5]}">
-        <span class="title">全部退单：</span>
-        <span class="num">{{today.total_failed}}</span>
-      </li>
-      <li :style="{background: colorSelections[3]}">
-        <span class="title">全部撤销：</span>
-        <span class="num">{{today.total_dismissed}}</span>
-      </li>
-    </ul>
+  <div class="stat-today-container">
+    <Button type="ghost" @click="entrance">刷新</Button>
+    <div class="stat-today">
+      <ul>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">今日派单：</span>
+          <span class="num">{{today.today_assigned}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">今日完成：</span>
+          <span class="num">{{today.today_finished}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">今日下单：</span>
+          <span class="num">{{today.today_ordered}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">今日退单：</span>
+          <span class="num">{{today.today_failed}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">今日撤销：</span>
+          <span class="num">{{today.today_dismissed}}</span>
+        </li>
+      </ul>
+      <ul>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">本月派单：</span>
+          <span class="num">{{today.monthly_assigned}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">本月完成：</span>
+          <span class="num">{{today.monthly_finished}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">本月下单：</span>
+          <span class="num">{{today.monthly_ordered}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">本月退单：</span>
+          <span class="num">{{today.monthly_failed}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">本月撤销：</span>
+          <span class="num">{{today.monthly_dismissed}}</span>
+        </li>
+      </ul>
+      <ul>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">全部派单：</span>
+          <span class="num">{{today.total_assigned}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">全部完成：</span>
+          <span class="num">{{today.total_finished}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">全部下单：</span>
+          <span class="num">{{today.total_ordered}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">全部退单：</span>
+          <span class="num">{{today.total_failed}}</span>
+        </li>
+        <li :style="{background: colorSelections[Math.round(Math.random() * 8)]}">
+          <span class="title">全部撤销：</span>
+          <span class="num">{{today.total_dismissed}}</span>
+        </li>
+      </ul>
+    </div>
+    <div class="today-shop-trades" v-if="$store.getters.user.role==='manager'||$store.getters.user.role==='boss'">
+      <div class="today-trade-total">
+        <span class="title">今日订单：</span>
+        <span class="num">{{todayShopTradeTotal}}</span>
+      </div>
+      <ul class="shop-ul">
+        <li v-for="(shop, index) in todayShopTrades" :key="index">
+          <span class="title">{{shop.shop}}：</span>
+          <span class="num">{{shop.tradeCount}}</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -102,7 +117,8 @@ export default {
         monthly_dismissed: 0
       },
       finishedTrades: null,
-      todayProfit: 0
+      todayProfit: 0,
+      todayShopTrades: []
     }
   },
   mounted () {
@@ -113,6 +129,13 @@ export default {
     // this.calcTodayProfit('total')
   },
   computed: {
+    todayShopTradeTotal: function () {
+      let total = 0
+      this.todayShopTrades.forEach((item) => {
+        total += item.tradeCount
+      })
+      return total
+    }
   },
   methods: {
     entrance () {
@@ -121,10 +144,12 @@ export default {
         setTimeout(() => {
           this.entrance()
         }, 2000)
+      } else if (this.$store.getters.user.role === 'service') { // 售后
       } else if (this.$store.getters.user.role === 'employee') { // 买手
         this.getTodayBuyerStatistics(this.$store.getters.user.userid)
       } else {
         this.getTodayStatistics()
+        this.getTodayShopTrades()
       }
     },
     async getBuyers () {
@@ -160,6 +185,23 @@ export default {
       })
     },
     async getTodayStatistics () {
+      this.today = {
+        today_assigned: 0,
+        today_finished: 0,
+        today_ordered: 0,
+        today_failed: 0,
+        today_dismissed: 0,
+        total_assigned: 0,
+        total_finished: 0,
+        total_ordered: 0,
+        total_failed: 0,
+        total_dismissed: 0,
+        monthly_assigned: 0,
+        monthly_finished: 0,
+        monthly_ordered: 0,
+        monthly_failed: 0,
+        monthly_dismissed: 0
+      }
       await this.getBuyers().then((buyers) => {
         buyers.forEach(buyer => {
           this.today.today_assigned += buyer.today_assigned ? buyer.today_assigned : 0
@@ -181,6 +223,23 @@ export default {
       })
     },
     getTodayBuyerStatistics (userid) {
+      this.today = {
+        today_assigned: 0,
+        today_finished: 0,
+        today_ordered: 0,
+        today_failed: 0,
+        today_dismissed: 0,
+        total_assigned: 0,
+        total_finished: 0,
+        total_ordered: 0,
+        total_failed: 0,
+        total_dismissed: 0,
+        monthly_assigned: 0,
+        monthly_finished: 0,
+        monthly_ordered: 0,
+        monthly_failed: 0,
+        monthly_dismissed: 0
+      }
       this.apiItem = {
         apiHost: '',
         apiService: 'buyers',
@@ -257,6 +316,33 @@ export default {
         this.todayProfit = (trades.tradePaymentTotal - trades.orderPaymentTotal).toFixed(2)
         console.log('[' + timespan + '] income: ' + trades.tradePaymentTotal.toFixed(2) + ' | expenditure: ' + trades.orderPaymentTotal.toFixed(2) + ' | gross: ' + (trades.tradePaymentTotal - trades.orderPaymentTotal).toFixed(2))
       })
+    },
+    getTodayShopTrades () {
+      this.loading = true
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'trades',
+        apiAction: 'gettodayshoptrades',
+        apiQuery: {}
+      }
+      this.apiData = {
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      this.$http.post(apiUrl, this.apiData).then(async (response) => {
+        var respBody = response.data
+        if (respBody.status === 'fail') {
+          this.$Message.error('今日店铺订单获取失败！(' + respBody.message + ')')
+        } else {
+          // this.$Message.success('列表载入成功!')
+          this.todayShopTrades = respBody.data.sort((a, b) => {
+            return b.tradeCount - a.tradeCount
+          })
+          this.$store.dispatch('setAPILastResponse', respBody)
+        }
+      }).catch(err => {
+        this.$store.dispatch('setAPILastResponse', err)
+      })
     }
   }
 }
@@ -283,6 +369,43 @@ ul {
     padding: 10px;
     background:cadetblue;
     width: 19%;
+    .title {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 18px;
+      font-weight: 300;
+    }
+    .num {
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      font-size: 36px;
+      font-weight: 800;
+    }
+  }
+  &.shop-ul {
+    flex-wrap: wrap;
+    li {
+      margin-bottom: 10px;
+      background: #fff;
+      border: 2px dotted cadetblue;
+      color: cadetblue;
+    }
+  }
+}
+.today-shop-trades {
+  margin-top: 50px;
+  .today-trade-total {
+    font-size: 20px;
+    position: relative;
+    color: #fff;
+    display: inline-block;
+    position: relative;
+    min-height: 90px;
+    padding: 10px;
+    background:cadetblue;
+    width: 100%;
     .title {
       position: absolute;
       top: 10px;

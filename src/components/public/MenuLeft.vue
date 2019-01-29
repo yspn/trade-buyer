@@ -6,9 +6,10 @@
         数据统计
       </template>
       <MenuItem name="1-1">我的数据</MenuItem>
-      <MenuItem name="1-2" v-if="$store.getters.user.role==='boss'">监控中心</MenuItem>
+      <MenuItem name="1-2" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">监控中心</MenuItem>
       <MenuItem name="1-3" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">利润报表</MenuItem>
       <MenuItem name="1-4" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">盈亏分析</MenuItem>
+      <MenuItem name="1-5" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">买手报表</MenuItem>
     </Submenu>
     <Submenu name="2">
       <template slot="title">
@@ -16,11 +17,11 @@
         我的订单
       </template>
       <MenuItem name="2-1">全部订单</MenuItem>
-      <MenuItem name="2-6" v-if="$store.getters.user.role==='boss'">未分配</MenuItem>
-      <MenuItem name="2-2">已分配</MenuItem>
-      <MenuItem name="2-3">已下单</MenuItem>
-      <MenuItem name="2-4">已完成</MenuItem>
-      <MenuItem name="2-5">已退单</MenuItem>
+      <MenuItem name="2-6" v-if="['service'].indexOf($store.getters.user.role) < 0 && $store.getters.user.role==='boss'">未分配</MenuItem>
+      <MenuItem name="2-2" v-if="['service'].indexOf($store.getters.user.role) < 0">已分配</MenuItem>
+      <MenuItem name="2-3" v-if="['service'].indexOf($store.getters.user.role) < 0">已下单</MenuItem>
+      <MenuItem name="2-4" v-if="['service'].indexOf($store.getters.user.role) < 0">已完成</MenuItem>
+      <MenuItem name="2-5" v-if="['service'].indexOf($store.getters.user.role) < 0">已退单</MenuItem>
     </Submenu>
     <Submenu name="3">
       <template slot="title">
@@ -32,6 +33,7 @@
       <MenuItem name="3-5" v-if="$store.getters.user.role==='boss'">店铺设置</MenuItem>
       <MenuItem name="3-6" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">店铺黑名单</MenuItem>
       <MenuItem name="3-7" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">历史下单管理</MenuItem>
+      <MenuItem name="3-8" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">代发商品</MenuItem>
       <MenuItem name="3-4" v-if="$store.getters.user.role==='boss'">导入订单</MenuItem>
       <MenuItem name="3-2">退出登陆</MenuItem>
     </Submenu>
@@ -60,6 +62,9 @@ export default {
           break
         case '1-4':
           path = '/reports/lossanalysis'
+          break
+        case '1-5':
+          path = '/reports/buyerreport'
           break
         case '2-1':
           path = '/trades'
@@ -99,6 +104,9 @@ export default {
           break
         case '3-7':
           path = '/boughthistory'
+          break
+        case '3-8':
+          path = '/daifa'
           break
       }
       this.$router.push({path: path})

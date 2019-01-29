@@ -44,6 +44,27 @@ const cookieResponse = (request, sender, sendResponse) => {
 
 const orderInfoResponse = (request, sender, sendResponse) => {
   if (request.cmd === 'get_orderinfo_response') {
+    try {
+      let orderFullInfo = null
+      window.chrome.storage.local.get('one_key_order', function (store) {
+        orderFullInfo = store.one_key_order
+        let orderInfo = request.value
+        let orderCurrent = orderFullInfo.orders.order.filter((item) => {
+          return item.oid_str === orderInfo.oid
+        })[0]
+        selectNumber(orderCurrent.num)
+        let skuPropertiesName = orderCurrent.sku_properties_name
+        let properties = skuPropertiesName.split(';')
+        properties.forEach((prop) => {
+          let skuProperty = prop.substring(0, prop.indexOf(':'))
+          let skuPropertyValue = prop.substr(prop.indexOf(':') + 1)
+          console.log(skuProperty, skuPropertyValue)
+          selectSku(skuProperty, skuPropertyValue)
+        })
+      })
+    } catch (err) {
+      alert('一键下单数据错误！\r\n详细:' + err.message)
+    }
     // console.log(request.value)
     // getAddressListNew(cookieArr)
     // addAddressEntrance(request.value.receiver, cookieArr, (error, addressId) => {
@@ -449,4 +470,25 @@ function getAddressSuggestion (l1, l2, address, callback) {
     }
     return false
   }
+}
+
+function selectSku (skuProperty, skuName) {
+  let skuProperties = $('#J_isku .J_Prop.tb-prop')
+  skuProperties.each(function () {
+    let property = $(this)
+    let pName = $(this).find('.tb-property-type').text().trim()
+    if (pName === skuProperty) {
+      let propSelections = $(this).find('dd ul li')
+      propSelections.each(function () { //TODO: 单一SKU选项默认已选，不能再点击
+        let propLi = $(this)
+        if (propLi.find('a span').text().trim() === skuName) {
+          propLi.click()
+        }
+      })
+    }
+  })
+}
+
+function selectNumber (num) {
+  $('#J_IptAmount').val(num)
 }

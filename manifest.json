@@ -1,7 +1,8 @@
 {
   "name": "一键下单2.0(dev)",
   "manifest_version": 2,
-  "version": "2.0",
+  "version": "2.1.2",
+  "version_name": "v2.1.2 build 20181205001",
   "description": "淘宝店群一键下单插件",
   "icons": {
     "16": "./static/logo.png",
@@ -68,6 +69,9 @@
         "./static/common.js",
         "./static/js/gbk.js",
         "./static/js/Order.js"
+      ],
+      "css": [
+        "./static/css/onekey.css"
       ]
     },
     {
@@ -92,9 +96,11 @@
   "options_page": "controls.html",
   "content_security_policy": "script-src 'self' http://localhost:8080 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
+    "changelog.txt",
     "controls.html",
     "./static/fonts/ionicons.ttf",
     "./static/fonts/ionicons.woff",
     "./static/fonts/img/logo.png"
-  ]
+  ],
+  "update_url": "http://192.168.99.1:3000/app/tradebuyer/checkupdate"
 }

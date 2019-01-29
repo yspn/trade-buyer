@@ -6,7 +6,7 @@
           <img src="../../static/logo.png">
           <div class="site-title">
             淘易易
-            <span class="small">下单管理</span>
+            <span class="small">订单管理</span>
           </div>
         </div>
         <div class="layout-nav">
@@ -22,12 +22,6 @@
                 <FormItem label="发货跟踪状态">
                   <span :style="{color: autoTracerSwitch ? 'forestgreen' : 'grey', fontWeight: 800}">{{autoTracerSwitch ? '进行中' : '关闭'}}</span>
                 </FormItem>
-                <!-- <FormItem label="发货跟踪">
-                  <i-switch v-model="autoTracerSwitch" size="small"></i-switch>
-                </FormItem>
-                <FormItem label="间隔(min)">
-                  <Input v-model="autoTracerInterval" style="width: 40px" size="small"></Input>
-                </FormItem> -->
                 <FormItem label="成功/总数">
                   <span style="color: forestgreen; font-weight: 800">{{logisticHistory.filter((item)=>{return item.result==='success'}).length}}</span>
                   /
@@ -35,7 +29,10 @@
                   <Button type="text" icon="ios-trash-outline" @click="logisticHistory=[]"></Button>
                 </FormItem>
               </Form>
-              <div class="logis-history-console-box"><p v-for="(log, index) in logisticHistory" :key="index" @click.stop.prevent="logisDetailModal=true;logisDetail=log">{{log.tid + '\t' + log.logisNumber + '\t' + log.companyCode + '\t' + log.result + '\t' + new Date(log.captureTime).Format('hh:mm:ss') }}</p></div>
+              <Tabs value="logisticHisTab">
+                <TabPane :label="logisticHisTabLabelSucceed" name="succeed"><div class="logis-history-console-box"><p v-for="(log, index) in logisticHistory.filter((item)=>{return item.result==='success'})" :key="index" @click.stop.prevent="logisDetailModal=true;logisDetail=log">{{log.tid + '\t' + log.logisNumber + '\t' + log.companyCode + '\t' + log.result + '\t' + new Date(log.captureTime).Format('hh:mm:ss') }}</p></div></TabPane>
+                <TabPane :label="logisticHisTabLabelFailed" name="failed"><div class="logis-history-console-box"><p v-for="(log, index) in logisticHistory.filter((item)=>{return item.result==='fail'})" :key="index" @click.stop.prevent="logisDetailModal=true;logisDetail=log">{{log.tid + '\t' + log.logisNumber + '\t' + log.companyCode + '\t' + log.result + '\t' + new Date(log.captureTime).Format('hh:mm:ss') }}</p></div></TabPane>
+              </Tabs>
               <Modal
                 v-model="logisDetailModal"
                 v-if="logisDetail"
@@ -76,6 +73,8 @@
                     <dd>{{$store.getters.user.role}}</dd>
                     <dt><Icon type="ios-color-filter-outline"></Icon> 店群</dt>
                     <dd>{{$store.getters.user.group}}</dd>
+                    <dt><Icon type="social-tumblr-outline"></Icon> 淘宝账号</dt>
+                    <dd>{{currentTBNick}}</dd>
                   </dl>
                 </div>
                 <Button type="error" long size="large" icon="power" @click="$router.push({path: '/logout'})">登出</Button>
@@ -118,7 +117,9 @@
       </Content>
     </Layout>
     <Footer class="layout-footer-center">
-      2011-2018 &copy; YSPN Studio
+      2011-2018 &copy; YSPN Studio &nbsp;&nbsp;当前版本：{{currentVersion?currentVersion.versionName:'未知'}}
+      <Button type="ghost" size="small" @click="checkLatestVersion">检查更新</Button>
+      <Button type="text" size="small" @click="showChangeLogs">更新日志</Button>
     </Footer>
   </Layout>
 </template>
@@ -136,6 +137,7 @@ export default {
   },
   data () {
     return {
+      currentVersion: '',
       apiItem: {
         apiHost: '',
         apiService: 'zztAuth',
@@ -147,6 +149,23 @@ export default {
       buyerNick: '',
       orderFinished: null,
       orderFailed: null,
+      logisticHisTab: 'succeed',
+      logisticHisTabLabelSucceed: (h) => {
+        let count = this.logisticHistory.filter((item) => {
+          return item.result === 'success'
+        }).length
+        return h('div', [
+          h('span', '成功' + (count ? '(' + count + ')' : ''))
+        ])
+      },
+      logisticHisTabLabelFailed: (h) => {
+        let count = this.logisticHistory.filter((item) => {
+          return item.result === 'fail'
+        }).length
+        return h('div', [
+          h('span', '失败' + (count ? '(' + count + ')' : ''))
+        ])
+      },
       logisUpdateItem: null,
       logisticHistory: [],
       logisDetailModal: false,
@@ -167,7 +186,9 @@ export default {
       disputeSignature: null,
       disputeHierarchy: null,
       addressList: [],
-      searchByTid: ''
+      searchByTid: '',
+      currentTBNick: '',
+      checkTBConnectionTask: null
     }
   },
   watch: {
@@ -202,6 +223,10 @@ export default {
       this.getLocalUrl()
       if (this.$store.getters.sysIsExtension) {
         this.getTBCookies(() => {
+          this.checkTaobaoConnection()
+          this.checkTBConnectionTask = setInterval(() => {
+            this.checkTaobaoConnection()
+          }, 1000 * 60 * 5) // 每5分钟检查一次淘宝在线情况
           // this.getRefundList()
         })
         window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -218,6 +243,7 @@ export default {
         this.listenOrderSubmitted()
         this.listenModifyTaobaoBoughtItemsRequestHeaders()
         this.listenAddressAPIRequestHeaders() // 监听地址相关H5API，增加Referer
+        this.listenTransLinkDetailedHistoryRequestHeaders() // 监视Detail页面，记录页面地址
         this.autoTracerSwitch = this.$store.getters.user.tracelogisticsEnable
       }
       this.getLogisticCompanies()
@@ -228,6 +254,13 @@ export default {
     }).catch(err => {
       console.log(err)
     })
+  },
+  async mounted () {
+    await this.getCurrentVersion().then(() => {
+      this.checkLatestVersion()
+    })
+  },
+  computed: {
   },
   methods: {
     switchMenu (name) {
@@ -256,6 +289,37 @@ export default {
       this.$store.dispatch('setSysIsExtension', window.chrome.extension || false)
       return localUrl
     },
+    /**
+     * 验证当前淘宝在线情况
+     */
+    checkTaobaoConnection () {
+      let form = {
+        pageNum: 1,
+        pageSize: 10,
+        auctionStatus: 'SEND',
+        prePageNo: 1
+      }
+      let url = 'https://buyertrade.taobao.com/trade/itemlist/asyncBought.htm?action=itemlist/BoughtQueryAction&event_submit_do_query=1&_input_charset=utf8'
+      // url = 'https://www.easy-mock.com/mock/5ad70f9da675954fc238c33e/example/orders'
+      this.$http.post(url, common.setQueryConfig(form))
+        .then(response => {
+          try {
+            let result = response.data
+            if (typeof result !== 'object') {
+              this.currentTBNick = '未登录'
+              // clearInterval(this.checkTBConnectionTask)
+            } else {
+              this.currentTBNick = this.$store.getters.tbNick
+            }
+          } catch (err) {
+            this.currentTBNick = '未登录'
+            // clearInterval(this.checkTBConnectionTask)
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     getTaobaoCookies (callback) {
       let arr = []
       window.chrome.cookies.getAll({}, (cookies) => {
@@ -276,7 +340,7 @@ export default {
         let code = common.getQueryString('code', details.url)
         console.log(code)
         this.auth(code)
-      }, {urls: [this.getLocalUrl() + '#/login*']}, [])
+      }, {urls: [this.getLocalUrl() + '#/loggedin*']}, [])
     },
     async checkAuth (fromPath) {
       await this.renewToken().then(() => {
@@ -339,6 +403,7 @@ export default {
         if (callback) {
           callback()
         }
+        // console.log(this.cookiesArr)
       })
     },
     listenGetCookies (request, sender, sendResponse) {
@@ -390,7 +455,7 @@ export default {
       if (request.cmd === 'get_translink') {
         sendResponse('ok')
         await this.getShopTransLinkByURL(request.value, request.shopid).then((url) => {
-          console.log(url)
+          // console.log(url)
           common.sendMessageToCurrentContentScript({ cmd: 'get_translink_response', value: url })
         }).catch((err) => {
           console.log(err)
@@ -463,7 +528,7 @@ export default {
       if (request.cmd === 'check_blacklistshop') {
         sendResponse('ok')
         await this.checkBlackListShop(request.value).then((result) => {
-          console.log(result)
+          // console.log(result)
           common.sendMessageToCurrentContentScript({ cmd: 'check_blacklistshop_response', value: result })
         }).catch((err) => {
           console.log(err)
@@ -490,7 +555,7 @@ export default {
             this.$Message.error(respBody.message)
             reject(new Error(respBody.message))
           } else {
-            console.log(response)
+            // console.log(response)
             resolve(respBody.data.in)
           }
         }).catch(err => {
@@ -527,14 +592,14 @@ export default {
         this.apiItem = {
           apiHost: '',
           apiService: 'trades',
-          apiAction: 'list', // this.$store.getters.token
+          apiAction: 'listunpost', // this.$store.getters.token
           apiQuery: {}
         }
         this.apiData = {
           // status: 'WAIT_SELLER_SEND_GOODS',
-          order_status: {
-            $in: ['PARTLY_ORDERED', 'ORDERED']
-          },
+          // order_status: {
+          //   $in: ['PARTLY_ORDERED', 'ORDERED']
+          // },
           limit$: 10000
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
@@ -582,6 +647,8 @@ export default {
               reject(new Error('淘宝账户登录失效，请先登录淘宝账户'))
               common.focusOrCreateTab('https://login.taobao.com/')
             } else {
+              let randomInsertPosi = Math.ceil(Math.random() * content.length)
+              content = content.substr(0, randomInsertPosi) + ' ' + content.substr(randomInsertPosi)
               var formData = {
                 _tb_token_: _cookieTbToken.value,
                 event_submit_do_query: '1',
@@ -589,7 +656,7 @@ export default {
                 biz_order_id: orderId,
                 buyer_id: decodeURI(_cookieUnb.value),
                 memo: urlencode(content, 'gbk'),
-                flag: 3
+                flag: this.$store.getters.defaultMemoFlag || 3
               }
               this.$http.post('https://trade.taobao.com/trade/memo/update_buy_memo.htm', common.setQueryConfig(formData))
                 .then(suc => {
@@ -640,7 +707,7 @@ export default {
               reject(new Error('淘宝账户登录失效，请先登录淘宝账户'))
               common.focusOrCreateTab('https://login.taobao.com/')
             } else {
-              let addMsg = '买来用作赠礼，请核对好订单信息和商品数量，不要漏发或少发。不要放价格清单、店铺信息进去，谢谢，定会五星好评。'
+              let addMsg = this.$store.getters.defaultBuyerMessage || ''
               let msg = this.buyerMessage ? this.buyerMessage + ' ' : ''
               msg += addMsg
               var formData = {
@@ -684,6 +751,7 @@ export default {
           sendResponse('fail')
           common.sendMessageToCurrentContentScript({ cmd: 'orderbought_temp_succeed', value: false, text: '回传信息为空，请刷新页面，再试一次！' })
         } else {
+          // console.log(request.value)
           if ((this.$store.getters.orderInfo.tradeid !== request.value.tradeid) ||
               (this.$store.getters.orderInfo.tid !== request.value.tid) ||
               (this.$store.getters.orderInfo.oid !== request.value.oid) ||
@@ -698,9 +766,25 @@ export default {
             orderBought.buyer = this.buyerNick
             orderBought.buyerTid = request.value
             orderBought.buyerOid = request.value
-            this.$store.dispatch('setOrderBought', orderBought)
-            common.sendMessageToCurrentContentScript({ cmd: 'orderbought_temp_succeed', value: true })
-            sendResponse('ok')
+            let buyUrl = orderBought.buyUrl
+            let querystring = buyUrl.indexOf('?') > -1 ? buyUrl.split('?')[1] : ''
+            let qsObj = qs.parse(querystring)
+            let numIid = qsObj.id
+            // console.log(buyUrl, querystring, qsObj, numIid)
+            window.chrome.storage.local.get('transLinkDetailedHistory', (store) => {
+              let transLinkDetailedHistory = store.transLinkDetailedHistory || []
+              let transHis = transLinkDetailedHistory.filter((his) => {
+                return his.indexOf(numIid) > -1
+              })
+              if (transHis.length) {
+                orderBought.buyUrl = transHis[transHis.length - 1]
+              }
+              // console.log(orderBought)
+              this.$store.dispatch('setOrderBought', orderBought)
+              common.sendMessageToCurrentContentScript({ cmd: 'orderbought_temp_succeed', value: true })
+              sendResponse('ok')
+            })
+            // this.$store.dispatch('setOrderBought', orderBought)
           }
         }
       }
@@ -710,7 +794,7 @@ export default {
         if (!request.value) {
           sendResponse('fail')
         } else {
-          console.log(request.value)
+          // console.log(request.value)
           sendResponse('ok')
         }
       }
@@ -739,8 +823,24 @@ export default {
           orderBought.buyerOid = orderNumber
           this.$store.dispatch('setOrderBought', orderBought)
           this.orderFinished = orderBought
+          // let buyUrl = orderBought.buyUrl
+          // let querystring = buyUrl.indexOf('?') > -1 ? buyUrl.split('?')[1] : ''
+          // let qsObj = qs.parse(querystring)
+          // let numIid = qsObj.id
+          // window.chrome.storage.local.get('transLinkDetailedHistory', function (store) {
+          //   let transLinkDetailedHistory = store.transLinkDetailedHistory || []
+          //   let transHis = transLinkDetailedHistory.filter((his) => {
+          //     return his.indexOf(numIid) > -1
+          //   })
+          //   if (transHis.length) {
+          //     orderBought.buyUrl = transHis[transHis.length - 1]
+          //   }
+          //   this.$store.dispatch('setOrderBought', orderBought)
+          //   this.orderFinished = orderBought
+          //   window.chrome.storage.local.set({'transLinkDetailedHistory': []})
+          // })
         }
-      }, {urls: ['*://buy.tmall.com/auction/confirm_order.htm*', '*://buy.taobao.com/auction/confirm_order.htm*']}, ['responseHeaders'])
+      }, {urls: ['*://buy.taobao.com/auction/buy_now.jhtml*', '*://buy.tmall.com/auction/confirm_order.htm*', '*://buy.taobao.com/auction/confirm_order.htm*', '*://buy.taobao.com/auction/confirmOrder.htm*']}, ['responseHeaders'])
     },
     listenOneKeyOrderSuccess (request, sender, sendResponse) {
       if (request.cmd === 'get_onekey_order_success') {
@@ -1028,6 +1128,7 @@ export default {
           try {
             for (let i = 0; i < orders.mainOrders.length; i++) {
               let tbOrderNumber = orders.mainOrders[i].id
+              // 轮询待发货订单
               for (let j = 0; j < trades.length;) {
                 let orderedList = trades[j].ordered.filter((item) => {
                   return !item.dismiss
@@ -1041,6 +1142,21 @@ export default {
                   })
                   if (hit.length) {
                     let oid = hit[0].oid_str // 子订单oid
+                    // 检测是否改价
+                    let boughtPrice = hit[0].buyer_fee
+                    let boughtPostFee = hit[0].post_fee
+                    let actualFee = orders.mainOrders[i].payInfo.actualFee
+                    let oldActualFee = orders.mainOrders[i].payInfo.oldActualFee
+                    if (oldActualFee) {
+                      // 已改价
+                      actualFee = parseFloat(actualFee) * 100
+                      let actualPostFee = parseFloat(orders.mainOrders[i].payInfo.postFees[0].value.replace(/￥/g, '')) * 100
+                      this.$Notice.info({
+                        title: '发现订单改价',
+                        desc: '订单' + originalOrderNumber + ' 原价:' + boughtPrice / 100 + '(邮费:' + boughtPostFee + ') 改为:' + actualFee / 100 + '(邮费: ' + actualPostFee + ')'
+                      })
+                      this.changePrice(tradeid, tbOrderNumber, actualFee, actualPostFee)
+                    }
                     this.$Notice.info({
                       title: '发现订单已发货',
                       desc: '匹配订单！' + originalOrderNumber + ':' + tbOrderNumber
@@ -1091,6 +1207,44 @@ export default {
         } else {
           resolve()
         }
+      })
+    },
+    /**
+     * 改价
+     * @param {String} [tradeId] 订单ID（Mongo）
+     * @param {String} [orderNumber] 下单单号
+     * @param {Number} [actualFee] 改后总价
+     * @param {Number} [actualPostFee] 改后运费
+     */
+    changePrice (tradeId, orderNumber, actualFee, actualPostFee) {
+      return new Promise((resolve, reject) => {
+        this.apiItem = {
+          apiHost: '',
+          apiService: 'trades',
+          apiAction: 'updateprice',
+          apiQuery: {}
+        }
+        this.apiData = {
+          tradeid: tradeId,
+          ordernumber: orderNumber,
+          actualfee: actualFee,
+          actualpostfee: actualPostFee
+        }
+        this.$store.dispatch('setAPIStore', this.apiItem)
+        var apiUrl = this.$store.getters.apiUrl
+        this.$http.post(apiUrl, this.apiData).then(response => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            this.$Message.error(respBody.message)
+            reject(new Error(respBody.message))
+          } else {
+            console.log(response)
+            resolve()
+          }
+        }).catch(err => {
+          this.$Message.error('更新下单价格失败！(' + err + ')')
+          reject(new Error(err.message))
+        })
       })
     },
     initShopList () {
@@ -1270,6 +1424,10 @@ export default {
         //   name: 'Origin',
         //   value: 'http://buyertrade.taobao.com'
         // })
+        // let accept = headers.filter((item) => {
+        //   return item.name === 'Accept'
+        // })
+        // accept[0].value = '*/*'
         headers.push({
           name: 'Referer',
           value: 'https://member1.taobao.com/member/fresh/deliver_address.htm'
@@ -1278,10 +1436,15 @@ export default {
         //   name: 'user-agent',
         //   value: 'zsea/fetch'
         // })
+        // let cookies = headers.filter((item) => {
+        //   return item.name === 'Cookie'
+        // })
+        // cookies[0].value += '; WAPFDFDTGFG=%2B4cMKKP%2B8PI%2BJV9eSpzXb7SSXQ%3D%3D; _w_app_lg=19'
+        // console.log(headers)
         return {
           requestHeaders: headers
         }
-      }, {urls: ['*://h5api.wapa.taobao.com/*']},
+      }, {urls: ['*://h5api.m.taobao.com/*']},
       ['blocking', 'requestHeaders'])
     },
     /**
@@ -1299,7 +1462,7 @@ export default {
         let appKey = '12574478'
         let data = '{}' // {"sn":"suibianchuan"}
         let md5 = this.md5Encode(m5Token + '&' + i + '&' + appKey + '&' + data)
-        let url = 'https://h5api.wapa.taobao.com/h5/mtop.taobao.mbis.getdeliveraddrlist/1.0/?jsv=2.4.2&appKey=12574478&t=' + i + '&sign=' + md5 + '&api=mtop.taobao.mbis.getDeliverAddrList&v=1.0&ecode=1&needLogin=true&dataType=jsonp&type=jsonp&callback=mtopjsonp3&data=%7B%7D'
+        let url = 'https://h5api.m.taobao.com/h5/mtop.taobao.mbis.getdeliveraddrlist/1.0/?jsv=2.4.2&appKey=12574478&t=' + i + '&sign=' + md5 + '&api=mtop.taobao.mbis.getDeliverAddrList&v=1.0&ecode=1&needLogin=true&dataType=jsonp&type=jsonp&callback=mtopjsonp3&data=%7B%7D'
         this.$http.get(url)
           .then(response => {
             let data = response.data.trim()
@@ -1348,26 +1511,29 @@ export default {
           'city': address.cityName,
           'cityId': address.city,
           'district': address.areaName,
-          'districtId': address.areaName,
+          'districtId': address.area || address.areaName,
           'town': address.townName,
-          'townId': address.townName,
+          'townId': address.town || address.townName,
           'addressDetail': address.addressDetail
         }
         let dataStr = JSON.stringify(data)
         let md5 = this.md5Encode(m5Token + '&' + i + '&' + appKey + '&' + dataStr)
-        let url = 'https://h5api.wapa.taobao.com/h5/mtop.cainiao.address.ua.china.address.validate/1.0/?jsv=2.4.2&appKey=12574478&t=' + i + '&sign=' + md5 + '&api=mtop.cainiao.address.ua.china.address.validate&v=1.0&dataType=jsonp&type=jsonp&callback=mtopjsonp17&data=' + encodeURIComponent(dataStr)
+        let url = 'https://h5api.m.taobao.com/h5/mtop.cainiao.address.ua.china.address.validate/1.0/?jsv=2.4.2&appKey=12574478&t=' + i + '&sign=' + md5 + '&api=mtop.cainiao.address.ua.china.address.validate&v=1.0&dataType=jsonp&type=jsonp&callback=mtopjsonp17&data=' + encodeURIComponent(dataStr)
         this.$http.get(url)
           .then(response => {
             let data = response.data.trim()
             let json = JSON.parse(data.substring(12, data.length - 1))
             if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0] === 'SUCCESS') {
+              if (!json.data.divisionParse.townId) {
+                reject(new Error('买家地址不完整'))
+              }
               let jsonData = {
                 'divisionCode': json.data.divisionParse.townId,
                 'townDivisionCode': json.data.divisionParse.townId,
                 'addressDetail': address.addressDetail,
-                'longitude': json.data.gc.lng,
-                'latitude': json.data.gc.lat,
-                'postCode': address.post,
+                // 'longitude': json.data.gc.lng,
+                // 'latitude': json.data.gc.lat,
+                'postCode': address.post === '000000' ? '' : address.post,
                 'overseaAddress': false,
                 'fullName': address.fullName,
                 'mobileCode': 86,
@@ -1398,9 +1564,9 @@ export default {
      */
     async insertNewAddress201807 (address) {
       return new Promise(async (resolve, reject) => {
-        let data
+        let validAddress = {}
         await this.validateNewAddress201807(address).then((addr) => {
-          data = addr
+          validAddress = addr
         }).catch((err) => {
           console.log(err)
           reject(err)
@@ -1415,13 +1581,29 @@ export default {
         }
         let i = new Date().getTime()
         let appKey = '12574478'
-        let dataStr = JSON.stringify(data)
+        // console.log(data)
+        let dataStr = JSON.stringify({
+          'divisionCode': validAddress.divisionCode || address.town || '',
+          'townDivisionCode': validAddress.townDivisionCode || address.town || '',
+          'addressDetail': address.addressDetail,
+          'postCode': address.post ? address.post : '000000',
+          'overseaAddress': false,
+          'fullName': address.fullName,
+          'mobileCode': 86,
+          'mobile': address.mobile,
+          'phoneInternationalCode': 86,
+          'phoneAreaCode': address.phoneSection,
+          'phoneNumber': address.phoneCode,
+          'phoneExtension': address.phoneExt,
+          'defaultDeliverAddress': true
+        })
+        // console.log(dataStr)
         // let dataStr = '{"divisionCode":"410105011","townDivisionCode":"410105011","addressDetail":"阳光新城19号楼9楼026","longitude":"113.704274","latitude":"34.797823","postCode":"","overseaAddress":false,"fullName":"杨硕","mobileCode":86,"mobile":"18625587270","phoneInternationalCode":86,"phoneAreaCode":"","phoneNumber":"","phoneExtension":"","defaultDeliverAddress":true}' // {"sn":"suibianchuan"}
         let md5 = this.md5Encode(m5Token + '&' + i + '&' + appKey + '&' + dataStr)
-        let url = 'https://h5api.wapa.taobao.com/h5/mtop.taobao.mbis.insertdeliveraddress/1.0/?jsv=2.4.2&appKey=12574478&t=' + i + '&sign=' + md5 + '&api=mtop.taobao.mbis.insertDeliverAddress&v=1.0&ecode=1&needLogin=true&timeout=20000&dataType=jsonp&type=jsonp&callback=mtopjsonp18&data=' + encodeURIComponent(dataStr)
+        let url = 'https://h5api.m.taobao.com/h5/mtop.taobao.mbis.insertdeliveraddress/1.0/?jsv=2.4.2&appKey=12574478&t=' + i + '&sign=' + md5 + '&api=mtop.taobao.mbis.insertDeliverAddress&v=1.0&ecode=1&needLogin=true&timeout=20000&dataType=jsonp&type=jsonp&callback=mtopjsonp11&data=' + encodeURIComponent(dataStr)
         this.$http.get(url)
           .then(response => {
-            console.log(response)
+            // console.log(response)
             let data = response.data.trim()
             let json = JSON.parse(data.substring(12, data.length - 1))
             if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0] === 'SUCCESS') {
@@ -1480,7 +1662,7 @@ export default {
         let dataStr = JSON.stringify(data)
         // let dataStr = '{"divisionCode":"410105011","townDivisionCode":"410105011","addressDetail":"阳光新城19号楼9楼026","longitude":"113.704274","latitude":"34.797823","postCode":"","overseaAddress":false,"fullName":"杨硕","mobileCode":86,"mobile":"18625587270","phoneInternationalCode":86,"phoneAreaCode":"","phoneNumber":"","phoneExtension":"","defaultDeliverAddress":true}' // {"sn":"suibianchuan"}
         let md5 = this.md5Encode(m5Token + '&' + i + '&' + appKey + '&' + dataStr)
-        let url = 'https://h5api.wapa.taobao.com/h5/mtop.taobao.mbis.deletedeliveraddressbyid/1.0/?jsv=2.4.2&appKey=12574478&t=' + i + '&sign=' + md5 + '&api=mtop.taobao.mbis.deleteDeliverAddressById&v=1.0&ecode=1&needLogin=true&dataType=jsonp&type=jsonp&callback=mtopjsonp4&data=' + encodeURIComponent(dataStr)
+        let url = 'https://h5api.m.taobao.com/h5/mtop.taobao.mbis.deletedeliveraddressbyid/1.0/?jsv=2.4.2&appKey=12574478&t=' + i + '&sign=' + md5 + '&api=mtop.taobao.mbis.deleteDeliverAddressById&v=1.0&ecode=1&needLogin=true&dataType=jsonp&type=jsonp&callback=mtopjsonp4&data=' + encodeURIComponent(dataStr)
         this.$http.get(url)
           .then(response => {
             console.log(response)
@@ -1534,6 +1716,60 @@ export default {
           return false
         }
         alert('新增地址失败！请手工添加地址。\r\n' + message)
+      })
+    },
+    listenTransLinkDetailedHistoryRequestHeaders () {
+      window.chrome.webRequest.onCompleted.addListener((details) => {
+        let url = details.url
+        if (url.indexOf('ali_trackid') > -1) {
+          window.chrome.storage.local.get('transLinkDetailedHistory', function (store) {
+            let transLinkDetailedHistory = store.transLinkDetailedHistory || []
+            transLinkDetailedHistory.push(url)
+            window.chrome.storage.local.set({'transLinkDetailedHistory': transLinkDetailedHistory})
+          })
+        }
+        // console.log(details.url)
+      }, {urls: ['*://item.taobao.com/item.htm*', '*://detail.tmall.com/item.htm*']},
+      ['responseHeaders'])
+    },
+    getCurrentVersion () {
+      return new Promise((resolve, reject) => {
+        this.$http.get(window.chrome.extension.getURL('manifest.json')).then((info) => {
+          this.currentVersion = {
+            version: info.data.version,
+            versionName: info.data.version_name
+          }
+          resolve(info.data)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    checkLatestVersion () {
+      this.$http.get('http://dingdan.tao11.la/version.json?_t=' + new Date().getTime()).then((res) => {
+        let latestVersion = res.data.stable
+        let latestVersionBuild = latestVersion ? latestVersion.version_name.split(' build ')[1] : ''
+        let currentVersionBuild = this.currentVersion ? this.currentVersion.versionName.split(' build ')[1] : ''
+        if (latestVersion && (latestVersion.version > this.currentVersion.version || latestVersionBuild > currentVersionBuild)) {
+          this.$Modal.confirm({
+            title: '发现新版本插件',
+            content: '<p>发现新版本：' + latestVersion.version_name + '</p><p>当前版本：' + this.currentVersion.versionName + '</p><p>是否更新？</p>',
+            onOk: () => {
+              window.open(latestVersion.file_url, '_blank')
+            }
+          })
+        } else {
+          this.$Message.success('您的版本已是最新')
+        }
+      })
+    },
+    showChangeLogs () {
+      this.$http.get(window.chrome.extension.getURL('changelog.txt')).then((res) => {
+        this.$Modal.info({
+          title: '版本更新日志',
+          content: '<pre>' + res.data + '</pre>',
+          width: 600
+        })
       })
     }
   }
@@ -1628,7 +1864,7 @@ export default {
     line-height: 20px;
     cursor: default;
     width: 450px;
-    height: 240px;
+    height: 280px;
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     border-left: 1px solid #ccc;

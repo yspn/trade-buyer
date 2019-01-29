@@ -9,7 +9,9 @@ export const userStore = {
       session: '',
       token: '',
       // 自动跟踪物流开关
-      tracelogisticsEnable: false
+      tracelogisticsEnable: false,
+      defaultBuyerMessage: '',
+      defaultMemoFlag: 0
     }
   },
   mutations: {
@@ -22,11 +24,19 @@ export const userStore = {
         group: data.group,
         session: data.session,
         token: data.token,
-        tracelogisticsEnable: data.tracelogistics_enable || false
+        tracelogisticsEnable: data.tracelogistics_enable || false,
+        defaultBuyerMessage: data.defaultbuyermessage || '',
+        defaultMemoFlag: data.defaultmemoflag || 0
       }
     },
     SET_TRACE_LOGISTICS_ENABLE (state, data) {
       state.user.tracelogisticsEnable = data
+    },
+    SET_DEFAULT_BUYER_MESSAGE (state, data) {
+      state.user.defaultBuyerMessage = data
+    },
+    SET_DEFAULT_MEMO_FLAG (state, data) {
+      state.user.defaultMemoFlag = data
     }
   },
   actions: {
@@ -35,6 +45,12 @@ export const userStore = {
     },
     setTraceLogisticsEnable ({ commit }, data) {
       commit('SET_TRACE_LOGISTICS_ENABLE', data)
+    },
+    setDefaultBuyerMessage ({ commit }, data) {
+      commit('SET_DEFAULT_BUYER_MESSAGE', data)
+    },
+    setDefaultMemoFlag ({ commit }, data) {
+      commit('SET_DEFAULT_MEMO_FLAG', data)
     }
   },
   getters: {
@@ -46,6 +62,12 @@ export const userStore = {
     },
     session: state => {
       return state.user.session
+    },
+    defaultBuyerMessage: state => {
+      return state.user.defaultBuyerMessage
+    },
+    defaultMemoFlag: state => {
+      return state.user.defaultMemoFlag
     }
   }
 }

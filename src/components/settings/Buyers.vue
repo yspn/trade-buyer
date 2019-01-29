@@ -11,16 +11,58 @@
       </div>
       <Button-group>
         <Button type="ghost" icon="document" @click="newModal=true" v-if="$store.getters.user.role==='boss'">新增</Button>
-        <Button type="ghost" icon="ios-refresh-empty" @click="refreshList">刷新</Button>
+        <Button type="ghost" icon="ios-refresh-empty" @click="refreshBuyerList">刷新</Button>
       </Button-group>
     </div>
-    <Table stripe :loading="loading" :height="tableHeight" :columns="columns" :data="dataViewPage" ref="table"></Table>
+    <Table stripe :loading="loading" :height="tableHeight" :columns="userColumns" :data="dataViewPage" ref="usertable"></Table>
+    <!-- <Table stripe :loading="loading" :height="tableHeight" :columns="columns" :data="dataViewPage" ref="table"></Table> -->
     <div style="margin: 10px;overflow: hidden">
-      <!-- <Button type="primary" size="large" @click="exportData" :disabled="!rowSelected"><Icon type="ios-download-outline"></Icon> 导出原始数据</Button> -->
       <div style="float: right;">
-        <Page :total="data.length" :page-size-opts="[10,20,50,100]" @on-change="changePage" @on-page-size-change="changePageSize" :current="pageCurrent" show-sizer show-total show-elevator></Page>
+        <!-- <Page :total="data.length" :page-size-opts="[10,20,50,100]" @on-change="changePage" @on-page-size-change="changePageSize" :current="pageCurrent" show-sizer show-total show-elevator></Page> -->
+        <Page :total="userSelectList.length" :page-size-opts="[10,20,50,100]" @on-change="changeUserPage" @on-page-size-change="changeUserPageSize" :current="pageUserCurrent" show-sizer show-total show-elevator></Page>
       </div>
     </div>
+    <Modal
+      v-model="buyerShopModal"
+      title="买手接单设置"
+      width="80%"
+      :mask-closable="true"
+      @on-cancel="buyerShopModal=false;detailByShopid=null;detailByUserid=null"
+      :transfer="false">
+      <div class="modal-content">
+        <div class="buyer-shops-content" v-if="detailByUserid">
+          <h2>{{userSelectList.filter((item)=>{return item.id===detailByUserid})[0].name}}</h2>
+          <ul>
+            <li v-for="(shop, index) in shopSelectList" :key="index" :class="dataBuyer.filter((item)=>{return item.shopid===shop.id}).length?dataBuyer.filter((item)=>{return item.shopid===shop.id})[0].is_enable?'listening':'holding':'unlinked'" @click="processBuyerShop(detailByUserid, shop.id)">
+              <div class="buyer-shop-item">{{shop.name}}</div>
+              <Tag type="dot" :color="dataBuyer.filter((item)=>{return item.shopid===shop.id}).length?dataBuyer.filter((item)=>{return item.shopid===shop.id})[0].is_enable?'green':'red':'default'">{{dataBuyer.filter((item)=>{return item.shopid===shop.id}).length?dataBuyer.filter((item)=>{return item.shopid===shop.id})[0].is_enable?'接单中':'休息中':'未关联'}}</Tag>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div slot="footer">
+        <Button size="large" @click="newModal=true" v-if="$store.getters.user.role==='boss'">新增</Button>
+        <Button size="large" @click="buyerShopModal=false;detailByShopid=null;detailByUserid=null">关闭</Button>
+      </div>
+    </Modal>
+    <Modal
+      v-model="detailModal"
+      title="买手设置"
+      width="80%"
+      :mask-closable="true"
+      @on-cancel="detailModal=false;detailByShopid=null;detailByUserid=null"
+      :transfer="false">
+      <div class="modal-content">
+        <Table stripe :loading="loading" :height="tableHeight" @on-sort-change="sortBuyerTable" :columns="columns" :data="dataBuyerViewPage" ref="table"></Table>
+      </div>
+      <div slot="footer">
+        <div style="float: left;">
+          <Page :total="dataBuyer.length" :page-size-opts="[10,20,50,100]" @on-change="changePage" @on-page-size-change="changePageSize" :current="pageCurrent" show-sizer show-total show-elevator></Page>
+        </div>
+        <Button size="large" @click="newModal=true" v-if="$store.getters.user.role==='boss'">新增</Button>
+        <Button size="large" @click="detailModal=false;detailByShopid=null;detailByUserid=null">关闭</Button>
+      </div>
+    </Modal>
     <Modal
       v-model="newModal"
       title="新增买手"
@@ -99,7 +141,8 @@
       </div>
       <div slot="footer">
         <Button size="large" @click="renameModal=false">关闭</Button>
-        <Button type="success" size="large" @click="submitRename">提交</Button>
+        <Button type="success" size="large" @click="submitRename" v-if="detailByShopid||detailByUserid">提交</Button>
+        <Button type="success" size="large" @click="submitUserRename" v-else>提交</Button>
       </div>
     </Modal>
     <Modal
@@ -120,6 +163,7 @@
 
 <script>
 export default {
+  props: ['shopList'],
   name: 'buyers',
   data () {
     return {
@@ -138,7 +182,6 @@ export default {
           width: 160,
           fixed: 'left',
           ellipsis: true,
-          sortable: true,
           searchable: true,
           render: (h, params) => {
             return h('span', {}, params.row.name)
@@ -158,14 +201,7 @@ export default {
           filterRemote: (value, row) => {
             this.filterShop = value
           },
-          sortable: true,
-          sortMethod: (a, b, type) => {
-            if (type === 'asc') {
-              return a.localeCompare(b, 'zh-CN')
-            } else {
-              return b.localeCompare(a, 'zh-CN')
-            }
-          },
+          sortable: 'custom',
           render: (h, params) => {
             return h('span', {}, this.getShopName(params.row.shopid))
           }
@@ -174,35 +210,32 @@ export default {
           key: 'weight',
           width: 120,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '状态',
           key: 'is_enable',
           width: 120,
           ellipsis: true,
-          sortable: true,
-          sortMethod: (a, b, type) => {
-            if (type === 'asc') {
-              return a.localeCompare(b, 'zh-CN')
-            } else {
-              return b.localeCompare(a, 'zh-CN')
-            }
-          },
+          sortable: 'custom',
           render: (h, params) => {
-            return h('span', {}, params.row.is_enable === false ? '休息中' : '接单中')
+            return h('span', {
+              style: {
+                color: params.row.is_enable === false ? 'red' : 'blue'
+              }
+            }, params.row.is_enable === false ? '休息中' : '接单中')
           }
         },
         { title: '本日派单',
           key: 'today_assigned',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '本日完成',
           key: 'today_finished',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '本日下单',
           key: 'today_ordered',
@@ -214,73 +247,73 @@ export default {
           key: 'today_failed',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '本日撤销',
           key: 'today_dismissed',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '本月派单',
           key: 'monthly_assigned',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '本月完成',
           key: 'monthly_finished',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '本月下单',
           key: 'monthly_ordered',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '本月退回',
           key: 'monthly_failed',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '本月撤销',
           key: 'monthly_dismissed',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '历史派单',
           key: 'total_assigned',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '历史完成',
           key: 'total_finished',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '历史下单',
           key: 'total_ordered',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '历史退回',
           key: 'total_failed',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         { title: '历史撤销',
           key: 'total_dismissed',
           width: 100,
           ellipsis: true,
-          sortable: true
+          sortable: 'custom'
         },
         {
           title: '操作',
@@ -344,12 +377,111 @@ export default {
           }
         }
       ],
+      userColumns: [
+        // { type: 'selection', width: 70, align: 'center' },
+        {
+          title: 'user_id',
+          key: 'user_id',
+          sortable: true,
+          searchable: true,
+          render: (h, params) => {
+            return h('span', {}, params.row.user_id)
+          }
+        },
+        {
+          title: '姓名',
+          key: 'name',
+          ellipsis: true,
+          sortable: true,
+          searchable: true,
+          render: (h, params) => {
+            return h('span', {}, params.row.name)
+          }
+        },
+        { title: '用户id',
+          key: 'id',
+          ellipsis: true,
+          sortable: true,
+          sortMethod: (a, b, type) => {
+            if (type === 'asc') {
+              return a.localeCompare(b, 'zh-CN')
+            } else {
+              return b.localeCompare(a, 'zh-CN')
+            }
+          },
+          render: (h, params) => {
+            return h('span', {}, this.getShopName(params.row.id))
+          }
+        },
+        {
+          title: '操作',
+          key: 'action',
+          fixed: 'right',
+          width: 180,
+          render: (h, params) => {
+            if (['boss'].indexOf(this.$store.getters.user.role) > -1) {
+              return h('Button-group', [
+                h('Button', {
+                  props: {
+                    type: 'ghost',
+                    size: 'small'
+                  },
+                  style: {
+                  },
+                  on: {
+                    click: async () => {
+                      this.detailModal = true
+                      this.detailByUserid = params.row.id
+                    }
+                  }
+                }, '详细'),
+                h('Button', {
+                  props: {
+                    type: 'ghost',
+                    size: 'small'
+                  },
+                  style: {
+                  },
+                  on: {
+                    click: async () => {
+                      this.buyerShopModal = true
+                      this.detailByUserid = params.row.id
+                    }
+                  }
+                }, '接单'),
+                h('Button', {
+                  props: {
+                    type: 'ghost',
+                    size: 'small'
+                  },
+                  style: {
+                  },
+                  on: {
+                    click: async () => {
+                      this.renameModal = true
+                      this.renameModel = {
+                        id: params.row.id,
+                        name: params.row.name
+                      }
+                    }
+                  }
+                }, '改名')
+              ])
+            }
+          }
+        }
+      ],
       loading: false,
       dataRaw: [],
       data: [],
+      dataBuyer: [],
+      dataBuyerRaw: [],
       dataViewPage: [],
+      dataBuyerViewPage: [],
       pageCurrent: 1,
       pageSize: 10,
+      pageUserCurrent: 1,
+      pageUserSize: 10,
       keyword: '',
       searchBy: '',
       searchMode: false,
@@ -360,6 +492,10 @@ export default {
       tableHeight: 500,
       detailed: false,
       detailedItem: {},
+      detailModal: false,
+      detailByUserid: null,
+      detailByShopid: null,
+      buyerShopModal: false,
       newModal: false,
       newModel: {
         group: this.$store.getters.user.group || 1,
@@ -425,12 +561,15 @@ export default {
   },
   mounted () {
     this.initDataTable().then(async (result) => {
-      this.dataRaw = result
-      this.data = result
+      this.dataBuyer = result
+      this.dataBuyerRaw = result
       this.pageSize = 10
       this.pageCurrent = 1
       this.loading = false
       this.calcTableHeight()
+      await this.syncUserList().then((users) => {
+        this.data = users
+      })
       await this.syncShopList().then((shops) => {
       })
     })
@@ -443,6 +582,14 @@ export default {
     }
   },
   watch: {
+    'detailByUserid': function (newVal) {
+      this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+        return item.userid === newVal
+      })
+      this.dataBuyerViewPage = this.dataBuyer.filter((item, index, source) => {
+        return index < this.pageSize * this.pageCurrent && index >= this.pageSize * (this.pageCurrent - 1)
+      })
+    },
     'data': async function (newVal) {
       let vmInstance = this
       this.dataViewPage = this.data.filter(function (item, index, source) {
@@ -451,21 +598,49 @@ export default {
     },
     'pageCurrent': async function (newVal) {
       let vmInstance = this
-      this.dataViewPage = this.data.filter(function (item, index, source) {
+      this.dataBuyerViewPage = this.dataBuyer.filter(function (item, index, source) {
         return index < vmInstance.pageSize * vmInstance.pageCurrent && index >= vmInstance.pageSize * (vmInstance.pageCurrent - 1)
       })
     },
     'pageSize': async function (newVal) {
       let vmInstance = this
-      this.dataViewPage = this.data.filter(function (item, index, source) {
+      this.dataBuyerViewPage = this.dataBuyer.filter((item) => {
+        if (this.detailByUserid) {
+          return item.userid === this.detailByUserid
+        } else if (this.detailByShopid) {
+          return item.shopid === this.detailByShopid
+        } else {
+          return item
+        }
+      }).filter(function (item, index, source) {
         return index < vmInstance.pageSize
       })
     },
+    'pageUserCurrent': async function (newVal) {
+      let vmInstance = this
+      this.dataViewPage = this.userSelectList.filter(function (item, index, source) {
+        return index < vmInstance.pageUserSize * vmInstance.pageUserCurrent && index >= vmInstance.pageUserSize * (vmInstance.pageUserCurrent - 1)
+      })
+    },
+    'pageUserSize': async function (newVal) {
+      let vmInstance = this
+      this.dataViewPage = this.userSelectList.filter(function (item, index, source) {
+        return index < vmInstance.pageUserSize
+      })
+    },
     'sort': function (newVal) {
-      this.refreshList()
+      this.refreshList((refreshList) => {
+        this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+          return item.userid === this.detailByUserid
+        })
+      })
     },
     'filterShop': function (newVal) {
-      this.refreshList()
+      this.refreshList((refreshList) => {
+        this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+          return item.userid === this.detailByUserid
+        })
+      })
     },
     'newModal': async function (val) {
       if (val) {
@@ -487,14 +662,30 @@ export default {
     }
   },
   methods: {
-    refreshList () {
-      // refreshList()
+    refreshBuyerList () {
+      this.refreshList((refreshList) => {
+        this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+          return item.userid === this.detailByUserid
+        })
+        this.syncUserList().then((users) => {
+          this.data = users
+        })
+      })
+    },
+    refreshList (callback) {
       this.initDataTable().then(async (result) => {
+        this.dataBuyerRaw = result
+        // this.dataBuyer = result
+        this.pageSize = 10
+        this.pageCurrent = 1
         this.loading = false
         // this.searchBy = ''
         // this.keyword = ''
         // this.searchMode = false
         this.tableSearchOn = false
+        if (callback && typeof callback === 'function') {
+          callback(result)
+        }
       })
     },
     async initDataTable () {
@@ -529,10 +720,12 @@ export default {
           } else {
             // this.$Message.success('列表载入成功!')
             this.$store.dispatch('setAPILastResponse', respBody)
-            this.dataRaw = respBody.data
-            this.data = respBody.data
-            this.pageSize = 10
-            this.pageCurrent = 1
+            // this.dataBuyerRaw = respBody.data
+            // this.data = respBody.data
+            // this.dataBuyer = respBody.data
+            // this.data = this.prepareBuyerData(respBody.data)
+            // this.pageSize = 10
+            // this.pageCurrent = 1
             resolve(respBody.data)
           }
         }).catch(err => {
@@ -540,6 +733,24 @@ export default {
           reject(err)
         })
       })
+    },
+    prepareBuyerData (data) {
+      let tempArr = []
+      let buyerArr = []
+      data.map((item) => {
+        tempArr.push(item.userid)
+      })
+      let buyerUserIdArr = Array.from(new Set(tempArr))
+      buyerUserIdArr.forEach((item) => {
+        let buyer = data.filter((b) => {
+          return b.userid === item
+        })[0]
+        buyerArr.push({
+          name: buyer.name,
+          userid: item
+        })
+      })
+      return buyerArr
     },
     getShopName (shopid) {
       if (this.shopSelectList) {
@@ -554,6 +765,41 @@ export default {
     sortTable (sort) {
       this.sort = sort
     },
+    sortBuyerTable (sort) {
+      // console.log(sort.column, sort.key, sort.order, this.dataBuyer[0][sort.key])
+      this.dataBuyer.sort((a, b) => {
+        let type = typeof a[sort.key]
+        switch (type) {
+          case 'string':
+            if (sort.order === 'asc') {
+              if (sort.key === 'shopid') {
+                return this.getShopName(a[sort.key]).localeCompare(this.getShopName(b[sort.key]), 'zh-CN')
+              } else {
+                return a[sort.key].localeCompare(b[sort.key], 'zh-CN')
+              }
+            } else if (sort.order === 'desc') {
+              if (sort.key === 'shopid') {
+                return this.getShopName(b[sort.key]).localeCompare(this.getShopName(a[sort.key]), 'zh-CN')
+              } else {
+                return b[sort.key].localeCompare(a[sort.key], 'zh-CN')
+              }
+            } else {
+              return a - b
+            }
+          default:
+            if (sort.order === 'asc') {
+              return a[sort.key] - b[sort.key]
+            } else if (sort.order === 'desc') {
+              return b[sort.key] - a[sort.key]
+            } else {
+              return a - b
+            }
+        }
+      })
+      this.dataBuyerViewPage = this.dataBuyer.filter((item, index, source) => {
+        return index < this.pageSize * this.pageCurrent && index >= this.pageSize * (this.pageCurrent - 1)
+      })
+    },
     calcTableHeight () {
       let eleMain = document.querySelector('#main')
       let eleMainPaddingTop = window.getComputedStyle(eleMain, null).paddingTop
@@ -565,6 +811,12 @@ export default {
     },
     changePageSize (pageSize) {
       this.pageSize = pageSize
+    },
+    changeUserPage (page) {
+      this.pageUserCurrent = page
+    },
+    changeUserPageSize (pageSize) {
+      this.pageUserSize = pageSize
     },
     toggleSearchMode () {
       this.searchMode = !this.searchMode
@@ -627,7 +879,11 @@ export default {
       })
       this.pageCurrent = 0
       this.pageCurrent = 1
-      this.refreshList()
+      this.refreshList((refreshList) => {
+        this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+          return item.userid === this.detailByUserid
+        })
+      })
     },
     async syncUserList () {
       this.apiItem = {
@@ -648,7 +904,9 @@ export default {
           } else {
             // this.$Message.success('列表载入成功!')
             this.$store.dispatch('setAPILastResponse', respBody)
-            this.userSelectList = respBody.data
+            this.userSelectList = respBody.data.sort((a, b) => {
+              return a.name.localeCompare(b.name, 'zh-CN')
+            })
             resolve(respBody.data)
           }
         }).catch(err => {
@@ -676,7 +934,9 @@ export default {
           } else {
             // this.$Message.success('列表载入成功!')
             this.$store.dispatch('setAPILastResponse', respBody)
-            this.shopSelectList = respBody.data
+            this.shopSelectList = respBody.data.sort((a, b) => {
+              return a.name.localeCompare(b.name, 'zh-CN')
+            })
             resolve(respBody.data)
           }
         }).catch(err => {
@@ -696,6 +956,91 @@ export default {
         return item.id === val
       })[0]
       this.editModel.name = user ? user.name : ''
+    },
+    processBuyerShop (userid, shopid) {
+      let user = this.userSelectList.filter((item) => {
+        return item.id === userid
+      })[0]
+      let shop = this.shopSelectList.filter((item) => {
+        return item.id === shopid
+      })[0]
+      let buyer = this.dataBuyer.filter((item) => {
+        return item.shopid === shopid
+      })
+      let status = buyer.length ? buyer[0].is_enable ? 'listening' : 'holding' : 'unlinked'
+      switch (status) {
+        case 'listening':
+          this.editModel = {
+            id: buyer[0].id,
+            group: this.$store.getters.user.group || buyer[0].group,
+            name: buyer[0].name,
+            userid: userid,
+            shopid: shopid,
+            weight: 0,
+            is_enable: false
+          }
+          this.$Modal.confirm({
+            render: (h) => {
+              return h('div', {}, '确认设置' + buyer[0].name + '对店铺' + shop.name + '为“休息中”么？设置后该买手将无法取到这个店铺的订单')
+            },
+            onOk: async () => {
+              await this.submitEdit()
+              this.refreshList((refreshList) => {
+                this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+                  return item.userid === this.detailByUserid
+                })
+              })
+            }
+          })
+          break
+        case 'holding':
+          this.editModel = {
+            id: buyer[0].id,
+            group: this.$store.getters.user.group || buyer[0].group,
+            name: buyer[0].name,
+            userid: userid,
+            shopid: shopid,
+            weight: 0,
+            is_enable: true
+          }
+          this.$Modal.confirm({
+            render: (h) => {
+              return h('div', {}, '确认设置' + buyer[0].name + '对店铺' + shop.name + '为“接单中”么？')
+            },
+            onOk: async () => {
+              await this.submitEdit()
+              this.refreshList((refreshList) => {
+                this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+                  return item.userid === this.detailByUserid
+                })
+              })
+            }
+          })
+          break
+        case 'unlinked':
+          this.newModel = {
+            group: this.$store.getters.user.group || 1,
+            name: user.name,
+            userid: userid,
+            shopid: shopid,
+            weight: 0,
+            is_enable: true
+          }
+          this.$Modal.confirm({
+            render: (h) => {
+              return h('div', {}, '确认设置' + user.name + '对店铺' + shop.name + '为“接单中”么？')
+            },
+            onOk: async () => {
+              await this.submitNew()
+              this.refreshList((refreshList) => {
+                this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+                  return item.userid === this.detailByUserid
+                })
+              })
+            }
+          })
+          break
+      }
     },
     submitEdit () {
       this.$refs['editForm'].validate((valid) => {
@@ -727,7 +1072,11 @@ export default {
                 this.$Message.success('买手修改成功!')
                 this.$store.dispatch('setAPILastResponse', respBody)
                 this.editModal = false
-                this.refreshList()
+                this.refreshList((refreshList) => {
+                  this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+                    return item.userid === this.detailByUserid
+                  })
+                })
                 resolve(respBody.data)
               }
             }).catch(err => {
@@ -769,7 +1118,11 @@ export default {
                 this.$Message.success('买手新增成功!')
                 this.$store.dispatch('setAPILastResponse', respBody)
                 this.newModal = false
-                this.refreshList()
+                this.refreshList((refreshList) => {
+                  this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+                    return item.userid === this.detailByUserid
+                  })
+                })
                 resolve(respBody.data)
               }
             }).catch(err => {
@@ -807,7 +1160,59 @@ export default {
                 this.$Message.success('名称修改成功!')
                 this.$store.dispatch('setAPILastResponse', respBody)
                 this.renameModal = false
-                this.refreshList()
+                this.refreshList((refreshList) => {
+                  this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+                    return item.userid === this.detailByUserid
+                  })
+                  this.syncUserList().then((users) => {
+                    this.data = users
+                  })
+                })
+                resolve(respBody.data)
+              }
+            }).catch(err => {
+              this.$store.dispatch('setAPILastResponse', err)
+              reject(err)
+            })
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
+      })
+    },
+    submitUserRename () {
+      this.$refs['renameForm'].validate((valid) => {
+        if (valid) {
+          this.apiItem = {
+            apiHost: '',
+            apiService: 'users',
+            apiAction: 'rename',
+            apiQuery: {}
+          }
+          this.apiData = {
+            id: this.renameModel.id,
+            name: this.renameModel.name
+          }
+          this.$store.dispatch('setAPIStore', this.apiItem)
+          var apiUrl = this.$store.getters.apiUrl
+          return new Promise(async (resolve, reject) => {
+            await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+              var respBody = response.data
+              if (respBody.status === 'fail') {
+                this.$Message.error('名称修改失败！(' + respBody.message + ')')
+                reject(new Error('名称修改失败！(' + respBody.message + ')'))
+              } else {
+                this.$Message.success('名称修改成功!')
+                this.$store.dispatch('setAPILastResponse', respBody)
+                this.renameModal = false
+                this.refreshList((refreshList) => {
+                  this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+                    return item.userid === this.detailByUserid
+                  })
+                })
+                this.syncUserList().then((users) => {
+                  this.data = users
+                })
                 resolve(respBody.data)
               }
             }).catch(err => {
@@ -842,7 +1247,11 @@ export default {
             this.$Message.success('删除买手成功!')
             this.$store.dispatch('setAPILastResponse', respBody)
             this.deleteModal = false
-            this.refreshList()
+            this.refreshList((refreshList) => {
+              this.dataBuyer = this.dataBuyerRaw.filter((item) => {
+                return item.userid === this.detailByUserid
+              })
+            })
             resolve(respBody.data)
           }
         }).catch(err => {
@@ -856,5 +1265,35 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.buyer-shops-content {
+  ul {
+    list-style: none;
+    li {
+      width: 280px;
+      height: 70px;
+      display: inline-flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #f2f2f2;
+      margin: 0 10px 10px 0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all .3s linear;
+      padding: 10px 20px;
+      &.holding {
+        border: 1px solid #cf3a3a;
+        background: #ffe6e6;
+      }
+      &.listening {
+        border: 1px solid #2b9669;
+        background: #c9ffe9;
+      }
+      &:hover {
+        border: 1px solid rgb(0, 89, 255);
+        background: rgb(204, 222, 255);
+      }
+    }
+  }
+}
 </style>

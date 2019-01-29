@@ -2,1826 +2,2191 @@
     {
         "code": "110100",
         "name": "北京市",
-        "parent_code": "110000"
+        "parent_code": "110000",
+        "section_code": "010"
     },
     {
         "code": "120100",
         "name": "天津市",
-        "parent_code": "120000"
+        "parent_code": "120000",
+        "section_code": "022"
     },
     {
         "code": "130100",
         "name": "石家庄市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0311"
     },
     {
         "code": "130200",
         "name": "唐山市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0315"
     },
     {
         "code": "130300",
         "name": "秦皇岛市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0335"
     },
     {
         "code": "130400",
         "name": "邯郸市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0310"
     },
     {
         "code": "130500",
         "name": "邢台市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0319"
     },
     {
         "code": "130600",
         "name": "保定市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0312"
     },
     {
         "code": "130700",
         "name": "张家口市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0313"
     },
     {
         "code": "130800",
         "name": "承德市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0314"
     },
     {
         "code": "130900",
         "name": "沧州市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0317"
     },
     {
         "code": "131000",
         "name": "廊坊市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0316"
     },
     {
         "code": "131100",
         "name": "衡水市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0318"
     },
     {
         "code": "139001",
         "name": "定州市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0312"
     },
     {
         "code": "139002",
         "name": "辛集市",
-        "parent_code": "130000"
+        "parent_code": "130000",
+        "section_code": "0311"
     },
     {
         "code": "140100",
         "name": "太原市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0351"
     },
     {
         "code": "140200",
         "name": "大同市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0352"
     },
     {
         "code": "140300",
         "name": "阳泉市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0353"
     },
     {
         "code": "140400",
         "name": "长治市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0355"
     },
     {
         "code": "140500",
         "name": "晋城市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0356"
     },
     {
         "code": "140600",
         "name": "朔州市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0349"
     },
     {
         "code": "140700",
         "name": "晋中市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0354"
     },
     {
         "code": "140800",
         "name": "运城市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0359"
     },
     {
         "code": "140900",
         "name": "忻州市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0350"
     },
     {
         "code": "141000",
         "name": "临汾市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0357"
     },
     {
         "code": "141100",
         "name": "吕梁市",
-        "parent_code": "140000"
+        "parent_code": "140000",
+        "section_code": "0358"
     },
     {
         "code": "150100",
         "name": "呼和浩特市",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0471"
     },
     {
         "code": "150200",
         "name": "包头市",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0472"
     },
     {
         "code": "150300",
         "name": "乌海市",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0473"
     },
     {
         "code": "150400",
         "name": "赤峰市",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0476"
     },
     {
         "code": "150500",
         "name": "通辽市",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0475"
     },
     {
         "code": "150600",
         "name": "鄂尔多斯市",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0477"
     },
     {
         "code": "150700",
         "name": "呼伦贝尔市",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0470"
     },
     {
         "code": "150800",
         "name": "巴彦淖尔市",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0478"
     },
     {
         "code": "150900",
         "name": "乌兰察布市",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0474"
     },
     {
         "code": "152200",
         "name": "兴安盟",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0482"
     },
     {
         "code": "152500",
         "name": "锡林郭勒盟",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0479"
     },
     {
         "code": "152900",
         "name": "阿拉善盟",
-        "parent_code": "150000"
+        "parent_code": "150000",
+        "section_code": "0483"
     },
     {
         "code": "210100",
         "name": "沈阳市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "024"
     },
     {
         "code": "210200",
         "name": "大连市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0411"
     },
     {
         "code": "210300",
         "name": "鞍山市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0412"
     },
     {
         "code": "210400",
         "name": "抚顺市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0413"
     },
     {
         "code": "210500",
         "name": "本溪市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0414"
     },
     {
         "code": "210600",
         "name": "丹东市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0415"
     },
     {
         "code": "210700",
         "name": "锦州市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0416"
     },
     {
         "code": "210800",
         "name": "营口市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0417"
     },
     {
         "code": "210900",
         "name": "阜新市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0418"
     },
     {
         "code": "211000",
         "name": "辽阳市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0419"
     },
     {
         "code": "211100",
         "name": "盘锦市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0427"
     },
     {
         "code": "211200",
         "name": "铁岭市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0410"
     },
     {
         "code": "211300",
         "name": "朝阳市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0421"
     },
     {
         "code": "211400",
         "name": "葫芦岛市",
-        "parent_code": "210000"
+        "parent_code": "210000",
+        "section_code": "0429"
     },
     {
         "code": "220100",
         "name": "长春市",
-        "parent_code": "220000"
+        "parent_code": "220000",
+        "section_code": "0431"
     },
     {
         "code": "220200",
         "name": "吉林市",
-        "parent_code": "220000"
+        "parent_code": "220000",
+        "section_code": "0432"
     },
     {
         "code": "220300",
         "name": "四平市",
-        "parent_code": "220000"
+        "parent_code": "220000",
+        "section_code": "0434"
     },
     {
         "code": "220400",
         "name": "辽源市",
-        "parent_code": "220000"
+        "parent_code": "220000",
+        "section_code": "0437"
     },
     {
         "code": "220500",
         "name": "通化市",
-        "parent_code": "220000"
+        "parent_code": "220000",
+        "section_code": "0435"
     },
     {
         "code": "220600",
         "name": "白山市",
-        "parent_code": "220000"
+        "parent_code": "220000",
+        "section_code": "0439"
     },
     {
         "code": "220700",
         "name": "松原市",
-        "parent_code": "220000"
+        "parent_code": "220000",
+        "section_code": "0438"
     },
     {
         "code": "220800",
         "name": "白城市",
-        "parent_code": "220000"
+        "parent_code": "220000",
+        "section_code": "0436"
     },
     {
         "code": "222400",
         "name": "延边朝鲜族自治州",
-        "parent_code": "220000"
+        "parent_code": "220000",
+        "section_code": "0433"
     },
     {
         "code": "230100",
         "name": "哈尔滨市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0451"
     },
     {
         "code": "230200",
         "name": "齐齐哈尔市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0452"
     },
     {
         "code": "230300",
         "name": "鸡西市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0467"
     },
     {
         "code": "230400",
         "name": "鹤岗市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0468"
     },
     {
         "code": "230500",
         "name": "双鸭山市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0469"
     },
     {
         "code": "230600",
         "name": "大庆市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0459"
     },
     {
         "code": "230700",
         "name": "伊春市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0458"
     },
     {
         "code": "230800",
         "name": "佳木斯市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0454"
     },
     {
         "code": "230900",
         "name": "七台河市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0464"
     },
     {
         "code": "231000",
         "name": "牡丹江市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0453"
     },
     {
         "code": "231100",
         "name": "黑河市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0456"
     },
     {
         "code": "231200",
         "name": "绥化市",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0455"
     },
     {
         "code": "232700",
         "name": "大兴安岭地区",
-        "parent_code": "230000"
+        "parent_code": "230000",
+        "section_code": "0457"
     },
     {
         "code": "310100",
         "name": "上海市",
-        "parent_code": "310000"
+        "parent_code": "310000",
+        "section_code": "021"
     },
     {
         "code": "320100",
         "name": "南京市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "025"
     },
     {
         "code": "320200",
         "name": "无锡市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0510"
     },
     {
         "code": "320300",
         "name": "徐州市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0516"
     },
     {
         "code": "320400",
         "name": "常州市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0519"
     },
     {
         "code": "320500",
         "name": "苏州市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0512"
     },
     {
         "code": "320600",
         "name": "南通市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0513"
     },
     {
         "code": "320700",
         "name": "连云港市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0518"
     },
     {
         "code": "320800",
         "name": "淮安市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0517"
     },
     {
         "code": "320900",
         "name": "盐城市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0515"
     },
     {
         "code": "321000",
         "name": "扬州市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0514"
     },
     {
         "code": "321100",
         "name": "镇江市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0511"
     },
     {
         "code": "321200",
         "name": "泰州市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0523"
     },
     {
         "code": "321300",
         "name": "宿迁市",
-        "parent_code": "320000"
+        "parent_code": "320000",
+        "section_code": "0527"
     },
     {
         "code": "330100",
         "name": "杭州市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0571"
     },
     {
         "code": "330200",
         "name": "宁波市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0574"
     },
     {
         "code": "330300",
         "name": "温州市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0577"
     },
     {
         "code": "330400",
         "name": "嘉兴市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0573"
     },
     {
         "code": "330500",
         "name": "湖州市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0572"
     },
     {
         "code": "330600",
         "name": "绍兴市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0575"
     },
     {
         "code": "330700",
         "name": "金华市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0579"
     },
     {
         "code": "330800",
         "name": "衢州市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0570"
     },
     {
         "code": "330900",
         "name": "舟山市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0580"
     },
     {
         "code": "331000",
         "name": "台州市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0576"
     },
     {
         "code": "331100",
         "name": "丽水市",
-        "parent_code": "330000"
+        "parent_code": "330000",
+        "section_code": "0578"
     },
     {
         "code": "340100",
         "name": "合肥市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0551"
     },
     {
         "code": "340200",
         "name": "芜湖市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0553"
     },
     {
         "code": "340300",
         "name": "蚌埠市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0552"
     },
     {
         "code": "340400",
         "name": "淮南市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0554"
     },
     {
         "code": "340500",
         "name": "马鞍山市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0555"
     },
     {
         "code": "340600",
         "name": "淮北市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0561"
     },
     {
         "code": "340700",
         "name": "铜陵市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0562"
     },
     {
         "code": "340800",
         "name": "安庆市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0556"
     },
     {
         "code": "341000",
         "name": "黄山市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0559"
     },
     {
         "code": "341100",
         "name": "滁州市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0550"
     },
     {
         "code": "341200",
         "name": "阜阳市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0558"
     },
     {
         "code": "341300",
         "name": "宿州市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0557"
     },
     {
         "code": "341500",
         "name": "六安市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0564"
     },
     {
         "code": "341600",
         "name": "亳州市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0558"
     },
     {
         "code": "341700",
         "name": "池州市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0566"
     },
     {
         "code": "341800",
         "name": "宣城市",
-        "parent_code": "340000"
+        "parent_code": "340000",
+        "section_code": "0563"
     },
     {
         "code": "350100",
         "name": "福州市",
-        "parent_code": "350000"
+        "parent_code": "350000",
+        "section_code": "0591"
     },
     {
         "code": "350200",
         "name": "厦门市",
-        "parent_code": "350000"
+        "parent_code": "350000",
+        "section_code": "0592"
     },
     {
         "code": "350300",
         "name": "莆田市",
-        "parent_code": "350000"
+        "parent_code": "350000",
+        "section_code": "0594"
     },
     {
         "code": "350400",
         "name": "三明市",
-        "parent_code": "350000"
+        "parent_code": "350000",
+        "section_code": "0598"
     },
     {
         "code": "350500",
         "name": "泉州市",
-        "parent_code": "350000"
+        "parent_code": "350000",
+        "section_code": "0595"
     },
     {
         "code": "350600",
         "name": "漳州市",
-        "parent_code": "350000"
+        "parent_code": "350000",
+        "section_code": "0596"
     },
     {
         "code": "350700",
         "name": "南平市",
-        "parent_code": "350000"
+        "parent_code": "350000",
+        "section_code": "0599"
     },
     {
         "code": "350800",
         "name": "龙岩市",
-        "parent_code": "350000"
+        "parent_code": "350000",
+        "section_code": "0597"
     },
     {
         "code": "350900",
         "name": "宁德市",
-        "parent_code": "350000"
+        "parent_code": "350000",
+        "section_code": "0593"
     },
     {
         "code": "360100",
         "name": "南昌市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0791"
     },
     {
         "code": "360200",
         "name": "景德镇市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0798"
     },
     {
         "code": "360300",
         "name": "萍乡市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0799"
     },
     {
         "code": "360400",
         "name": "九江市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0792"
     },
     {
         "code": "360500",
         "name": "新余市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0790"
     },
     {
         "code": "360600",
         "name": "鹰潭市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0701"
     },
     {
         "code": "360700",
         "name": "赣州市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0797"
     },
     {
         "code": "360800",
         "name": "吉安市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0796"
     },
     {
         "code": "360900",
         "name": "宜春市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0795"
     },
     {
         "code": "361000",
         "name": "抚州市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0794"
     },
     {
         "code": "361100",
         "name": "上饶市",
-        "parent_code": "360000"
+        "parent_code": "360000",
+        "section_code": "0793"
     },
     {
         "code": "370100",
         "name": "济南市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0531"
     },
     {
         "code": "370200",
         "name": "青岛市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0532"
     },
     {
         "code": "370300",
         "name": "淄博市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0533"
     },
     {
         "code": "370400",
         "name": "枣庄市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0632"
     },
     {
         "code": "370500",
         "name": "东营市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0546"
     },
     {
         "code": "370600",
         "name": "烟台市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0535"
     },
     {
         "code": "370700",
         "name": "潍坊市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0536"
     },
     {
         "code": "370800",
         "name": "济宁市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0537"
     },
     {
         "code": "370900",
         "name": "泰安市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0538"
     },
     {
         "code": "371000",
         "name": "威海市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0631"
     },
     {
         "code": "371100",
         "name": "日照市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0633"
     },
     {
         "code": "371200",
         "name": "莱芜市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0634"
     },
     {
         "code": "371300",
         "name": "临沂市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0539"
     },
     {
         "code": "371400",
         "name": "德州市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0534"
     },
     {
         "code": "371500",
         "name": "聊城市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0635"
     },
     {
         "code": "371600",
         "name": "滨州市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0543"
     },
     {
         "code": "371700",
         "name": "菏泽市",
-        "parent_code": "370000"
+        "parent_code": "370000",
+        "section_code": "0530"
     },
     {
         "code": "410100",
         "name": "郑州市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0371"
     },
     {
         "code": "410200",
         "name": "开封市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0371"
     },
     {
         "code": "410300",
         "name": "洛阳市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0379"
     },
     {
         "code": "410400",
         "name": "平顶山市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0375"
     },
     {
         "code": "410500",
         "name": "安阳市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0372"
     },
     {
         "code": "410600",
         "name": "鹤壁市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0392"
     },
     {
         "code": "410700",
         "name": "新乡市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0373"
     },
     {
         "code": "410800",
         "name": "焦作市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0391"
     },
     {
         "code": "410900",
         "name": "濮阳市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0393"
     },
     {
         "code": "411000",
         "name": "许昌市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0374"
     },
     {
         "code": "411100",
         "name": "漯河市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0395"
     },
     {
         "code": "411200",
         "name": "三门峡市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0398"
     },
     {
         "code": "411300",
         "name": "南阳市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0377"
     },
     {
         "code": "411400",
         "name": "商丘市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0370"
     },
     {
         "code": "411500",
         "name": "信阳市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0376"
     },
     {
         "code": "411600",
         "name": "周口市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0394"
     },
     {
         "code": "411700",
         "name": "驻马店市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0396"
     },
     {
         "code": "419001",
         "name": "济源市",
-        "parent_code": "410000"
+        "parent_code": "410000",
+        "section_code": "0391"
     },
     {
         "code": "420100",
         "name": "武汉市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "027"
     },
     {
         "code": "420200",
         "name": "黄石市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0714"
     },
     {
         "code": "420300",
         "name": "十堰市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0719"
     },
     {
         "code": "420500",
         "name": "宜昌市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0717"
     },
     {
         "code": "420600",
         "name": "襄阳市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0710"
     },
     {
         "code": "420700",
         "name": "鄂州市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0711"
     },
     {
         "code": "420800",
         "name": "荆门市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0724"
     },
     {
         "code": "420900",
         "name": "孝感市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0712"
     },
     {
         "code": "421000",
         "name": "荆州市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0716"
     },
     {
         "code": "421100",
         "name": "黄冈市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0713"
     },
     {
         "code": "421200",
         "name": "咸宁市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0715"
     },
     {
         "code": "421300",
         "name": "随州市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0722"
     },
     {
         "code": "422800",
         "name": "恩施土家族苗族自治州",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0718"
     },
     {
         "code": "429004",
         "name": "仙桃市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0728"
     },
     {
         "code": "429005",
         "name": "潜江市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0728"
     },
     {
         "code": "429006",
         "name": "天门市",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0728"
     },
     {
         "code": "429021",
         "name": "神农架林区",
-        "parent_code": "420000"
+        "parent_code": "420000",
+        "section_code": "0719"
     },
     {
         "code": "430100",
         "name": "长沙市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0731"
     },
     {
         "code": "430200",
         "name": "株洲市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0731"
     },
     {
         "code": "430300",
         "name": "湘潭市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0732"
     },
     {
         "code": "430400",
         "name": "衡阳市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0734"
     },
     {
         "code": "430500",
         "name": "邵阳市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0739"
     },
     {
         "code": "430600",
         "name": "岳阳市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0730"
     },
     {
         "code": "430700",
         "name": "常德市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0736"
     },
     {
         "code": "430800",
         "name": "张家界市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0744"
     },
     {
         "code": "430900",
         "name": "益阳市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0737"
     },
     {
         "code": "431000",
         "name": "郴州市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0735"
     },
     {
         "code": "431100",
         "name": "永州市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0746"
     },
     {
         "code": "431200",
         "name": "怀化市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0745"
     },
     {
         "code": "431300",
         "name": "娄底市",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0738"
     },
     {
         "code": "433100",
         "name": "湘西土家族苗族自治州",
-        "parent_code": "430000"
+        "parent_code": "430000",
+        "section_code": "0743"
     },
     {
         "code": "440100",
         "name": "广州市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "020"
     },
     {
         "code": "440200",
         "name": "韶关市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0751"
     },
     {
         "code": "440300",
         "name": "深圳市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0755"
     },
     {
         "code": "440400",
         "name": "珠海市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0756"
     },
     {
         "code": "440500",
         "name": "汕头市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0754"
     },
     {
         "code": "440600",
         "name": "佛山市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0757"
     },
     {
         "code": "440700",
         "name": "江门市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0750"
     },
     {
         "code": "440800",
         "name": "湛江市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0759"
     },
     {
         "code": "440900",
         "name": "茂名市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0668"
     },
     {
         "code": "441200",
         "name": "肇庆市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0758"
     },
     {
         "code": "441300",
         "name": "惠州市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0752"
     },
     {
         "code": "441400",
         "name": "梅州市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0753"
     },
     {
         "code": "441500",
         "name": "汕尾市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0660"
     },
     {
         "code": "441600",
         "name": "河源市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0762"
     },
     {
         "code": "441700",
         "name": "阳江市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0662"
     },
     {
         "code": "441800",
         "name": "清远市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0763"
     },
     {
         "code": "441900",
         "name": "东莞市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0769"
     },
     {
         "code": "442000",
         "name": "中山市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0760"
     },
     {
         "code": "445100",
         "name": "潮州市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0768"
     },
     {
         "code": "445200",
         "name": "揭阳市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0663"
     },
     {
         "code": "445300",
         "name": "云浮市",
-        "parent_code": "440000"
+        "parent_code": "440000",
+        "section_code": "0766"
     },
     {
         "code": "450100",
         "name": "南宁市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0771"
     },
     {
         "code": "450200",
         "name": "柳州市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0772"
     },
     {
         "code": "450300",
         "name": "桂林市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0773"
     },
     {
         "code": "450400",
         "name": "梧州市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0774"
     },
     {
         "code": "450500",
         "name": "北海市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0779"
     },
     {
         "code": "450600",
         "name": "防城港市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0770"
     },
     {
         "code": "450700",
         "name": "钦州市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0777"
     },
     {
         "code": "450800",
         "name": "贵港市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0775"
     },
     {
         "code": "450900",
         "name": "玉林市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0775"
     },
     {
         "code": "451000",
         "name": "百色市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0776"
     },
     {
         "code": "451100",
         "name": "贺州市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0774"
     },
     {
         "code": "451200",
         "name": "河池市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0778"
     },
     {
         "code": "451300",
         "name": "来宾市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0772"
     },
     {
         "code": "451400",
         "name": "崇左市",
-        "parent_code": "450000"
+        "parent_code": "450000",
+        "section_code": "0771"
     },
     {
         "code": "460100",
         "name": "海口市",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "460200",
         "name": "三亚市",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "460300",
         "name": "三沙市",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "460400",
         "name": "儋州市",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469001",
         "name": "五指山市",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469002",
         "name": "琼海市",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469005",
         "name": "文昌市",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469006",
         "name": "万宁市",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469007",
         "name": "东方市",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469021",
         "name": "定安县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469022",
         "name": "屯昌县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469023",
         "name": "澄迈县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469024",
         "name": "临高县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469025",
         "name": "白沙黎族自治县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469026",
         "name": "昌江黎族自治县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469027",
         "name": "乐东黎族自治县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469028",
         "name": "陵水黎族自治县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469029",
         "name": "保亭黎族苗族自治县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "469030",
         "name": "琼中黎族苗族自治县",
-        "parent_code": "460000"
+        "parent_code": "460000",
+        "section_code": "0898"
     },
     {
         "code": "500100",
         "name": "重庆市",
-        "parent_code": "500000"
+        "parent_code": "500000",
+        "section_code": "0811"
     },
     {
         "code": "510100",
         "name": "成都市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "028"
     },
     {
         "code": "510300",
         "name": "自贡市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0813"
     },
     {
         "code": "510400",
         "name": "攀枝花市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0812"
     },
     {
         "code": "510500",
         "name": "泸州市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0830"
     },
     {
         "code": "510600",
         "name": "德阳市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0838"
     },
     {
         "code": "510700",
         "name": "绵阳市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0816"
     },
     {
         "code": "510800",
         "name": "广元市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0839"
     },
     {
         "code": "510900",
         "name": "遂宁市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0825"
     },
     {
         "code": "511000",
         "name": "内江市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0832"
     },
     {
         "code": "511100",
         "name": "乐山市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0833"
     },
     {
         "code": "511300",
         "name": "南充市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0817"
     },
     {
         "code": "511400",
         "name": "眉山市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "028"
     },
     {
         "code": "511500",
         "name": "宜宾市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0831"
     },
     {
         "code": "511600",
         "name": "广安市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0826"
     },
     {
         "code": "511700",
         "name": "达州市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0818"
     },
     {
         "code": "511800",
         "name": "雅安市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0835"
     },
     {
         "code": "511900",
         "name": "巴中市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0827"
     },
     {
         "code": "512000",
         "name": "资阳市",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "028"
     },
     {
         "code": "513200",
         "name": "阿坝藏族羌族自治州",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0837"
     },
     {
         "code": "513300",
         "name": "甘孜藏族自治州",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0836"
     },
     {
         "code": "513400",
         "name": "凉山彝族自治州",
-        "parent_code": "510000"
+        "parent_code": "510000",
+        "section_code": "0834"
     },
     {
         "code": "520100",
         "name": "贵阳市",
-        "parent_code": "520000"
+        "parent_code": "520000",
+        "section_code": "0851"
     },
     {
         "code": "520200",
         "name": "六盘水市",
-        "parent_code": "520000"
+        "parent_code": "520000",
+        "section_code": "0858"
     },
     {
         "code": "520300",
         "name": "遵义市",
-        "parent_code": "520000"
+        "parent_code": "520000",
+        "section_code": "0852"
     },
     {
         "code": "520400",
         "name": "安顺市",
-        "parent_code": "520000"
+        "parent_code": "520000",
+        "section_code": "0853"
     },
     {
         "code": "520500",
         "name": "毕节市",
-        "parent_code": "520000"
+        "parent_code": "520000",
+        "section_code": "0857"
     },
     {
         "code": "520600",
         "name": "铜仁市",
-        "parent_code": "520000"
+        "parent_code": "520000",
+        "section_code": "0856"
     },
     {
         "code": "522300",
         "name": "黔西南布依族苗族自治州",
-        "parent_code": "520000"
+        "parent_code": "520000",
+        "section_code": "0859"
     },
     {
         "code": "522600",
         "name": "黔东南苗族侗族自治州",
-        "parent_code": "520000"
+        "parent_code": "520000",
+        "section_code": "0855"
     },
     {
         "code": "522700",
         "name": "黔南布依族苗族自治州",
-        "parent_code": "520000"
+        "parent_code": "520000",
+        "section_code": "0854"
     },
     {
         "code": "530100",
         "name": "昆明市",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0871"
     },
     {
         "code": "530300",
         "name": "曲靖市",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0874"
     },
     {
         "code": "530400",
         "name": "玉溪市",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0877"
     },
     {
         "code": "530500",
         "name": "保山市",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0875"
     },
     {
         "code": "530600",
         "name": "昭通市",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0870"
     },
     {
         "code": "530700",
         "name": "丽江市",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0888"
     },
     {
         "code": "530800",
         "name": "普洱市",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0879"
     },
     {
         "code": "530900",
         "name": "临沧市",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0883"
     },
     {
         "code": "532300",
         "name": "楚雄彝族自治州",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0878"
     },
     {
         "code": "532500",
         "name": "红河哈尼族彝族自治州",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0873"
     },
     {
         "code": "532600",
         "name": "文山壮族苗族自治州",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0876"
     },
     {
         "code": "532800",
         "name": "西双版纳傣族自治州",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0691"
     },
     {
         "code": "532900",
         "name": "大理白族自治州",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0872"
     },
     {
         "code": "533100",
         "name": "德宏傣族景颇族自治州",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0692"
     },
     {
         "code": "533300",
         "name": "怒江傈僳族自治州",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0886"
     },
     {
         "code": "533400",
         "name": "迪庆藏族自治州",
-        "parent_code": "530000"
+        "parent_code": "530000",
+        "section_code": "0887"
     },
     {
         "code": "540100",
         "name": "拉萨市",
-        "parent_code": "540000"
+        "parent_code": "540000",
+        "section_code": "0891"
     },
     {
         "code": "540200",
         "name": "日喀则市",
-        "parent_code": "540000"
+        "parent_code": "540000",
+        "section_code": "0892"
     },
     {
         "code": "540300",
         "name": "昌都市",
-        "parent_code": "540000"
+        "parent_code": "540000",
+        "section_code": "0895"
     },
     {
         "code": "540400",
         "name": "林芝市",
-        "parent_code": "540000"
+        "parent_code": "540000",
+        "section_code": "0894"
     },
     {
         "code": "540500",
         "name": "山南市",
-        "parent_code": "540000"
+        "parent_code": "540000",
+        "section_code": "0893"
     },
     {
         "code": "542400",
         "name": "那曲地区",
-        "parent_code": "540000"
+        "parent_code": "540000",
+        "section_code": "0896"
     },
     {
         "code": "542500",
         "name": "阿里地区",
-        "parent_code": "540000"
+        "parent_code": "540000",
+        "section_code": "0897"
     },
     {
         "code": "610100",
         "name": "西安市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "029"
     },
     {
         "code": "610200",
         "name": "铜川市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "0919"
     },
     {
         "code": "610300",
         "name": "宝鸡市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "0917"
     },
     {
         "code": "610400",
         "name": "咸阳市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "0910"
     },
     {
         "code": "610500",
         "name": "渭南市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "0913"
     },
     {
         "code": "610600",
         "name": "延安市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "0911"
     },
     {
         "code": "610700",
         "name": "汉中市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "0916"
     },
     {
         "code": "610800",
         "name": "榆林市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "0912"
     },
     {
         "code": "610900",
         "name": "安康市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "0915"
     },
     {
         "code": "611000",
         "name": "商洛市",
-        "parent_code": "610000"
+        "parent_code": "610000",
+        "section_code": "0914"
     },
     {
         "code": "620100",
         "name": "兰州市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0931"
     },
     {
         "code": "620200",
         "name": "嘉峪关市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0937"
     },
     {
         "code": "620300",
         "name": "金昌市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0935"
     },
     {
         "code": "620400",
         "name": "白银市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0943"
     },
     {
         "code": "620500",
         "name": "天水市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0938"
     },
     {
         "code": "620600",
         "name": "武威市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0935"
     },
     {
         "code": "620700",
         "name": "张掖市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0936"
     },
     {
         "code": "620800",
         "name": "平凉市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0933"
     },
     {
         "code": "620900",
         "name": "酒泉市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0937"
     },
     {
         "code": "621000",
         "name": "庆阳市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0934"
     },
     {
         "code": "621100",
         "name": "定西市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0932"
     },
     {
         "code": "621200",
         "name": "陇南市",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0939"
     },
     {
         "code": "622900",
         "name": "临夏回族自治州",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0930"
     },
     {
         "code": "623000",
         "name": "甘南藏族自治州",
-        "parent_code": "620000"
+        "parent_code": "620000",
+        "section_code": "0452"
     },
     {
         "code": "630100",
         "name": "西宁市",
-        "parent_code": "630000"
+        "parent_code": "630000",
+        "section_code": "0971"
     },
     {
         "code": "630200",
         "name": "海东市",
-        "parent_code": "630000"
+        "parent_code": "630000",
+        "section_code": "0972"
     },
     {
         "code": "632200",
         "name": "海北藏族自治州",
-        "parent_code": "630000"
+        "parent_code": "630000",
+        "section_code": "0970"
     },
     {
         "code": "632300",
         "name": "黄南藏族自治州",
-        "parent_code": "630000"
+        "parent_code": "630000",
+        "section_code": "0973"
     },
     {
         "code": "632500",
         "name": "海南藏族自治州",
-        "parent_code": "630000"
+        "parent_code": "630000",
+        "section_code": "0974"
     },
     {
         "code": "632600",
         "name": "果洛藏族自治州",
-        "parent_code": "630000"
+        "parent_code": "630000",
+        "section_code": "0975"
     },
     {
         "code": "632700",
         "name": "玉树藏族自治州",
-        "parent_code": "630000"
+        "parent_code": "630000",
+        "section_code": "0976"
     },
     {
         "code": "632800",
         "name": "海西蒙古族藏族自治州",
-        "parent_code": "630000"
+        "parent_code": "630000",
+        "section_code": "0979"
     },
     {
         "code": "640100",
         "name": "银川市",
-        "parent_code": "640000"
+        "parent_code": "640000",
+        "section_code": "0951"
     },
     {
         "code": "640200",
         "name": "石嘴山市",
-        "parent_code": "640000"
+        "parent_code": "640000",
+        "section_code": "0952"
     },
     {
         "code": "640300",
         "name": "吴忠市",
-        "parent_code": "640000"
+        "parent_code": "640000",
+        "section_code": "0953"
     },
     {
         "code": "640400",
         "name": "固原市",
-        "parent_code": "640000"
+        "parent_code": "640000",
+        "section_code": "0954"
     },
     {
         "code": "640500",
         "name": "中卫市",
-        "parent_code": "640000"
+        "parent_code": "640000",
+        "section_code": "0955"
     },
     {
         "code": "650100",
         "name": "乌鲁木齐市",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0991"
     },
     {
         "code": "650200",
         "name": "克拉玛依市",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0990"
     },
     {
         "code": "650400",
         "name": "吐鲁番市",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0995"
     },
     {
         "code": "650500",
         "name": "哈密市",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0902"
     },
     {
         "code": "652300",
         "name": "昌吉回族自治州",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0994"
     },
     {
         "code": "652700",
         "name": "博尔塔拉蒙古自治州",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0909"
     },
     {
         "code": "652800",
         "name": "巴音郭楞蒙古自治州",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0996"
     },
     {
         "code": "652900",
         "name": "阿克苏地区",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0997"
     },
     {
         "code": "653000",
         "name": "克孜勒苏柯尔克孜自治州",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0908"
     },
     {
         "code": "653100",
         "name": "喀什地区",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0998"
     },
     {
         "code": "653200",
         "name": "和田地区",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0903"
     },
     {
         "code": "654000",
         "name": "伊犁哈萨克自治州",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0999"
     },
     {
         "code": "654200",
         "name": "塔城地区",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0901"
     },
     {
         "code": "654300",
         "name": "阿勒泰地区",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0906"
     },
     {
         "code": "659001",
         "name": "石河子市",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0993"
     },
     {
         "code": "659002",
         "name": "阿拉尔市",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0997"
     },
     {
         "code": "659003",
         "name": "图木舒克市",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0998"
     },
     {
         "code": "659004",
         "name": "五家渠市",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0994"
     },
     {
         "code": "659006",
         "name": "铁门关市",
-        "parent_code": "650000"
+        "parent_code": "650000",
+        "section_code": "0996"
     }
 ]
