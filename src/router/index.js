@@ -19,6 +19,7 @@ import BoughtHistoryList from '@/components/settings/BoughtHistory'
 import ReportProfit from '@/components/reports/Profits'
 import ReportLossAnalysis from '@/components/reports/LossAnalysis'
 import BuyerReport from '@/components/reports/BuyerReport'
+import Update from '@/components/Update'
 
 Vue.use(Router)
 
@@ -126,6 +127,11 @@ export default new Router({
       path: '/logout',
       name: 'logout',
       component: Logout
+    },
+    {
+      path: '/update',
+      name: 'update',
+      component: Update
     }
   ]
 })
