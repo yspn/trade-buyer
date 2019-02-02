@@ -47,7 +47,7 @@ export default {
       return new Promise((resolve, reject) => {
         this.apiItem = {
           apiHost: '',
-          apiService: 'trades',
+          apiService: 'trade',
           apiAction: 'rescue',
           apiQuery: {}
         }
