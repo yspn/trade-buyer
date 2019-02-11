@@ -1,0 +1,12 @@
+{
+  "stable": {
+    "version": "2.1.2",
+    "version_name": "v2.1.2 build 201901170001",
+    "file_url": "http://dingdan.tao11.la/download/v2.1.2.build20190117001.crx"
+  },
+  "develop": {
+    "version": "2.1.2",
+    "version_name": "v2.1.2 build 201901170001",
+    "file_url": "http://dingdan.tao11.la/download/v2.1.2.build20190117001.crx"
+  }
+}

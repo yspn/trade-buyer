@@ -1,6 +1,6 @@
 let host = '192.168.99.1:3000'
 host = 'localhost:3000'
-// host = 'read-trade.wgkyz.com'
+host = 'read-trade.wgkyz.com'
 // host = 'apibus.tao11.la'
 const initAPIData = {
   token: '',
