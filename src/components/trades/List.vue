@@ -105,6 +105,7 @@
                     <p><b>
                       {{detailedItem.receiver_name}}
                       ({{detailedItem.receiver_mobile}}<span v-if="detailedItem.receiver_phone"> {{detailedItem.receiver_phone}}</span>)
+                      <Button type="text" @click="editReceiverMobile=true;editReceiverMobileModel.receiverMobile=detailedItem.receiver_mobile;editReceiverMobileModel.receiverPhone=detailedItem.receiver_phone;" size="small">改电话</Button>
                       </b>
                     </p>
                     <p style="max-width: 480px; margin: 0 auto;">
@@ -115,6 +116,25 @@
                       {{detailedItem.receiver_address}}
                       <Button type="text" @click="detailedItem.receiver_address_sync=false" size="small">更新</Button>
                     </p>
+                    <Modal
+                      v-model="editReceiverMobile"
+                      title="修改收货人电话"
+                      :mask-closable="true"
+                      :transfer="true">
+                      <Form ref="editReceiverMobileForm" :model="editReceiverMobileModel" :label-width="80">
+                        <FormItem label="手机号码" prop="receiverMobile" :rules="[{validator: editReceiverMobileValidator, trigger: 'blur'}]">
+                          <Input v-model="editReceiverMobileModel.receiverMobile" placeholder="手机号码"></Input>
+                        </FormItem>
+                        <FormItem label="固话号码" prop="receiverPhone" :rules="[{validator: editReceiverMobileValidator, trigger: 'blur'}]">
+                          <Input v-model="editReceiverMobileModel.receiverPhone" placeholder="固话号码"></Input>
+                        </FormItem>
+                      </Form>
+                      <div class="">手机或固话二者必填其中之一</div>
+                      <div slot="footer">
+                        <Button type="error" size="large" @click="editReceiverMobile=false">取消</Button>
+                        <Button type="success" size="large" @click="submitEditReceiverMobile">提交</Button>
+                      </div>
+                    </Modal>
                   </td>
                 </tr>
                 <tr>
@@ -519,6 +539,11 @@ export default {
         buyerPostFee: [
           { type: 'number', required: true, message: '下单邮费不能为空', trigger: 'blur' }
         ]
+      },
+      editReceiverMobile: false,
+      editReceiverMobileModel: {
+        receiverMobile: '',
+        receiverPhone: ''
       }
     }
   },
@@ -1833,7 +1858,7 @@ export default {
               apiQuery: {}
             }
             this.apiData = {
-              tradeid: this.detailedItem._id,
+              tradeid: this.detailedItem._id || this.detailedItem.id,
               tid: this.detailedItem.tid_str,
               oid: sub.oid_str,
               session: this.$store.getters.session,
@@ -1848,7 +1873,7 @@ export default {
                 this.$Message.error('解除订单关联失败！(' + respBody.message + ')')
               } else {
                 let trade = this.data.filter((item) => { // this.data
-                  return item._id === this.detailedItem._id
+                  return item._id === this.detailedItem._id || this.detailedItem.id
                 })[0]
                 let dismissModel = {
                   oid: sub.oid_str,
@@ -1915,7 +1940,7 @@ export default {
             apiQuery: {}
           }
           this.apiData = {
-            tradeid: this.detailedItem._id,
+            tradeid: this.detailedItem._id || this.detailedItem.id,
             session: this.$store.getters.session,
             reason: this.resignModel.reason,
             reason_other: this.resignModel.other
@@ -1928,7 +1953,7 @@ export default {
               this.$Message.error('退回订单失败！(' + respBody.message + ')')
             } else {
               let trade = this.data.filter((item) => { // this.data
-                return item._id === this.detailedItem._id
+                return item._id === this.detailedItem._id || this.detailedItem.id
               })[0]
               let resignModel = {
                 reason: this.resignModel.reason,
@@ -2040,7 +2065,7 @@ export default {
             apiQuery: {}
           }
           this.apiData = {
-            tradeid: this.detailedItem._id,
+            tradeid: this.detailedItem._id || this.detailedItem.id,
             buyerid: this.assignModel.buyerid
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
@@ -2051,7 +2076,7 @@ export default {
               this.$Message.error('分配订单失败！(' + respBody.message + ')')
             } else {
               let trade = this.data.filter((item) => { // this.data
-                return item._id === this.detailedItem._id
+                return item._id === this.detailedItem._id || this.detailedItem.id
               })[0]
               let assignbuyerModel = {
                 buyerid: this.assignModel.buyerid,
@@ -2153,7 +2178,7 @@ export default {
           this.buyingItem = sub
           let numiid = sub.num_iid
           if (!this.detailedItem.receiver_address_sync) {
-            await this.getReceiverAddress(this.detailedItem._id, this.detailedItem.tid_str, this.detailedItem.seller_nick)
+            await this.getReceiverAddress(this.detailedItem._id || this.detailedItem.id, this.detailedItem.tid_str, this.detailedItem.seller_nick)
               .catch(err => {
                 this.$Message.error('获取收货人信息错误!' + err)
                 return false
@@ -2516,7 +2541,7 @@ export default {
         this.$store.dispatch('setOrderInfo', orderInfo)
         // console.log(this.$store.getters.tbCookies)
         this.joinModel = {
-          tradeid: this.detailedItem._id,
+          tradeid: this.detailedItem._id || this.detailedItem.id,
           tid: this.detailedItem.tid_str,
           oid: sub.oid_str,
           buyer: this.$store.getters.tbNick,
@@ -3041,6 +3066,56 @@ export default {
             this.spinShow = false
           })
       }
+    },
+    editReceiverMobileValidator (rule, value, callback) {
+      if (!this.editReceiverMobileModel.receiverMobile && !this.editReceiverMobileModel.receiverPhone) {
+        return callback(new Error('手机或固话必填其一'))
+      } else {
+        callback()
+      }
+    },
+    async submitEditReceiverMobile () {
+      this.$refs['editReceiverMobileForm'].validate(async (valid) => {
+        if (valid) {
+          this.apiItem = {
+            apiHost: '',
+            apiService: 'trades',
+            apiAction: 'editaddress',
+            apiQuery: {}
+          }
+          this.apiData = {
+            tradeid: this.detailedItem._id || this.detailedItem.id,
+            receiver_mobile: this.editReceiverMobileModel.receiverMobile,
+            receiver_phone: this.editReceiverMobileModel.receiverPhone,
+            receiver_address: this.detailedItem.receiver_address,
+            receiver_city: this.detailedItem.receiver_city,
+            receiver_district: this.detailedItem.receiver_district,
+            receiver_name: this.detailedItem.receiver_name,
+            receiver_state: this.detailedItem.receiver_state,
+            receiver_town: this.detailedItem.receiver_town,
+            receiver_zip: this.detailedItem.receiver_zip
+          }
+          this.$store.dispatch('setAPIStore', this.apiItem)
+          var apiUrl = this.$store.getters.apiUrl
+          await this.$http.post(apiUrl, this.apiData).then(response => {
+            var respBody = response.data
+            if (respBody.status === 'fail') {
+              this.$Message.error('修改收货电话失败！(' + respBody.message + ')')
+            } else {
+              Object.assign(this.detailedItem, respBody.data)
+              this.$store.dispatch('setAPILastResponse', respBody)
+              this.$Message.success('修改收货电话成功！')
+              this.editReceiverMobile = false
+            }
+          }).catch(err => {
+            // console.log(err)
+            this.$store.dispatch('setAPILastResponse', err)
+            this.$Message.error('修改收货电话失败！(' + err + ')')
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
+      })
     }
   }
 }

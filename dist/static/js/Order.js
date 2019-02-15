@@ -22,6 +22,7 @@ window.onload = () => {
 
 $(document).ready(function () {
   window.chrome.storage.local.get('one_key_order', function (store) {
+    console.log(store)
     oneKeyOrderInstance = store.one_key_order
     $('.order-item').each(function (orderIndex) {
       var cur = $(this)
@@ -31,6 +32,7 @@ $(document).ready(function () {
       }
     })
     window.setTimeout(function () {
+      console.log(orderInfo, oneKeyOrderInstance)
       buyerOrder = getOrdersFeesOnload(orderInfo)
       window.chrome.runtime.sendMessage({ cmd: 'set_orderbought_temp', value: buyerOrder }, (response) => {
         if (response !== 'ok') {
