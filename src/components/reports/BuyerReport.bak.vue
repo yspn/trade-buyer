@@ -46,7 +46,7 @@ export default {
         // { type: 'selection', width: 70, align: 'center' },
         {
           title: '订单编号',
-          key: 'tid',
+          key: 'tid_str',
           width: 180,
           ellipsis: true,
           sortable: true,
@@ -59,13 +59,14 @@ export default {
                   this.$router.push({path: '/trades'})
                 }
               }
-            }, params.row.tid)
+            }, params.row.tid_str)
           }
         },
         {
           title: '店铺',
-          key: 'sellerNick',
+          key: 'shop',
           width: 160,
+          subKey: 'name',
           ellipsis: true,
           filters: this.shopList.map((item) => {
             return {
@@ -81,28 +82,28 @@ export default {
             this.filterShop = value
           },
           render: (h, params) => {
-            return h('span', {}, params.row.sellerNick)
+            return h('span', {}, params.row.shop.name)
           }
         },
         { title: '下单单号',
-          key: 'orderNumber',
+          key: 'ordered_order_number',
           ellipsis: false,
           render: (h, params) => {
-            return h('span', {}, params.row.orderNumber)
+            return h('span', {}, this.getOrderNumbers(params.row.ordered_temp))
           }
         },
         { title: '买手',
-          key: 'lastAssignBuyerName',
+          key: 'ordered_name',
           ellipsis: false,
           render: (h, params) => {
-            return h('span', {}, params.row.lastAssignBuyerName)
+            return h('span', {}, this.getOrderBuyers(params.row.ordered_temp))
           }
         },
         { title: '买家号',
-          key: 'buyerNick',
+          key: 'ordered_buyer_nick',
           ellipsis: false,
           render: (h, params) => {
-            return h('span', {}, params.row.buyerNick)
+            return h('span', {}, this.getOrderBuyerNicks(params.row.ordered_temp))
           }
         },
         { title: '收入',
@@ -110,15 +111,15 @@ export default {
           key: 'payment',
           ellipsis: true,
           render: (h, params) => {
-            return h('span', {}, parseFloat(params.row.payment).toLocaleString())
+            return h('span', {}, params.row.payment.toLocaleString())
           }
         },
         { title: '支出',
-          key: 'orderedPaymentTotal',
+          key: 'ordered_sum',
           width: 120,
           ellipsis: true,
           render: (h, params) => {
-            return h('span', {}, parseFloat(params.row.orderedPaymentTotal).toLocaleString())
+            return h('span', {}, (params.row.ordered_sum / 100).toLocaleString())
           }
         },
         { title: '利润',
@@ -127,20 +128,20 @@ export default {
           ellipsis: true,
           sortable: 'custom',
           render: (h, params) => {
-            return h('span', {style: {color: params.row.profit > 0 ? 'forestgreen' : 'red'}}, params.row.profit.toLocaleString())
+            return h('span', {style: {color: params.row.profit > 0 ? 'forestgreen' : 'red'}}, (Math.round(params.row.profit) / 100).toLocaleString())
           }
         },
         { title: '利润率',
-          key: 'profitRatio',
+          key: 'profit_ratio',
           width: 120,
           ellipsis: true,
           sortable: 'custom',
           render: (h, params) => {
-            return h('span', {style: {color: params.row.profit > 0 ? 'forestgreen' : 'red'}}, params.row.profitRatio)
+            return h('span', {style: {color: params.row.profit > 0 ? 'forestgreen' : 'red'}}, Math.round(params.row.profit_ratio * 10000) / 100 + '%')
           }
         },
         { title: '下单时间',
-          key: 'lastorderTime',
+          key: 'lastorder_time',
           width: 180,
           ellipsis: true,
           sortable: 'custom',
@@ -152,7 +153,7 @@ export default {
             }
           },
           render: (h, params) => {
-            return h('span', {}, params.row.lastorderTime)
+            return h('span', {}, new Date(params.row.lastorder_time).Format('yyyy-MM-dd hh:mm:ss'))
           }
         }
       ],
@@ -206,27 +207,27 @@ export default {
       })()
     }
     // 很重要 必须写，判断浏览器是否支持websocket
-    // let CreateWebSocket = (function () {
-    //   return function (urlValue) {
-    //     if (window.WebSocket) { return new WebSocket(urlValue) }
-    //     if (window.MozWebSocket) { return new window.MozWebSocket(urlValue) }
-    //     return false
-    //   }
-    // })()
+    let CreateWebSocket = (function () {
+      return function (urlValue) {
+        if (window.WebSocket) { return new WebSocket(urlValue) }
+        if (window.MozWebSocket) { return new window.MozWebSocket(urlValue) }
+        return false
+      }
+    })()
     // 实例化websoscket websocket有两种协议ws(不加密)和wss(加密)
-    // this.webSocket = CreateWebSocket('ws://127.0.0.1:3050/buyerreport')
-    // this.webSocket.onopen = function (evt) {
-    //   // 连接成功
-    //   console.log('Connection opened.')
-    // }
-    // this.webSocket.onmessage = function (evt) {
-    //   // 这是服务端返回的数据
-    //   console.log('服务端说' + evt.data)
-    // }
-    // // 关闭连接
-    // this.webSocket.onclose = function (evt) {
-    //   console.log('Connection closed.')
-    // }
+    this.webSocket = CreateWebSocket('ws://127.0.0.1:3050/buyerreport')
+    this.webSocket.onopen = function (evt) {
+      // 连接成功
+      console.log('Connection opened.')
+    }
+    this.webSocket.onmessage = function (evt) {
+      // 这是服务端返回的数据
+      console.log('服务端说' + evt.data)
+    }
+    // 关闭连接
+    this.webSocket.onclose = function (evt) {
+      console.log('Connection closed.')
+    }
   },
   watch: {
     'data': async function (newVal) {
@@ -365,7 +366,7 @@ export default {
             // this.pageSize = 10
             // this.pageCurrent = 1
             this.totalCount = respBody.data.total_count
-            resolve(respBody.data.datalist)
+            resolve(respBody.data)
           }
         }).catch(err => {
           this.$store.dispatch('setAPILastResponse', err)
@@ -462,8 +463,8 @@ export default {
               this.$store.dispatch('setAPILastResponse', respBody)
               this.taskTraceId = null
               this.tracing = false
-              window.open(respBody.data.url.replace('-internal', ''))
-              resolve(respBody.data.url.replace('-internal', ''))
+              window.open(respBody.data.url)
+              resolve(respBody.data.url)
             } else {
               await sleepES6(3000)
               return this.traceTask()
@@ -560,16 +561,16 @@ export default {
         columns: this.columns,
         data: this.data.map((item, index, ori) => {
           return {
-            tid: '\t' + item.tid + '\t',
-            sellerNick: item.sellerNick,
-            orderNumber: '\t' + item.orderNumber + '\t',
-            lastAssignBuyerName: item.lastAssignBuyerName,
-            buyerNick: item.buyerNick,
+            tid_str: '\t' + item.tid_str + '\t',
+            shop: item.shop.name,
+            ordered_order_number: '\t' + this.getOrderNumbers(item.ordered_temp) + '\t',
+            ordered_name: this.getOrderBuyers(item.ordered_temp),
+            ordered_buyer_nick: this.getOrderBuyerNicks(item.ordered_temp),
             payment: item.payment,
-            orderedPaymentTotal: item.orderedPaymentTotal,
-            profit: item.profit,
-            profitRatio: item.profitRatio,
-            lastorderTime: item.lastorderTime
+            ordered_sum: item.ordered_sum / 100,
+            profit: item.profit / 100,
+            profit_ratio: item.profit_ratio,
+            lastorder_time: new Date(item.lastorder_time).Format('yyyy-MM-dd hh:mm:ss')
           }
         })
       })

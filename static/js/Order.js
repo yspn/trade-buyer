@@ -35,6 +35,7 @@ $(document).ready(function () {
       window.chrome.runtime.sendMessage({ cmd: 'set_orderbought_temp', value: buyerOrder }, (response) => {
         if (response !== 'ok') {
           window.setTimeout(function () {
+            buyerOrder = getOrdersFeesOnload(orderInfo)
             window.chrome.runtime.sendMessage({ cmd: 'set_orderbought_temp', value: buyerOrder })
           }, 2000)
           alert('选品信息暂存失败！请刷新本页面。')
@@ -50,6 +51,7 @@ $(document).ready(function () {
         window.chrome.runtime.sendMessage({ cmd: 'set_orderbought_temp', value: buyerOrder }, (response) => {
           if (response !== 'ok') {
             window.setTimeout(function () {
+              buyerOrder = getOrdersFees(orderInfo)
               window.chrome.runtime.sendMessage({ cmd: 'set_orderbought_temp', value: buyerOrder })
             }, 2000)
             alert('选品信息暂存失败！请刷新本页面。')
