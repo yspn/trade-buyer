@@ -702,7 +702,8 @@ export default {
           }
           this.$set(trade, 'ordered', trade.ordered)
           this.$set(trade, 'order_status', finalStatus)
-          this.detailedItem = trade
+          Object.assign(this.detailedItem, trade)
+          // this.detailedItem = trade
           this.$emit('on-addorderbuyermessage', this.$store.getters.orderBought.buyerTid) // 写入订单留言
           let memo = trade.seller_memo ? trade.seller_memo + ':' + this.$store.getters.orderInfo.tid : this.$store.getters.orderInfo.sellernick + ':' + this.$store.getters.orderInfo.tid
           this.$emit('on-addordermemo', this.$store.getters.orderBought.buyerTid, memo) // 原始订单 sellernick：tid
@@ -2311,7 +2312,7 @@ export default {
           this.$emit('on-insertnewaddress', receiverModel)
           let orderInfo = {
             numiid: numiid,
-            tradeid: this.detailedItem._id,
+            tradeid: this.detailedItem._id || this.detailedItem.id,
             tid: this.detailedItem.tid_str,
             oid: sub.oid_str,
             sellernick: this.detailedItem.seller_nick,
@@ -2504,7 +2505,7 @@ export default {
         let numiid = sub.num_iid
         let orderInfo = {
           numiid: numiid,
-          tradeid: this.detailedItem._id,
+          tradeid: this.detailedItem._id || this.detailedItem.id,
           tid: this.detailedItem.tid_str,
           oid: sub.oid_str,
           sellernick: this.detailedItem.seller_nick,

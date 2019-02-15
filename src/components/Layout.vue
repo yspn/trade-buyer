@@ -840,7 +840,8 @@ export default {
           //   window.chrome.storage.local.set({'transLinkDetailedHistory': []})
           // })
         }
-      }, {urls: ['*://buy.taobao.com/auction/buy_now.jhtml*', '*://buy.tmall.com/auction/confirm_order.htm*', '*://buy.taobao.com/auction/confirm_order.htm*', '*://buy.taobao.com/auction/confirmOrder.htm*']}, ['responseHeaders'])
+        // '*://buy.taobao.com/auction/buy_now.jhtml*',
+      }, {urls: ['*://buy.tmall.com/auction/confirm_order.htm*', '*://buy.taobao.com/auction/confirm_order.htm*', '*://buy.taobao.com/auction/confirmOrder.htm*']}, ['responseHeaders'])
     },
     listenOneKeyOrderSuccess (request, sender, sendResponse) {
       if (request.cmd === 'get_onekey_order_success') {
