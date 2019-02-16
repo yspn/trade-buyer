@@ -2785,7 +2785,7 @@ export default {
                   await this.traceOrderedTask(respBody.data.taskTraceId).then((resTrade) => {
                     // this.detailedItem = null
                     // this.detailed = false
-                    // this.refreshList()
+                    this.refreshList()
                     // this.getAssignableTrades()
                     resolve(resTrade)
                   }).catch(err => {
