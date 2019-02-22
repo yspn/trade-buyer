@@ -48,13 +48,14 @@ export default {
         this.apiItem = {
           apiHost: '',
           apiService: 'sys',
-          apiAction: 'syncstatbulk',
+          apiAction: 'syncstatbatch',  // syncstatbulk,syncstatbatch
           apiQuery: {}
         }
         this.apiData = {
           page: page,
           pagesize: this.pageSize,
-          last_id: this.lastId
+          last_id: this.lastId,
+          query: this.query
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
         var apiUrl = this.$store.getters.apiUrl
