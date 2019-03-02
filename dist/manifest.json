@@ -2,7 +2,7 @@
   "name": "一键下单2.0(alpha)",
   "manifest_version": 2,
   "version": "2.1.2",
-  "version_name": "v2.1.2 build 201902160001",
+  "version_name": "v2.1.2 build 201903020001",
   "description": "淘宝店群一键下单插件",
   "icons": {
     "16": "./static/logo.png",

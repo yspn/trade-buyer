@@ -5,6 +5,7 @@
     lastId:<Input v-model="lastId"></Input>
     pageSize:<Input v-model="pageSize"></Input>
     page:<Input v-model="pageIdx"></Input>
+    query:<Input v-model="query"></Input>
     <Input v-model="result" type="textarea" :autosize="{minRows: 8}"></Input>
   </div>
 </template>
@@ -18,7 +19,8 @@ export default {
       curPage: 1,
       pageSize: 1000,
       pageIdx: 1,
-      lastId: ''
+      lastId: '',
+      query: ''
     }
   },
   methods: {
@@ -48,14 +50,14 @@ export default {
         this.apiItem = {
           apiHost: '',
           apiService: 'sys',
-          apiAction: 'syncstatbatch',  // syncstatbulk,syncstatbatch
+          apiAction: 'syncstatbatch', // syncstatbulk,syncstatbatch
           apiQuery: {}
         }
         this.apiData = {
           page: page,
           pagesize: this.pageSize,
           last_id: this.lastId,
-          query: this.query
+          query: this.query ? JSON.parse(this.query) : {}
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
         var apiUrl = this.$store.getters.apiUrl

@@ -2767,36 +2767,40 @@ export default {
             num_iid: this.$store.getters.orderInfo.numiid,
             tradeid: bought.tradeid,
             oid_str: bought.oid,
-            orderBought: bought,
-            session: this.$store.getters.session
+            orderBought: {
+              num: bought.num,
+              buyer: bought.buyer,
+              buyerTid: bought.buyerTid,
+              buyerFee: bought.buyerFee,
+              buyUrl: getQueryString('id', bought.buyUrl),
+              buyerPostFee: bought.buyerPostFee
+            }
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
           var apiUrl = this.$store.getters.apiUrl
-          await this.$http.post(apiUrl, this.apiData)
-            .then(async (response) => {
-              var respBody = response.data
-              if (respBody.status === 'fail') {
-                reject(new Error(respBody.message))
+          await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+            var respBody = response.data
+            if (respBody.status === 'fail') {
+              reject(new Error(respBody.message))
+            } else {
+              this.$store.dispatch('setAPILastResponse', respBody)
+              if (!respBody.data.suc || !respBody.data.taskTraceId) {
+                reject(new Error('关联订单失败！'))
               } else {
-                this.$store.dispatch('setAPILastResponse', respBody)
-                if (!respBody.data.suc || !respBody.data.taskTraceId) {
-                  reject(new Error('关联订单失败！'))
-                } else {
-                  await this.traceOrderedTask(respBody.data.taskTraceId).then((resTrade) => {
-                    // this.detailedItem = null
-                    // this.detailed = false
-                    this.refreshList()
-                    // this.getAssignableTrades()
-                    resolve(resTrade)
-                  }).catch(err => {
-                    reject(new Error('关联订单失败！(' + err.message + ')'))
-                  })
-                }
+                await this.traceOrderedTask(respBody.data.taskTraceId).then((resTrade) => {
+                  // this.detailedItem = null
+                  // this.detailed = false
+                  this.refreshList()
+                  // this.getAssignableTrades()
+                  resolve(resTrade)
+                }).catch(err => {
+                  reject(new Error('关联订单失败！(' + err.message + ')'))
+                })
               }
-            })
-            .catch(err => {
-              reject(err)
-            })
+            }
+          }).catch(err => {
+            reject(err)
+          })
         } else {
           reject(new Error('订单信息异常，请刷新列表重试一次！'))
         }
@@ -2830,7 +2834,7 @@ export default {
               }
             }).catch(() => {
               // console.log('repeatFn failed')
-              repeatTimeout = setTimeout(repeatFn, 500)
+              repeatTimeout = setTimeout(repeatFn, 300)
             })
           }
           repeatFn()
