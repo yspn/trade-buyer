@@ -11,8 +11,8 @@
       </div>
       <Button-group>
         <Button type="ghost" icon="android-sync" @click="syncShopModal" v-if="$store.getters.user.role==='boss'">同步店铺</Button>
-        <Button type="ghost" icon="gear-a" @click="translinkModal=true" v-if="$store.getters.user.role==='boss'">转链设置</Button>
-        <Button type="ghost" icon="document" @click="newModal=true" v-if="$store.getters.user.role==='boss'">新增</Button>
+        <Button type="ghost" icon="gear-a" @click="translinkModal=true" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">转链设置</Button>
+        <Button type="ghost" icon="document" @click="newModal=true" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">新增</Button>
         <Button type="ghost" icon="ios-refresh-empty" @click="refreshList">刷新</Button>
       </Button-group>
     </div>

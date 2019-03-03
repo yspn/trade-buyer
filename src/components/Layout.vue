@@ -72,7 +72,13 @@
                     <dt><Icon type="ios-unlocked-outline"></Icon> 角色</dt>
                     <dd>{{$store.getters.user.role}}</dd>
                     <dt><Icon type="ios-color-filter-outline"></Icon> 店群</dt>
-                    <dd>{{$store.getters.user.group}}</dd>
+                    <dd v-if="$store.getters.user.role==='god'">
+                      <Input v-model="godGroup" size="small" style="width:50px;"></Input>
+                      <Button type="ghost" size="small" @click="switchGroup">更改</Button>
+                    </dd>
+                    <dd v-else>
+                      {{$store.getters.user.group}}
+                    </dd>
                     <dt><Icon type="social-tumblr-outline"></Icon> 淘宝账号</dt>
                     <dd>{{currentTBNick}}</dd>
                   </dl>
@@ -188,7 +194,8 @@ export default {
       addressList: [],
       searchByTid: '',
       currentTBNick: '',
-      checkTBConnectionTask: null
+      checkTBConnectionTask: null,
+      godGroup: 0
     }
   },
   watch: {
@@ -220,6 +227,7 @@ export default {
   },
   async created () {
     await this.checkAuth().then(() => {
+      this.godGroup = this.$store.getters.user.group
       this.getLocalUrl()
       if (this.$store.getters.sysIsExtension) {
         this.getTBCookies(() => {
@@ -379,6 +387,30 @@ export default {
           this.$Message.error('身份验证失败，请重试。')
           reject(new Error('身份验证失败，请重试。'))
         }
+      })
+    },
+    switchGroup () {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'users',
+        apiAction: 'switchgroup',
+        apiQuery: {}
+      }
+      this.apiData = {
+        group: parseInt(this.godGroup)
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      this.$http.post(apiUrl, this.apiData).then(response => {
+        var respBody = response.data
+        if (respBody.status === 'fail') {
+          this.$Message.error(respBody.message)
+        } else {
+          this.$Message.error('修改成功!')
+          window.location.reload()
+        }
+      }).catch(err => {
+        this.$Message.error('获取商品转链失败！(' + err + ')')
       })
     },
     md5Encode (text) {

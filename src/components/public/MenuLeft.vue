@@ -6,10 +6,10 @@
         数据统计
       </template>
       <MenuItem name="1-1">我的数据</MenuItem>
-      <MenuItem name="1-2" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">监控中心</MenuItem>
-      <MenuItem name="1-3" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">利润报表</MenuItem>
-      <MenuItem name="1-4" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">盈亏分析</MenuItem>
-      <MenuItem name="1-5" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">买手报表</MenuItem>
+      <MenuItem name="1-2" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">监控中心</MenuItem>
+      <MenuItem name="1-3" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">利润报表</MenuItem>
+      <MenuItem name="1-4" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">盈亏分析</MenuItem>
+      <MenuItem name="1-5" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">买手报表</MenuItem>
     </Submenu>
     <Submenu name="2">
       <template slot="title">
@@ -29,12 +29,12 @@
         系统设置
       </template>
       <MenuItem name="3-1">个人设置</MenuItem>
-      <MenuItem name="3-3" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">买手设置</MenuItem>
-      <MenuItem name="3-5" v-if="$store.getters.user.role==='boss'">店铺设置</MenuItem>
-      <MenuItem name="3-6" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">店铺黑名单</MenuItem>
-      <MenuItem name="3-7" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">历史下单管理</MenuItem>
-      <MenuItem name="3-8" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1">代发商品</MenuItem>
-      <MenuItem name="3-4" v-if="$store.getters.user.role==='boss'">导入订单</MenuItem>
+      <MenuItem name="3-3" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">买手设置</MenuItem>
+      <MenuItem name="3-5" v-if="['god', 'boss'].indexOf($store.getters.user.role) > -1">店铺设置</MenuItem>
+      <MenuItem name="3-6" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">店铺黑名单</MenuItem>
+      <MenuItem name="3-7" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">历史下单管理</MenuItem>
+      <MenuItem name="3-8" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">代发商品</MenuItem>
+      <MenuItem name="3-4" v-if="['god', 'boss'].indexOf($store.getters.user.role) > -1">导入订单</MenuItem>
       <MenuItem name="3-2">退出登陆</MenuItem>
     </Submenu>
   </Menu>

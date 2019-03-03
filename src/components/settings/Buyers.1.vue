@@ -10,7 +10,7 @@
         <Button type="ghost" icon="ios-search" @click="searchRemote"></Button>
       </div>
       <Button-group>
-        <Button type="ghost" icon="document" @click="newModal=true" v-if="$store.getters.user.role==='boss'">新增</Button>
+        <Button type="ghost" icon="document" @click="newModal=true" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">新增</Button>
         <Button type="ghost" icon="ios-refresh-empty" @click="refreshList">刷新</Button>
       </Button-group>
     </div>
@@ -288,7 +288,7 @@ export default {
           fixed: 'right',
           width: 180,
           render: (h, params) => {
-            if (['boss'].indexOf(this.$store.getters.user.role) > -1) {
+            if (['god', 'boss'].indexOf(this.$store.getters.user.role) > -1) {
               return h('Button-group', [
                 h('Button', {
                   props: {

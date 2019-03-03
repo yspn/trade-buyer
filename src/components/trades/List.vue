@@ -3,7 +3,7 @@
     <div class="box-tools pull-left">
       <template v-if="$route.params.status==='ASSIGNED'">
         <!-- <Button type="warning" @click="assignBatch" :disabled="checkAssignBatchDisabled">取单</Button> -->
-        <Button type="warning" @click="assignBatch" :disabled="checkAssignBatchDisabled" v-if="$store.getters.user.role!=='boss'">取单</Button>
+        <Button type="warning" @click="assignBatch" :disabled="checkAssignBatchDisabled" v-if="['god', 'boss'].indexOf($store.getters.user.role)<0">取单</Button>
         <span class="assignable-total">({{assignableTradesTotal}}个订单待取)</span>
         <Button type="text" @click="getAssignableTrades">刷新</Button>
       </template>
@@ -188,9 +188,9 @@
                       </p>
                     </td>
                     <td v-if="['service'].indexOf($store.getters.user.role) < 0">
-                      <Button size="large" type="warning" @click.prevent.stop="goJoin(item)" v-if="!item.is_daixiao && (getSubOrderStatus(item).text === '待下单' || getSubOrderStatus(item).text === '已退单') && ['boss', 'manager'].indexOf($store.getters.user.role) > -1 && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1">关联订单</Button>
+                      <Button size="large" type="warning" @click.prevent.stop="goJoin(item)" v-if="!item.is_daixiao && (getSubOrderStatus(item).text === '待下单' || getSubOrderStatus(item).text === '已退单') && ['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1 && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1">关联订单</Button>
                       <Button size="large" type="success" @click.prevent.stop="goBuying(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '待下单' && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1 ">去下单</Button>
-                      <Button size="large" type="success" @click.prevent.stop="goBuying(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已退单' && ['boss', 'manager'].indexOf($store.getters.user.role) > -1 && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1">去下单</Button>
+                      <Button size="large" type="success" @click.prevent.stop="goBuying(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已退单' && ['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1 && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1">去下单</Button>
                       <Button size="large" type="error" @click.prevent.stop="goDismiss(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已下单'">撤销关联</Button>
                     </td>
                     <td v-else></td>
@@ -198,7 +198,7 @@
                   <tr v-if="['service'].indexOf($store.getters.user.role) < 0 && ((item.history_purchase && item.history_purchase.length) || item.outer_iid ||
                             (getSubOrderStatus(item).text === '待下单' ||
                             (getSubOrderStatus(item).text === '已退单' &&
-                            ['boss', 'manager'].indexOf($store.getters.user.role) > -1)))" class="history-purchase">
+                            ['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1)))" class="history-purchase">
                     <td>
                       历史下单
                     </td>
@@ -247,7 +247,7 @@
         </Tabs>
       </div>
       <div slot="footer">
-        <Button size="large" type="warning" @click="assignModal=true" v-if="['boss', 'manager'].indexOf($store.getters.user.role) > -1&&['UNASSIGNED', 'RESIGNED', 'ASSIGNED'].indexOf(detailedItem.order_status) >= 0">分配给...</Button>
+        <Button size="large" type="warning" @click="assignModal=true" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1&&['UNASSIGNED', 'RESIGNED', 'ASSIGNED'].indexOf(detailedItem.order_status) >= 0">分配给...</Button>
         <Button size="large" type="error" @click="goResign" v-if="['service'].indexOf($store.getters.user.role) < 0 && ['ORDERED', 'PARTLY_ORDERED', 'RESIGNED', 'PARTLY_FINISHED', 'FINISHED'].indexOf(detailedItem.order_status) < 0">退单</Button>
         <Button size="large" type="default" @click="setMemoModal">订单备注</Button>
         <Button size="large" @click="closeDetailed">关闭</Button>
@@ -1838,7 +1838,7 @@ export default {
     },
     orderClick (item) {
       let itemText = this.getSubOrderStatus(item).text
-      if (!item.is_daixiao && item.refund_status === 'NO_REFUND' && (itemText === '待下单' || (itemText === '已退单' && this.$store.getters.user.role === 'boss'))) {
+      if (!item.is_daixiao && item.refund_status === 'NO_REFUND' && (itemText === '待下单' || (itemText === '已退单' && ['god', 'boss'].indexOf(this.$store.getters.user.role) > -1))) {
         this.goBuying(item)
       }
     },
@@ -2355,6 +2355,10 @@ export default {
           this.buyingModal = true
           // 获取转链链接 sub.trans_link
           if (url) {
+            let reg = /^[0-9]+$/ // 检测是否为纯num_iid
+            if (reg.test(url)) {
+              url = 'https://item.taobao.com/item.htm?id=' + url
+            }
             await this.getShopTransLinkByURL(url, this.detailedItem.shop.id).then((link) => {
               if (link) {
                 this.goToItemLink(sub, link)
