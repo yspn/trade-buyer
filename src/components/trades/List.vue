@@ -2772,6 +2772,7 @@ export default {
             tradeid: bought.tradeid,
             oid_str: bought.oid,
             orderBought: {
+              tid: bought.tid,
               num: bought.num,
               buyer: bought.buyer,
               buyerTid: bought.buyerTid,
