@@ -69,7 +69,7 @@
         </li>
       </ul>
     </div>
-    <div class="today-shop-trades" v-if="$store.getters.user.role==='manager'||$store.getters.user.role==='boss'">
+    <div class="today-shop-trades" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role)>-1">
       <div class="today-trade-total">
         <span class="title">今日订单：</span>
         <span class="num">{{todayShopTradeTotal}}</span>
