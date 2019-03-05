@@ -2760,7 +2760,7 @@ export default {
           this.apiItem = {
             apiHost: '',
             apiService: 'trades',
-            apiAction: 'ordered', // success
+            apiAction: 'success', // success, ordered
             apiQuery: {}
           }
           this.apiData = {
@@ -2776,22 +2776,24 @@ export default {
             .then(async (response) => {
               var respBody = response.data
               if (respBody.status === 'fail') {
-                reject(new Error(respBody.message))
+                reject(new Error('关联订单失败！(' + respBody.message + ')'))
               } else {
                 this.$store.dispatch('setAPILastResponse', respBody)
-                if (!respBody.data.suc || !respBody.data.taskTraceId) {
-                  reject(new Error('关联订单失败！'))
-                } else {
-                  await this.traceOrderedTask(respBody.data.taskTraceId).then((resTrade) => {
-                    // this.detailedItem = null
-                    // this.detailed = false
-                    this.refreshList()
-                    // this.getAssignableTrades()
-                    resolve(resTrade)
-                  }).catch(err => {
-                    reject(new Error('关联订单失败！(' + err.message + ')'))
-                  })
-                }
+                // if (!respBody.data.suc || !respBody.data.taskTraceId) {
+                //   reject(new Error('关联订单失败！'))
+                // } else {
+                //   await this.traceOrderedTask(respBody.data.taskTraceId).then((resTrade) => {
+                //     // this.detailedItem = null
+                //     // this.detailed = false
+                //     this.refreshList()
+                //     // this.getAssignableTrades()
+                //     resolve(resTrade)
+                //   }).catch(err => {
+                //     reject(new Error('关联订单失败！(' + err.message + ')'))
+                //   })
+                // }
+                this.refreshList()
+                resolve(respBody.data)
               }
             })
             .catch(err => {
