@@ -2783,30 +2783,6 @@ export default {
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
           var apiUrl = this.$store.getters.apiUrl
-<<<<<<< HEAD
-          await this.$http.post(apiUrl, this.apiData)
-            .then(async (response) => {
-              var respBody = response.data
-              if (respBody.status === 'fail') {
-                reject(new Error('关联订单失败！(' + respBody.message + ')'))
-              } else {
-                this.$store.dispatch('setAPILastResponse', respBody)
-                // if (!respBody.data.suc || !respBody.data.taskTraceId) {
-                //   reject(new Error('关联订单失败！'))
-                // } else {
-                //   await this.traceOrderedTask(respBody.data.taskTraceId).then((resTrade) => {
-                //     // this.detailedItem = null
-                //     // this.detailed = false
-                //     this.refreshList()
-                //     // this.getAssignableTrades()
-                //     resolve(resTrade)
-                //   }).catch(err => {
-                //     reject(new Error('关联订单失败！(' + err.message + ')'))
-                //   })
-                // }
-                this.refreshList()
-                resolve(respBody.data)
-=======
           await this.$http.post(apiUrl, this.apiData).then(async (response) => {
             var respBody = response.data
             if (respBody.status === 'fail') {
@@ -2825,7 +2801,6 @@ export default {
                 }).catch(err => {
                   reject(new Error('关联订单失败！(' + err.message + ')'))
                 })
->>>>>>> 398b0c4096a28c8e5ed224a555f117a038671880
               }
             }
           }).catch(err => {
