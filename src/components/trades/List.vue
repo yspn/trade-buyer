@@ -139,7 +139,23 @@
                 </tr>
                 <tr>
                   <th>买家留言</th>
-                  <td style="font-weight: bold; color: blue" colspan="5">{{detailedItem.buyer_message}}</td>
+                  <td style="font-weight: bold; color: blue" colspan="5">
+                    {{detailedItem.buyer_message}}
+                    <Button type="text" @click="editBuyerMessage=true;editBuyerMessageModel=detailedItem.buyer_message;" size="small">改留言</Button>
+                    <Modal
+                      v-model="editBuyerMessage"
+                      title="修改买家留言"
+                      :mask-closable="true"
+                      :transfer="true">
+                      <Form ref="editBuyerMessageForm">
+                        <Input v-model="editBuyerMessageModel" type="textarea" placeholder="请填写买家留言。内容将自动填入订单留言"></Input>
+                      </Form>
+                      <div slot="footer">
+                        <Button type="error" size="large" @click="editBuyerMessage=false">取消</Button>
+                        <Button type="success" size="large" @click="submitEditBuyerMessage">提交</Button>
+                      </div>
+                    </Modal>
+                  </td>
                 </tr>
                 <tr v-if="detailedItem.seller_memo">
                   <th>订单备注</th>
@@ -544,7 +560,9 @@ export default {
       editReceiverMobileModel: {
         receiverMobile: '',
         receiverPhone: ''
-      }
+      },
+      editBuyerMessage: false,
+      editBuyerMessageModel: ''
     }
   },
   created () {
@@ -3124,6 +3142,35 @@ export default {
         } else {
           this.$Message.error('表单验证失败!')
         }
+      })
+    },
+    async submitEditBuyerMessage () {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'trades',
+        apiAction: 'editbuyermessage',
+        apiQuery: {}
+      }
+      this.apiData = {
+        tradeid: this.detailedItem._id || this.detailedItem.id,
+        buyer_message: this.editBuyerMessageModel
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      await this.$http.post(apiUrl, this.apiData).then(response => {
+        var respBody = response.data
+        if (respBody.status === 'fail') {
+          this.$Message.error('修改买家留言失败！(' + respBody.message + ')')
+        } else {
+          Object.assign(this.detailedItem, respBody.data)
+          this.$store.dispatch('setAPILastResponse', respBody)
+          this.$Message.success('修改买家留言成功！')
+          this.editBuyerMessage = false
+        }
+      }).catch(err => {
+        // console.log(err)
+        this.$store.dispatch('setAPILastResponse', err)
+        this.$Message.error('修改买家留言失败！(' + err + ')')
       })
     }
   }
