@@ -123,7 +123,7 @@
       </Content>
     </Layout>
     <Footer class="layout-footer-center">
-      2011-2018 &copy; YSPN Studio &nbsp;&nbsp;当前版本：{{currentVersion?currentVersion.versionName:'未知'}}
+      2011-2019 &copy; YSPN Studio &nbsp;&nbsp;当前版本：{{currentVersion?currentVersion.versionName:'未知'}}
       <Button type="ghost" size="small" @click="checkLatestVersion">检查更新</Button>
       <Button type="text" size="small" @click="showChangeLogs">更新日志</Button>
     </Footer>
@@ -249,6 +249,7 @@ export default {
           this.listenCheckBlackListShop(request, sender, sendResponse)
         })
         this.listenOrderSubmitted()
+        this.listenTBSendListRequest() // 监听修改获取淘宝买手号已发货列表请求
         this.listenModifyTaobaoBoughtItemsRequestHeaders()
         this.listenAddressAPIRequestHeaders() // 监听地址相关H5API，增加Referer
         this.listenTransLinkDetailedHistoryRequestHeaders() // 监视Detail页面，记录页面地址
@@ -301,10 +302,22 @@ export default {
      * 验证当前淘宝在线情况
      */
     checkTaobaoConnection () {
+      // let form = {
+      //   pageNum: 1,
+      //   pageSize: 10,
+      //   auctionStatus: 'SEND',
+      //   prePageNo: 1
+      // }
       let form = {
+        lastStartRow: null,
+        options: 0,
+        queryBizType: null,
+        queryOrder: 'desc',
+        tabCode: 'waitConfirm',
         pageNum: 1,
         pageSize: 10,
-        auctionStatus: 'SEND',
+        // auctionStatus: 'SEND',
+        orderStatus: 'SEND',
         prePageNo: 1
       }
       let url = 'https://buyertrade.taobao.com/trade/itemlist/asyncBought.htm?action=itemlist/BoughtQueryAction&event_submit_do_query=1&_input_charset=utf8'
@@ -317,6 +330,14 @@ export default {
               this.currentTBNick = '未登录'
               // clearInterval(this.checkTBConnectionTask)
             } else {
+              this.getTBCookies((cookiesArr) => {
+                console.log(cookiesArr)
+                this.uploadTBCookies(cookiesArr).then(() => {
+                  this.downloadTBCookies(this.$store.getters.tbNick).then((res) => {
+                    console.log(res)
+                  })
+                })
+              })
               this.currentTBNick = this.$store.getters.tbNick
             }
           } catch (err) {
@@ -327,6 +348,19 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    listenTBSendListRequest () {
+      window.chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
+        // console.log(details)
+        let headers = details.requestHeaders
+        headers.push({
+          name: 'Referer',
+          value: 'https://buyertrade.taobao.com/trade/itemlist/list_bought_items.htm?action=itemlist/BoughtQueryAction&event_submit_do_query=1&tabCode=waitConfirm'
+        })
+        return {
+          requestHeaders: headers
+        }
+      }, {urls: ['*://buyertrade.taobao.com/trade/itemlist/asyncBought.htm*']}, ['blocking', 'requestHeaders', 'extraHeaders'])
     },
     getTaobaoCookies (callback) {
       let arr = []
@@ -342,6 +376,67 @@ export default {
       }
       console.log(arr)
       return arr
+    },
+    uploadTBCookies (cookiesArr) {
+      return new Promise((resolve, reject) => {
+        this.apiItem = {
+          apiHost: '',
+          apiService: 'tao11',
+          apiAction: 'writecookies',
+          apiQuery: {}
+        }
+        this.apiData = {
+          nick: this.$store.getters.tbNick,
+          cookies: cookiesArr,
+          session: this.$store.getters.session
+        }
+        this.$store.dispatch('setAPIStore', this.apiItem)
+        var apiUrl = this.$store.getters.apiUrl
+        this.$http.post(apiUrl, this.apiData).then(response => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            this.$Message.error(respBody.message)
+            reject(new Error(respBody.message))
+          } else {
+            // console.log(response)
+            resolve(respBody)
+          }
+        }).catch(err => {
+          this.$Message.error('上传Cookies失败！(' + err + ')')
+          reject(new Error(err.message))
+        })
+      })
+    },
+    downloadTBCookies (nick) {
+      return new Promise((resolve, reject) => {
+        this.apiItem = {
+          apiHost: '',
+          apiService: 'tao11',
+          apiAction: 'readcookies',
+          apiQuery: {}
+        }
+        this.apiData = {
+          nick: nick,
+          domain: '.taobao.com',
+          session: this.$store.getters.session
+        }
+        this.$store.dispatch('setAPIStore', this.apiItem)
+        var apiUrl = this.$store.getters.apiUrl
+        this.$http.post(apiUrl, this.apiData).then(response => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            this.$Message.error(respBody.message)
+            reject(new Error(respBody.message))
+          } else {
+            // console.log(response)
+            console.log(respBody)
+            resolve(respBody)
+          }
+        }).catch(err => {
+          this.$Message.error('下载Cookies失败！(' + err + ')')
+          reject(new Error(err.message))
+        })
+      })
     },
     listenLoggedIn () {
       window.chrome.webRequest.onBeforeRequest.addListener((details) => {
@@ -433,7 +528,7 @@ export default {
         })
         this.$store.dispatch('setTBCookies', this.cookiesArr)
         if (callback) {
-          callback()
+          callback(this.cookiesArr)
         }
         // console.log(this.cookiesArr)
       })
@@ -987,10 +1082,22 @@ export default {
     },
     searchTBSendOrders (pageSize, pageNum) {
       return new Promise((resolve, reject) => {
+        // let form = {
+        //   pageNum: pageNum,
+        //   pageSize: pageSize,
+        //   auctionStatus: 'SEND',
+        //   prePageNo: pageNum === 1 ? 1 : pageNum - 1
+        // }
         let form = {
+          lastStartRow: null,
+          options: 0,
+          queryBizType: null,
+          queryOrder: 'desc',
+          tabCode: 'waitConfirm',
           pageNum: pageNum,
           pageSize: pageSize,
-          auctionStatus: 'SEND',
+          // auctionStatus: 'SEND',
+          orderStatus: 'SEND',
           prePageNo: pageNum === 1 ? 1 : pageNum - 1
         }
         let url = 'https://buyertrade.taobao.com/trade/itemlist/asyncBought.htm?action=itemlist/BoughtQueryAction&event_submit_do_query=1&_input_charset=utf8'

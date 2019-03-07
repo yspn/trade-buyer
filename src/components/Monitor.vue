@@ -200,6 +200,7 @@ export default {
         today: []
       },
       syncTask: null,
+      syncSysStatsTask: null,
       synchronizing: false,
       lastUpdatedAt: null,
       newTrades: [],
@@ -307,8 +308,9 @@ export default {
   mounted () {
     this.renewTodayBuyerRank().then((buyersToday) => {
       this.drawTodayBuyerRankChart()
-      if (this.syncTask) {
+      if (this.syncTask || this.syncSysStatsTask) {
         clearInterval(this.syncTask)
+        clearInterval(this.syncSysStatsTask)
       }
       this.syncData()
       this.syncTask = setInterval(() => {
@@ -320,7 +322,7 @@ export default {
         this.drawFulfilmentChart()
         this.drawResignmentChart()
       })
-      this.syncTask = setInterval(() => {
+      this.syncSysStatsTask = setInterval(() => {
         this.syncSysStats().then((stats) => {
           this.drawTodayNewTradesChart()
           this.drawRecentDailyTrendChart()
@@ -1418,6 +1420,7 @@ export default {
   },
   beforeDestroy () {
     clearInterval(this.syncTask)
+    clearInterval(this.syncSysStatsTask)
   }
 }
 </script>
