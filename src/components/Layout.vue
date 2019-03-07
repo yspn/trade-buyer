@@ -360,7 +360,7 @@ export default {
         return {
           requestHeaders: headers
         }
-      }, {urls: ['*://buyertrade.taobao.com/trade/itemlist/asyncBought.htm*']}, ['blocking', 'requestHeaders', 'extraHeaders'])
+      }, {urls: ['*://buyertrade.taobao.com/trade/itemlist/asyncBought.htm*']}, ['blocking', 'requestHeaders'])
     },
     getTaobaoCookies (callback) {
       let arr = []
@@ -387,6 +387,7 @@ export default {
         }
         this.apiData = {
           nick: this.$store.getters.tbNick,
+          domain: '.taobao.com',
           cookies: cookiesArr,
           session: this.$store.getters.session
         }
@@ -417,7 +418,7 @@ export default {
         }
         this.apiData = {
           nick: nick,
-          domain: '.taobao.com',
+          domain: 'www.taobao.com',
           session: this.$store.getters.session
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
