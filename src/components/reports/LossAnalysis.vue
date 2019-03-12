@@ -90,6 +90,26 @@ export default {
             return h('span', {}, this.getOrdersNumiidLink(h, params.row.orders))
           }
         },
+        { title: '买家号',
+          key: 'ordered_temp',
+          ellipsis: false,
+          render: (h, params) => {
+            return h('span', {}, params.row.ordered_temp.buyer_nick)
+          }
+        },
+        { title: '下单地址',
+          key: 'ordered_temp',
+          ellipsis: false,
+          render: (h, params) => {
+            return h('span', {}, [h('a', {
+              on: {
+                click: () => {
+                  window.open(this.getOrderedUrl(params.row.ordered_temp.buy_url), '_blank')
+                }
+              }
+            }, params.row.ordered_temp.buy_url)])
+          }
+        },
         { title: '收入',
           width: 120,
           key: 'payment',
@@ -344,6 +364,13 @@ export default {
         })
       }
       this.data = templist
+    },
+    getOrderedUrl (url) {
+      let reg = /^[0-9]+$/ // 检测是否为纯num_iid
+      if (reg.test(url)) {
+        url = 'https://item.taobao.com/item.htm?id=' + url
+      }
+      return url
     },
     getOrdersNumiid (orders) {
       let arr = []

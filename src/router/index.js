@@ -7,6 +7,7 @@ import Login from '@/components/Login'
 import Logout from '@/components/Logout'
 import TradeList from '@/components/trades/List'
 import TradeImport from '@/components/trades/Import'
+import TradeDeliver from '@/components/trades/Deliver'
 import StatisticsToday from '@/components/statistics/Today'
 import BuyerSettings from '@/components/settings/BuyerSettings'
 import Buyers from '@/components/settings/Buyers'
@@ -45,6 +46,11 @@ export default new Router({
           path: '/trades/query/:status',
           name: 'trade-list',
           component: TradeList
+        },
+        {
+          path: '/delivery',
+          name: 'trade-deliver',
+          component: TradeDeliver
         },
         {
           path: '/today',

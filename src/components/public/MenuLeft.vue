@@ -17,11 +17,12 @@
         我的订单
       </template>
       <MenuItem name="2-1">全部订单</MenuItem>
-      <MenuItem name="2-6" v-if="['service'].indexOf($store.getters.user.role) < 0 && $store.getters.user.role==='boss'">未分配</MenuItem>
+      <MenuItem name="2-6" v-if="['service'].indexOf($store.getters.user.role) < 0 && ['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">未分配</MenuItem>
       <MenuItem name="2-2" v-if="['service'].indexOf($store.getters.user.role) < 0">已分配</MenuItem>
       <MenuItem name="2-3" v-if="['service'].indexOf($store.getters.user.role) < 0">已下单</MenuItem>
       <MenuItem name="2-4" v-if="['service'].indexOf($store.getters.user.role) < 0">已完成</MenuItem>
       <MenuItem name="2-5" v-if="['service'].indexOf($store.getters.user.role) < 0">已退单</MenuItem>
+      <MenuItem name="2-7" v-if="['god', 'boss'].indexOf($store.getters.user.role) > -1">离线发货</MenuItem>
     </Submenu>
     <Submenu name="3">
       <template slot="title">
@@ -83,6 +84,9 @@ export default {
           break
         case '2-6':
           path = '/trades/query/UNASSIGNED'
+          break
+        case '2-7':
+          path = '/delivery'
           break
         case '3-1':
           path = '/buyer-settings'
