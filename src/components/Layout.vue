@@ -360,7 +360,7 @@ export default {
         return {
           requestHeaders: headers
         }
-      }, {urls: ['*://buyertrade.taobao.com/trade/itemlist/asyncBought.htm*']}, ['blocking', 'requestHeaders', 'extraHeaders'])
+      }, {urls: ['*://buyertrade.taobao.com/trade/itemlist/asyncBought.htm*']}, ['blocking', 'requestHeaders']) // , 'extraHeaders'
     },
     getTaobaoCookies (callback) {
       let arr = []
