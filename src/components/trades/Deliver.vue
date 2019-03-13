@@ -10,7 +10,7 @@
           </Tooltip>
         </h3>
         <ul class="history">
-          <li v-for="(his, index) in history" :key="index" @click="viewHistory(his)">[{{new Date(his.timestamp).toLocaleString()}}]{{his.taskTraceId}}</li>
+          <li v-for="(his, index) in history" :key="index" @click="viewHistory(his)">[{{new Date(his.timestamp).toLocaleString()}}]{{his.buyers.join(',')}}</li>
         </ul>
       </Col>
       <Col span="18">
@@ -145,8 +145,8 @@ export default {
                   let msgBody = ''
                   if (msg.logisNumber) { // 发货信息
                     msgBody = `快递公司：${msg.companyCode} 快递单：${msg.logisNumber}`
-                  } else if (msg.actualfee) { // 改价信息
-                    msgBody = `改价：${msg.actualfee / 100}(运费:${msg.actualpostfee / 100})`
+                  } else if (msg.actualFee) { // 改价信息
+                    msgBody = `改价：${msg.actualFee / 100}`
                   }
                   let outputH = h('div', {
                     attrs: {
@@ -216,6 +216,68 @@ export default {
         this.traceLogsTask()
       }
     },
+    // submit () {
+    //   if (this.buyers) {
+    //     this.logs = []
+    //     this.detailedLogs = []
+    //     this.tracing = true
+    //     try {
+    //       let buyers = this.buyers.replace(/ /g, '').split(/,|，|\|/)
+    //       this.apiItem = {
+    //         apiHost: '',
+    //         apiService: 'trades',
+    //         apiAction: 'startbulkdeliver',
+    //         apiQuery: {}
+    //       }
+    //       this.apiData = {
+    //         buyers: this.buyers.replace(/ /g, '').split(/,|，|\|/)
+    //       }
+    //       this.$store.dispatch('setAPIStore', this.apiItem)
+    //       var apiUrl = this.$store.getters.apiUrl
+    //       this.$http.post(apiUrl, this.apiData).then(async (res) => {
+    //         if (res.data.status === 'ok') {
+    //           this.taskTraceId = res.data.data.taskTraceId
+    //           this.$Modal.success({
+    //             title: '提交成功!',
+    //             content: res.data.data.taskTraceId
+    //           })
+    //           this.history.push({
+    //             taskTraceId: res.data.data.taskTraceId,
+    //             status: 'start',
+    //             buyers: buyers,
+    //             logs: [],
+    //             timestamp: Date.now()
+    //           })
+    //           window.localStorage.setItem('bulk_deliver_tasks', JSON.stringify(this.history))
+    //           this.readHistory()
+    //           await this.traceTask()
+    //         } else {
+    //           this.$Modal.error({
+    //             title: '提交失败!',
+    //             content: res.data.message
+    //           })
+    //           this.tracing = false
+    //         }
+    //       }).catch(err => {
+    //         console.log(err)
+    //         this.$Modal.error({
+    //           title: '设置失败!',
+    //           content: err.message
+    //         })
+    //         this.tracing = false
+    //       })
+    //     } catch (err) {
+    //       console.log(err)
+    //       this.$Modal.error({
+    //         title: '设置失败!',
+    //         content: err.message
+    //       })
+    //       this.tracing = false
+    //     }
+    //   } else {
+    //     this.$Message.error('买家号不能为空')
+    //   }
+    // },
     submit () {
       if (this.buyers) {
         this.logs = []

@@ -2782,7 +2782,7 @@ export default {
           this.apiItem = {
             apiHost: '',
             apiService: 'trades',
-            apiAction: 'success', // success, ordered
+            apiAction: 'ordered', // success, ordered
             apiQuery: {}
           }
           this.apiData = {
