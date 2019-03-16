@@ -75,30 +75,86 @@
         <span class="num">{{todayShopTradeTotal}}</span>
       </div>
       <ul class="shop-ul">
-        <li v-for="(shop, index) in todayShopTrades" :key="index">
+        <li v-for="(shop, index) in todayShopTrades" :key="index" @mouseenter="drawRecentShopTradesChart(index)">
           <span class="title">{{shop.shop}}：</span>
           <span class="num">{{shop.tradeCount}}</span>
           <span class="num-yesterday" v-if="$store.getters.user.role==='god'">
             昨:{{recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}
           </span>
-          <div class="recent" v-if="$store.getters.user.role==='god'">
+          <div class="recent" :id="'recentShopTable-'+index" v-if="$store.getters.user.role==='god'">
             <ul>
-              <li>今日:{{shop.tradeCount}}</li>
-              <li>昨日:{{recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
-              <li>{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:{{recentShopTrades.day2.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day2.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
-              <li>{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:{{recentShopTrades.day3.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day3.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
-              <li>{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:{{recentShopTrades.day4.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day4.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
-              <li>{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:{{recentShopTrades.day5.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day5.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
-              <li>{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:{{recentShopTrades.day6.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day6.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
+              <li><span class="recent-title">今日:</span><span class="recent-digit">{{shop.tradeCount}}</span></li>
+              <li>&nbsp;</li>
+              <li><span class="recent-title">昨日:</span><span class="recent-digit">{{recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</span></li>
+              <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{recentShopTrades.day2.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day2.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</span></li>
+              <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:</span><span class="recent-digit">{{recentShopTrades.day3.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day3.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</span></li>
+              <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:</span><span class="recent-digit">{{recentShopTrades.day4.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day4.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</span></li>
+              <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:</span><span class="recent-digit">{{recentShopTrades.day5.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day5.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</span></li>
+              <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:</span><span class="recent-digit">{{recentShopTrades.day6.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day6.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</span></li>
             </ul>
+          </div>
+          <div class="recent-chart" :id="'recentShopChart-'+index" v-if="$store.getters.user.role==='god'"></div>
+          <div class="recent-table-visibility" v-if="$store.getters.user.role==='god'" @click="toggleRecentShopChart(index)">
+            <Icon type="ios-glasses-outline"></Icon>
           </div>
         </li>
       </ul>
+    </div>
+    <div class="shop-ranks" v-if="['god'].indexOf($store.getters.user.role)>-1">
+      <Card class="today">
+        <p slot="title">
+          <Icon type="podium"></Icon>
+          今日店铺订单排行
+        </p>
+        <ul>
+          <li>
+            <span class="rank-index"></span>
+            <span class="rank-shopname">店铺</span>
+            <span class="rank-group"><b>店群</b></span>
+            <span class="rank-tradecount">
+              订单数
+            </span>
+          </li>
+          <li v-for="(shop, idx) in todayShopRank" :key="idx">
+            <span class="rank-index">{{ idx + 1 }}.</span>
+            <span class="rank-shopname">{{ shop.shop }}</span>
+            <span class="rank-group">{{ shop.group }}</span>
+            <span class="rank-tradecount">
+              {{shop.tradeCount}}
+            </span>
+          </li>
+        </ul>
+      </Card>
+      <Card class="yesterday">
+        <p slot="title">
+          <Icon type="podium"></Icon>
+          昨日店铺订单排行
+        </p>
+        <ul>
+          <li>
+            <span class="rank-index"></span>
+            <span class="rank-shopname">店铺</span>
+            <span class="rank-group"><b>店群</b></span>
+            <span class="rank-tradecount">
+              订单数
+            </span>
+          </li>
+          <li v-for="(shop, idx) in yesterdayShopRank" :key="idx">
+            <span class="rank-index">{{ idx + 1 }}.</span>
+            <span class="rank-shopname">{{ shop.shop }}</span>
+            <span class="rank-group">{{ shop.group }}</span>
+            <span class="rank-tradecount">
+              {{shop.tradeCount}}
+            </span>
+          </li>
+        </ul>
+      </Card>
     </div>
   </div>
 </template>
 
 <script>
+import echarts from 'echarts'
 export default {
   name: 'stat-today',
   data () {
@@ -158,7 +214,9 @@ export default {
           total: 0,
           shops: []
         }
-      }
+      },
+      todayShopRank: [],
+      yesterdayShopRank: []
     }
   },
   mounted () {
@@ -178,7 +236,7 @@ export default {
     }
   },
   methods: {
-    entrance () {
+    async entrance () {
       if (!this.$store.getters.user.role) {
         this.$emit('on-checkauth', this.$route.path)
         setTimeout(() => {
@@ -189,10 +247,25 @@ export default {
         this.getTodayBuyerStatistics(this.$store.getters.user.userid)
       } else {
         this.getTodayStatistics()
-        this.getTodayShopTrades()
-        if (this.$store.getters.user.role === 'god') {
-          this.getRecentShopTrades()
-        }
+        await this.getTodayShopTrades().then(async () => {
+          if (this.$store.getters.user.role === 'god') {
+            await this.getRecentShopTrades().then(() => {
+              // for (let i = 0; i < this.todayShopTrades.length; i++) {
+              //   this.drawRecentShopTradesChart(i)
+              // }
+            })
+            await this.getDateShopTradesRank().then((list) => {
+              this.todayShopRank = list.sort((a, b) => {
+                return b.tradeCount - a.tradeCount
+              })
+            })
+            await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
+              this.yesterdayShopRank = list.sort((a, b) => {
+                return b.tradeCount - a.tradeCount
+              })
+            })
+          }
+        })
       }
     },
     async getBuyers () {
@@ -361,72 +434,82 @@ export default {
       })
     },
     getTodayShopTrades () {
-      this.loading = true
-      this.apiItem = {
-        apiHost: '',
-        apiService: 'trades',
-        apiAction: 'gettodayshoptrades',
-        apiQuery: {}
-      }
-      this.apiData = {
-      }
-      this.$store.dispatch('setAPIStore', this.apiItem)
-      var apiUrl = this.$store.getters.apiUrl
-      this.$http.post(apiUrl, this.apiData).then(async (response) => {
-        var respBody = response.data
-        if (respBody.status === 'fail') {
-          this.$Message.error('今日店铺订单获取失败！(' + respBody.message + ')')
-        } else {
-          // this.$Message.success('列表载入成功!')
-          this.todayShopTrades = respBody.data.sort((a, b) => {
-            return b.tradeCount - a.tradeCount
-          })
-          this.$store.dispatch('setAPILastResponse', respBody)
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        this.apiItem = {
+          apiHost: '',
+          apiService: 'trades',
+          apiAction: 'gettodayshoptrades',
+          apiQuery: {}
         }
-      }).catch(err => {
-        this.$store.dispatch('setAPILastResponse', err)
+        this.apiData = {
+        }
+        this.$store.dispatch('setAPIStore', this.apiItem)
+        var apiUrl = this.$store.getters.apiUrl
+        this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            this.$Message.error('今日店铺订单获取失败！(' + respBody.message + ')')
+            reject(new Error(respBody.message))
+          } else {
+            // this.$Message.success('列表载入成功!')
+            this.todayShopTrades = respBody.data.sort((a, b) => {
+              return b.tradeCount - a.tradeCount
+            })
+            this.$store.dispatch('setAPILastResponse', respBody)
+            resolve(this.todayShopTradeTotal)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
       })
     },
     /**
      * 获取最近7天店铺订单统计数据
      */
     async getRecentShopTrades () {
-      this.recentShopTrades = {
-        day1: {
-          total: 0,
-          shops: []
-        },
-        day2: {
-          total: 0,
-          shops: []
-        },
-        day3: {
-          total: 0,
-          shops: []
-        },
-        day4: {
-          total: 0,
-          shops: []
-        },
-        day5: {
-          total: 0,
-          shops: []
-        },
-        day6: {
-          total: 0,
-          shops: []
+      return new Promise(async (resolve, reject) => {
+        this.recentShopTrades = {
+          day1: {
+            total: 0,
+            shops: []
+          },
+          day2: {
+            total: 0,
+            shops: []
+          },
+          day3: {
+            total: 0,
+            shops: []
+          },
+          day4: {
+            total: 0,
+            shops: []
+          },
+          day5: {
+            total: 0,
+            shops: []
+          },
+          day6: {
+            total: 0,
+            shops: []
+          }
         }
-      }
-      let date = new Date()
-      for (let i = 1; i <= 6; i++) {
-        let curDate = date.setUTCHours(-24 * i)
-        await this.getDateShopTrades(curDate).then(list => {
-          list.forEach((item) => {
-            this.recentShopTrades['day' + i].total += item.tradeCount
-            this.recentShopTrades['day' + i].shops.push(item)
+        let date = new Date()
+        for (let i = 1; i <= 6; i++) {
+          let curDate = date.setUTCHours(-24 * i)
+          await this.getDateShopTrades(curDate).then(list => {
+            list.forEach((item) => {
+              this.recentShopTrades['day' + i].total += item.tradeCount
+              this.recentShopTrades['day' + i].shops.push(item)
+            })
           })
-        })
-      }
+          if (i === 6) {
+            resolve()
+          }
+        }
+      })
     },
     getDateShopTrades (date) {
       return new Promise((resolve, reject) => {
@@ -454,6 +537,96 @@ export default {
         }).catch(err => {
           reject(err)
         })
+      })
+    },
+    getDateShopTradesRank (date) {
+      return new Promise((resolve, reject) => {
+        this.apiItem = {
+          apiHost: '',
+          apiService: 'trades',
+          apiAction: 'getdateshoptradesrank',
+          apiQuery: {}
+        }
+        this.apiData = {
+          date: date || new Date().toUTCString()
+        }
+        this.$store.dispatch('setAPIStore', this.apiItem)
+        var apiUrl = this.$store.getters.apiUrl
+        this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            reject(new Error(respBody.message))
+            // this.$Message.error('今日店铺订单获取失败！(' + respBody.message + ')')
+          } else {
+            // this.$Message.success('列表载入成功!')
+            resolve(respBody.data)
+            this.$store.dispatch('setAPILastResponse', respBody)
+          }
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    toggleRecentShopChart (index) {
+      let target = document.getElementById('recentShopTable-' + index)
+      let height = window.getComputedStyle(target, null).height
+      console.log(height)
+      if (height === '16px') {
+        target.style.top = '0px'
+      } else {
+        target.style.top = height
+      }
+    },
+    drawRecentShopTradesChart (index) {
+      let shop = this.todayShopTrades[index].shop
+      let xAxisData = [
+        new Date(new Date().setUTCHours(-24 * 6)).Format('MM-dd'),
+        new Date(new Date().setUTCHours(-24 * 5)).Format('MM-dd'),
+        new Date(new Date().setUTCHours(-24 * 4)).Format('MM-dd'),
+        new Date(new Date().setUTCHours(-24 * 3)).Format('MM-dd'),
+        new Date(new Date().setUTCHours(-24 * 2)).Format('MM-dd'),
+        new Date(new Date().setUTCHours(-24 * 1)).Format('MM-dd')
+      ]
+      let seriesData = [
+        this.recentShopTrades.day6.shops.filter((item) => { return item.shop === shop })[0] ? this.recentShopTrades.day6.shops.filter((item) => { return item.shop === shop })[0].tradeCount : 0,
+        this.recentShopTrades.day5.shops.filter((item) => { return item.shop === shop })[0] ? this.recentShopTrades.day5.shops.filter((item) => { return item.shop === shop })[0].tradeCount : 0,
+        this.recentShopTrades.day4.shops.filter((item) => { return item.shop === shop })[0] ? this.recentShopTrades.day4.shops.filter((item) => { return item.shop === shop })[0].tradeCount : 0,
+        this.recentShopTrades.day3.shops.filter((item) => { return item.shop === shop })[0] ? this.recentShopTrades.day3.shops.filter((item) => { return item.shop === shop })[0].tradeCount : 0,
+        this.recentShopTrades.day2.shops.filter((item) => { return item.shop === shop })[0] ? this.recentShopTrades.day2.shops.filter((item) => { return item.shop === shop })[0].tradeCount : 0,
+        this.recentShopTrades.day1.shops.filter((item) => { return item.shop === shop })[0] ? this.recentShopTrades.day1.shops.filter((item) => { return item.shop === shop })[0].tradeCount : 0
+      ]
+      var myChart = echarts.getInstanceByDom(document.getElementById('recentShopChart-' + index))
+      if (!myChart) {
+        myChart = echarts.init(document.getElementById('recentShopChart-' + index))
+      }
+      // 绘制图表
+      myChart.setOption({
+        color: ['#fddc3c'],
+        xAxis: {
+          type: 'category',
+          data: xAxisData
+        },
+        yAxis: {
+          type: 'value',
+          show: false
+        },
+        title: {
+          show: false
+        },
+        legend: {
+          show: false
+        },
+        grid: {
+          top: 10,
+          left: 10,
+          right: 10,
+          bottom: 20
+        },
+        series: [{
+          data: seriesData,
+          type: 'line',
+          smooth: true
+        }]
       })
     }
   }
@@ -535,6 +708,7 @@ ul {
   }
   .shop-ul {
     & > li {
+      overflow: hidden;
       .num-yesterday {
         position: absolute;
         bottom: 5px;
@@ -543,27 +717,129 @@ ul {
       }
       .recent {
         display: none;
+        position: absolute;
+        top: 0;
+        bottom:0;
+        left: 0;
+        right: 0;
+        padding: 8px;
+        overflow: hidden;
+        transition: all .3s linear;
         ul {
-          display: block;
+          display: flex;
+          margin: 0;
+          flex-wrap: wrap;
+          justify-content: flex-start;
           li {
-            display: block;
-            width: 100%;
+            display: inline-flex;
+            flex-basis: 50%;
             border: none;
-            font-size: 12px;
-            color: #000;
+            font-size: 12px !important;
+            line-height: 16px !important;
+            color: #fff;
+            background: none;
             min-height: initial;
             padding: 0;
+            margin: 0 !important;
+            padding-right: 5px;
+            justify-content: space-between;
+            .recent-digit {
+              font-weight: bold;
+            }
           }
         }
       }
+      .recent-chart {
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom:0;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        transition: all .3s linear;
+      }
+      .recent-table-visibility {
+        display: none;
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        z-index: 101;
+        color: #e2e2e2;
+      }
       &:hover {
+        .num {
+          display: none;
+        }
+        .num-yesterday {
+          display: none;
+        }
         .recent {
           display: block;
-          position: absolute;
-          top: 80px;
-          background: #fff;
+          // position: absolute;
+          // top: 80px;
+          background: rgba(0, 0, 0, .3);
           z-index: 100;
         }
+        .recent-chart {
+          display: block;
+          background:cornflowerblue;
+          z-index: 99;
+        }
+        .recent-table-visibility {
+          display: block;
+          &:hover {
+            color: #fff;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
+.shop-ranks {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  .today {
+    flex-basis: 47%;
+    margin: 10px 5px;
+  }
+  .yesterday {
+    flex-basis: 47%;
+    margin: 10px 5px;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    display: block;
+    & > li {
+      display: flex;
+      flex-direction: row;
+      font-size: 14px;
+      padding: 5px;
+      width: 100%;
+      background: initial;
+      min-height: initial;
+      color: #000;
+      .rank-index {
+        width: 24px;
+        text-align: right;
+        margin-right: 10px;
+      }
+      .rank-shopname {
+        flex: 1;
+        font-weight: bold;
+      }
+      .rank-group {
+        width: 60px;
+        text-align: center;
+      }
+      .rank-tradecount {
+        width: 60px;
+        text-align: right;
+        font-weight: bold;
       }
     }
   }
