@@ -78,6 +78,20 @@
         <li v-for="(shop, index) in todayShopTrades" :key="index">
           <span class="title">{{shop.shop}}：</span>
           <span class="num">{{shop.tradeCount}}</span>
+          <span class="num-yesterday" v-if="$store.getters.user.role==='god'">
+            昨:{{recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}
+          </span>
+          <div class="recent" v-if="$store.getters.user.role==='god'">
+            <ul>
+              <li>今日:{{shop.tradeCount}}</li>
+              <li>昨日:{{recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
+              <li>{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:{{recentShopTrades.day2.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day2.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
+              <li>{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:{{recentShopTrades.day3.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day3.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
+              <li>{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:{{recentShopTrades.day4.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day4.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
+              <li>{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:{{recentShopTrades.day5.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day5.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
+              <li>{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:{{recentShopTrades.day6.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day6.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</li>
+            </ul>
+          </div>
         </li>
       </ul>
     </div>
@@ -118,7 +132,33 @@ export default {
       },
       finishedTrades: null,
       todayProfit: 0,
-      todayShopTrades: []
+      todayShopTrades: [],
+      recentShopTrades: {
+        day1: {
+          total: 0,
+          shops: []
+        },
+        day2: {
+          total: 0,
+          shops: []
+        },
+        day3: {
+          total: 0,
+          shops: []
+        },
+        day4: {
+          total: 0,
+          shops: []
+        },
+        day5: {
+          total: 0,
+          shops: []
+        },
+        day6: {
+          total: 0,
+          shops: []
+        }
+      }
     }
   },
   mounted () {
@@ -150,6 +190,9 @@ export default {
       } else {
         this.getTodayStatistics()
         this.getTodayShopTrades()
+        if (this.$store.getters.user.role === 'god') {
+          this.getRecentShopTrades()
+        }
       }
     },
     async getBuyers () {
@@ -343,6 +386,75 @@ export default {
       }).catch(err => {
         this.$store.dispatch('setAPILastResponse', err)
       })
+    },
+    /**
+     * 获取最近7天店铺订单统计数据
+     */
+    async getRecentShopTrades () {
+      this.recentShopTrades = {
+        day1: {
+          total: 0,
+          shops: []
+        },
+        day2: {
+          total: 0,
+          shops: []
+        },
+        day3: {
+          total: 0,
+          shops: []
+        },
+        day4: {
+          total: 0,
+          shops: []
+        },
+        day5: {
+          total: 0,
+          shops: []
+        },
+        day6: {
+          total: 0,
+          shops: []
+        }
+      }
+      let date = new Date()
+      for (let i = 1; i <= 6; i++) {
+        let curDate = date.setUTCHours(-24 * i)
+        await this.getDateShopTrades(curDate).then(list => {
+          list.forEach((item) => {
+            this.recentShopTrades['day' + i].total += item.tradeCount
+            this.recentShopTrades['day' + i].shops.push(item)
+          })
+        })
+      }
+    },
+    getDateShopTrades (date) {
+      return new Promise((resolve, reject) => {
+        this.apiItem = {
+          apiHost: '',
+          apiService: 'trades',
+          apiAction: 'getdateshoptrades',
+          apiQuery: {}
+        }
+        this.apiData = {
+          date: date || new Date().toUTCString()
+        }
+        this.$store.dispatch('setAPIStore', this.apiItem)
+        var apiUrl = this.$store.getters.apiUrl
+        this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            reject(new Error(respBody.message))
+            // this.$Message.error('今日店铺订单获取失败！(' + respBody.message + ')')
+          } else {
+            // this.$Message.success('列表载入成功!')
+            resolve(respBody.data)
+            this.$store.dispatch('setAPILastResponse', respBody)
+          }
+        }).catch(err => {
+          reject(err)
+        })
+      })
     }
   }
 }
@@ -419,6 +531,40 @@ ul {
       right: 20px;
       font-size: 36px;
       font-weight: 800;
+    }
+  }
+  .shop-ul {
+    & > li {
+      .num-yesterday {
+        position: absolute;
+        bottom: 5px;
+        font-size: 14px;
+        color: #999;
+      }
+      .recent {
+        display: none;
+        ul {
+          display: block;
+          li {
+            display: block;
+            width: 100%;
+            border: none;
+            font-size: 12px;
+            color: #000;
+            min-height: initial;
+            padding: 0;
+          }
+        }
+      }
+      &:hover {
+        .recent {
+          display: block;
+          position: absolute;
+          top: 80px;
+          background: #fff;
+          z-index: 100;
+        }
+      }
     }
   }
 }
