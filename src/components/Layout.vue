@@ -684,7 +684,7 @@ export default {
             reject(new Error(respBody.message))
           } else {
             // console.log(response)
-            resolve(respBody.data.in)
+            resolve(respBody.data)
           }
         }).catch(err => {
           this.$Message.error('查询店铺黑名单失败！(' + err + ')')

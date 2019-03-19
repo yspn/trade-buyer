@@ -86,10 +86,26 @@
         <Button type="error" size="large" @click="submitDelete">确认</Button>
       </div>
     </Modal>
+    <Modal
+      v-model="deleteBulkModal"
+      title="批量删除记录"
+      :mask-closable="false"
+      :transfer="false">
+      <div class="modal-content">
+        确认批量删除这个下单地址的全部记录吗？
+      </div>
+      <div slot="footer">
+        <Button size="large" @click="deleteBulkModal=false">取消</Button>
+        <Button type="error" size="large" @click="submitDeleteBulk">确认</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
+import {
+  getQueryString
+} from '../../../static/common'
 export default {
   name: 'bought-history-list',
   data () {
@@ -188,7 +204,21 @@ export default {
                     this.deleteModel = params.row
                   }
                 }
-              }, '删除')
+              }, '删除'),
+              h('Button', {
+                props: {
+                  type: 'ghost',
+                  size: 'small'
+                },
+                style: {
+                },
+                on: {
+                  click: async () => {
+                    this.deleteBulkModal = true
+                    this.deleteBulkNumiid = this.getNumIid(params.row.buy_url)
+                  }
+                }
+              }, '批量删除')
             ])
           }
         }
@@ -241,7 +271,9 @@ export default {
       deleteModal: false,
       deleteModel: {
         id: null
-      }
+      },
+      deleteBulkModal: false,
+      deleteBulkNumiid: ''
     }
   },
   created () {
@@ -330,6 +362,13 @@ export default {
           reject(err)
         })
       })
+    },
+    getNumIid (buyUrl) {
+      if (/^\d{5,}$/.test(buyUrl)) {
+        return buyUrl
+      } else {
+        return getQueryString('id', buyUrl)
+      }
     },
     sortTable (sort) {
       this.sort = sort
@@ -510,6 +549,41 @@ export default {
           reject(err)
         })
       })
+    },
+    submitDeleteBulk () {
+      if (!this.deleteBulkNumiid) {
+        this.$Message.error('批量删除失败！(num_iid不能为空)')
+      } else {
+        this.apiItem = {
+          apiHost: '',
+          apiService: 'boughthistory',
+          apiAction: 'deletebynumiid',
+          apiQuery: {}
+        }
+        this.apiData = {
+          num_iid: this.deleteBulkNumiid
+        }
+        this.$store.dispatch('setAPIStore', this.apiItem)
+        var apiUrl = this.$store.getters.apiUrl
+        return new Promise(async (resolve, reject) => {
+          await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+            var respBody = response.data
+            if (respBody.status === 'fail') {
+              this.$Message.error('批量删除失败！(' + respBody.message + ')')
+              reject(new Error('批量删除失败！(' + respBody.message + ')'))
+            } else {
+              this.$Message.success('批量删除成功!')
+              this.$store.dispatch('setAPILastResponse', respBody)
+              this.deleteBulkModal = false
+              this.deleteBulkNumiid = ''
+              resolve(respBody.data)
+            }
+          }).catch(err => {
+            this.$store.dispatch('setAPILastResponse', err)
+            reject(err)
+          })
+        })
+      }
     }
   }
 }
