@@ -106,9 +106,13 @@ const checkBlackListShop = (shopname) => {
 const checkBlackListShopResponse = (request, sender, sendResponse) => {
   if (request.cmd === 'check_blacklistshop_response') {
     // console.log(request.value)
-    shopInBlackList = request.value
-    if (request.value) {
-      alert('【店铺黑名单】请勿在列入黑名单的店铺下单！')
+    shopInBlackList = request.value.in
+    if (request.value.in) {
+      let reason = ''
+      if (request.value.reason) {
+        reason = '(' + request.value.reason + ')'
+      }
+      alert('【店铺黑名单】请勿在列入黑名单的店铺下单！' + reason)
     }
     // getOrdersFees(orderInfo)
     // let buyerOrder = getOrdersFees(request.value)

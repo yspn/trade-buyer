@@ -31,6 +31,9 @@
           <FormItem label="店铺昵称" prop="name">
             <Input v-model="newModel.name"></Input>
           </FormItem>
+          <FormItem label="原因备注" prop="reason">
+            <Input v-model="newModel.reason"></Input>
+          </FormItem>
           <FormItem>
             <p>注意:加入黑名单后，该店铺商品将无法下单！</p>
           </FormItem>
@@ -97,12 +100,41 @@ export default {
             return h('span', {}, params.row.name)
           }
         },
+        { title: '原因备注',
+          key: 'reason',
+          ellipsis: true,
+          sortable: true,
+          sortMethod: (a, b, type) => {
+            if (type === 'asc') {
+              return a.localeCompare(b, 'zh-CN')
+            } else {
+              return b.localeCompare(a, 'zh-CN')
+            }
+          },
+          render: (h, params) => {
+            return h('span', {}, params.row.reason)
+          }
+        },
         {
           title: '操作',
           key: 'action',
           fixed: 'right',
           render: (h, params) => {
             return h('Button-group', [
+              h('Button', {
+                props: {
+                  type: 'ghost',
+                  size: 'small'
+                },
+                style: {
+                },
+                on: {
+                  click: async () => {
+                    this.newModal = true
+                    this.newModel = params.row
+                  }
+                }
+              }, '修改'),
               h('Button', {
                 props: {
                   type: 'ghost',
@@ -139,6 +171,7 @@ export default {
       newModal: false,
       newModel: {
         name: '',
+        reason: '',
         group: 1
       },
       ruleValidate: {
@@ -340,6 +373,7 @@ export default {
           }
           this.apiData = {
             name: this.newModel.name,
+            reason: this.newModel.reason,
             group: this.$store.getters.user.group
           }
           this.$store.dispatch('setAPIStore', this.apiItem)

@@ -32,7 +32,10 @@
             <Input v-model="newModel.name"></Input>
           </FormItem>
           <FormItem label="店群号码" prop="group">
-            <Input v-model="newModel.group"></Input>
+            <InputNumber v-model="newModel.group"></InputNumber>
+          </FormItem>
+          <FormItem label="离线发货授权" prop="offline_deliver">
+            <DatePicker type="date" v-model="newModel.offline_deliver" placeholder="选择日期" style="width: 200px"></DatePicker>
           </FormItem>
         </Form>
       </div>
@@ -52,7 +55,10 @@
             <Input v-model="editModel.name"></Input>
           </FormItem>
           <FormItem label="店群号码" prop="group">
-            <Input v-model="editModel.group"></Input>
+            <InputNumber v-model="editModel.group"></InputNumber>
+          </FormItem>
+          <FormItem label="离线发货授权" prop="offline_deliver">
+            <DatePicker type="date" v-model="editModel.offline_deliver" placeholder="选择日期" style="width: 200px"></DatePicker>
           </FormItem>
         </Form>
       </div>
@@ -132,6 +138,25 @@ export default {
             return h('span', {}, params.row.group)
           }
         },
+        { title: '离线发货',
+          key: 'offline_deliver',
+          sortable: true,
+          sortMethod: (a, b, type) => {
+            if (type === 'asc') {
+              return a.localeCompare(b, 'zh-CN')
+            } else {
+              return b.localeCompare(a, 'zh-CN')
+            }
+          },
+          render: (h, params) => {
+            return h('Tag', {
+              props: {
+                type: 'border',
+                color: !params.row.offline_deliver ? 'default' : new Date(params.row.offline_deliver).getTime() - new Date().getTime() > 0 ? 'green' : 'red'
+              }
+            }, !params.row.offline_deliver ? '未授权' : new Date(params.row.offline_deliver).getTime() - new Date().getTime() > 0 ? new Date(params.row.offline_deliver).toLocaleDateString() : new Date(params.row.offline_deliver).toLocaleDateString())
+          }
+        },
         {
           title: '操作',
           key: 'action',
@@ -151,7 +176,8 @@ export default {
                     this.editModel = {
                       id: params.row.id,
                       name: params.row.name,
-                      group: params.row.group
+                      group: params.row.group,
+                      offline_deliver: new Date(params.row.offline_deliver)
                     }
                   }
                 }
@@ -192,20 +218,22 @@ export default {
       newModal: false,
       newModel: {
         name: '',
-        group: this.$store.getters.user.group
+        offline_deliver: null,
+        group: null
       },
       editModal: false,
       editModel: {
         id: null,
         name: '',
-        group: this.$store.getters.user.group
+        group: null,
+        offline_deliver: null
       },
       ruleValidate: {
         name: [
           { required: true, message: '请填写名称', trigger: 'blur' }
         ],
         group: [
-          { required: true, message: '请填写店铺号码', trigger: 'blur' }
+          { required: true, message: '请填写店铺号码', trigger: 'blur', type: 'number' }
         ]
       },
       deleteModal: false,
@@ -404,6 +432,9 @@ export default {
             name: this.newModel.name,
             group: this.newModel.group
           }
+          if (this.newModel.offline_deliver) {
+            this.apiData.offline_deliver = new Date(this.newModel.offline_deliver).getTime()
+          }
           this.$store.dispatch('setAPIStore', this.apiItem)
           var apiUrl = this.$store.getters.apiUrl
           return new Promise(async (resolve, reject) => {
@@ -441,6 +472,9 @@ export default {
             id: this.editModel.id,
             name: this.editModel.name,
             group: this.editModel.group
+          }
+          if (this.editModel.offline_deliver) {
+            this.apiData.offline_deliver = new Date(this.editModel.offline_deliver).getTime()
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
           var apiUrl = this.$store.getters.apiUrl
