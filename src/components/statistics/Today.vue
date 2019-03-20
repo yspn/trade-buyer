@@ -114,6 +114,9 @@
             <span class="rank-tradecount">
               订单数
             </span>
+            <span class="rank-shift">
+              对比
+            </span>
           </li>
           <li v-for="(shop, idx) in todayShopRank" :key="idx">
             <span class="rank-index">{{ idx + 1 }}.</span>
@@ -121,6 +124,12 @@
             <span class="rank-group">{{ shop.group }}</span>
             <span class="rank-tradecount">
               {{shop.tradeCount}}
+            </span>
+            <span class="rank-shift">
+              <span v-if="shop.yesterdayRank==='300+'" class="font-green">↑300+</span>
+              <span v-else-if="shop.yesterdayRank > shop.rank" class="font-green">↑{{shop.yesterdayRank - shop.rank}}</span>
+              <span v-else-if="shop.rank > shop.yesterdayRank" class="font-red">↓{{shop.rank - shop.yesterdayRank}}</span>
+              <span v-else>--</span>
             </span>
           </li>
         </ul>
@@ -138,6 +147,9 @@
             <span class="rank-tradecount">
               订单数
             </span>
+            <span class="rank-shift">
+              对比
+            </span>
           </li>
           <li v-for="(shop, idx) in yesterdayShopRank" :key="idx">
             <span class="rank-index">{{ idx + 1 }}.</span>
@@ -145,6 +157,45 @@
             <span class="rank-group">{{ shop.group }}</span>
             <span class="rank-tradecount">
               {{shop.tradeCount}}
+            </span>
+            <span class="rank-shift">
+              <span v-if="shop.yesterdayRank==='300+'" class="font-green">↑300+</span>
+              <span v-else-if="shop.yesterdayRank > shop.rank" class="font-green">↑{{shop.yesterdayRank - shop.rank}}</span>
+              <span v-else-if="shop.rank > shop.yesterdayRank" class="font-red">↓{{shop.rank - shop.yesterdayRank}}</span>
+              <span v-else>--</span>
+            </span>
+          </li>
+        </ul>
+      </Card>
+      <Card class="daybeforeyesterday">
+        <p slot="title">
+          <Icon type="podium"></Icon>
+          前天店铺订单排行
+        </p>
+        <ul>
+          <li>
+            <span class="rank-index"></span>
+            <span class="rank-shopname">店铺</span>
+            <span class="rank-group"><b>店群</b></span>
+            <span class="rank-tradecount">
+              订单数
+            </span>
+            <span class="rank-shift">
+              对比
+            </span>
+          </li>
+          <li v-for="(shop, idx) in daybeforeyesterdayShopRank" :key="idx">
+            <span class="rank-index">{{ idx + 1 }}.</span>
+            <span class="rank-shopname">{{ shop.shop }}</span>
+            <span class="rank-group">{{ shop.group }}</span>
+            <span class="rank-tradecount">
+              {{shop.tradeCount}}
+            </span>
+            <span class="rank-shift">
+              <span v-if="shop.yesterdayRank==='300+'" class="font-green">↑300+</span>
+              <span v-else-if="shop.yesterdayRank > shop.rank" class="font-green">↑{{shop.yesterdayRank - shop.rank}}</span>
+              <span v-else-if="shop.rank > shop.yesterdayRank" class="font-red">↓{{shop.rank - shop.yesterdayRank}}</span>
+              <span v-else>--</span>
             </span>
           </li>
         </ul>
@@ -216,7 +267,8 @@ export default {
         }
       },
       todayShopRank: [],
-      yesterdayShopRank: []
+      yesterdayShopRank: [],
+      daybeforeyesterdayShopRank: []
     }
   },
   mounted () {
@@ -261,6 +313,11 @@ export default {
             })
             await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
               this.yesterdayShopRank = list.sort((a, b) => {
+                return b.tradeCount - a.tradeCount
+              })
+            })
+            await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
+              this.daybeforeyesterdayShopRank = list.sort((a, b) => {
                 return b.tradeCount - a.tradeCount
               })
             })
@@ -803,12 +860,16 @@ ul {
   justify-content: space-between;
   flex-wrap: wrap;
   .today {
-    flex-basis: 47%;
-    margin: 10px 5px;
+    flex-basis: 33%;
+    // margin: 10px 5px;
   }
   .yesterday {
-    flex-basis: 47%;
-    margin: 10px 5px;
+    flex-basis: 33%;
+    // margin: 10px 5px;
+  }
+  .daybeforeyesterday {
+    flex-basis: 33%;
+    // margin: 10px 5px;
   }
   ul {
     margin: 0;
@@ -824,7 +885,7 @@ ul {
       min-height: initial;
       color: #000;
       .rank-index {
-        width: 24px;
+        width: 18px;
         text-align: right;
         margin-right: 10px;
       }
@@ -833,12 +894,17 @@ ul {
         font-weight: bold;
       }
       .rank-group {
-        width: 60px;
+        width: 40px;
         text-align: center;
       }
       .rank-tradecount {
         width: 60px;
         text-align: right;
+        font-weight: bold;
+      }
+      .rank-shift {
+        width: 50px;
+        text-align: center;
         font-weight: bold;
       }
     }

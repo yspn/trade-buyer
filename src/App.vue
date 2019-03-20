@@ -132,6 +132,9 @@ export default {
 .font-red {
   color: #ed3f14;
 }
+.font-green {
+  color: #2ac56a;
+}
 .pull-right {
   float: right !important;
 }
