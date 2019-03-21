@@ -91,6 +91,11 @@
               <Radio label="passive">买手取单</Radio>
             </RadioGroup>
           </FormItem> -->
+          <FormItem label="店铺分类标签" prop="tags" v-if="$store.getters.user.role==='god'">
+            <CheckboxGroup v-model="newModel.tags">
+              <Checkbox v-for="(tag, idx) in shopTagDic" :key="idx" :label="tag"></Checkbox>
+            </CheckboxGroup>
+          </FormItem>
         </Form>
       </div>
       <div slot="footer">
@@ -133,6 +138,11 @@
               <Radio label="passive">买手取单</Radio>
             </RadioGroup>
           </FormItem> -->
+          <FormItem label="店铺分类标签" prop="tags" v-if="$store.getters.user.role==='god'">
+            <CheckboxGroup v-model="editModel.tags">
+              <Checkbox v-for="(tag, idx) in shopTagDic" :key="idx" :label="tag"></Checkbox>
+            </CheckboxGroup>
+          </FormItem>
         </Form>
       </div>
       <div slot="footer">
@@ -268,7 +278,6 @@ export default {
         { title: '转链模式',
           key: 'transMode',
           sortable: true,
-          searchable: true,
           render: (h, params) => {
             return h('span', {}, params.row.transMode === 'yitao' ? '一淘' : params.row.transMode === 'normal' ? '第三方' : '未设置')
           }
@@ -277,7 +286,6 @@ export default {
           key: 'appkey',
           ellipsis: true,
           sortable: true,
-          searchable: true,
           render: (h, params) => {
             return h('span', {}, params.row.appkey)
           }
@@ -286,7 +294,6 @@ export default {
           key: 'pid',
           ellipsis: true,
           sortable: true,
-          searchable: true,
           render: (h, params) => {
             return h('span', {}, params.row.pid)
           }
@@ -314,7 +321,8 @@ export default {
                       pid: params.row.pid,
                       nickname: params.row.nickname,
                       group: this.$store.getters.user.group,
-                      assignMode: params.row.assign_mode || 'auto'
+                      assignMode: params.row.assign_mode || 'auto',
+                      tags: params.row.tags
                     }
                   }
                 }
@@ -359,7 +367,8 @@ export default {
         appkey: '',
         pid: '',
         nickname: '',
-        group: this.$store.getters.user.group
+        group: this.$store.getters.user.group,
+        tags: []
         // assignMode: 'auto'
       },
       editModal: false,
@@ -370,7 +379,8 @@ export default {
         appkey: '',
         pid: '',
         nickname: '',
-        group: this.$store.getters.user.group
+        group: this.$store.getters.user.group,
+        tags: []
         // assignMode: 'auto'
       },
       translinkModal: false,
@@ -421,7 +431,8 @@ export default {
       deleteModel: {
         id: null,
         name: ''
-      }
+      },
+      shopTagDic: ['男装', '女装', '男鞋', '女鞋', '内衣', '童装', '童鞋', '收纳整理', '宠物', '餐饮具', '家居饰品', '流行饰品', '家具', '园艺', '成人', '车品', '3C']
     }
   },
   created () {
@@ -431,6 +442,27 @@ export default {
     }
   },
   mounted () {
+    if (this.$store.getters.user.role === 'god') {
+      this.columns.splice(3, 0, {
+        title: '分类标签',
+        key: 'tags',
+        render: (h, params) => {
+          let tagsH = []
+          if (params.row.tags && params.row.tags instanceof Array) {
+            params.row.tags.forEach((tag) => {
+              tagsH.push(h('Tag', {
+                props: {
+                  type: 'border',
+                  color: 'primary'
+                }
+              }, tag))
+            })
+          }
+          return h('div', {}, tagsH)
+        }
+      })
+      this.columns.splice(5, 2)
+    }
     this.initDataTable().then(async (result) => {
       this.dataRaw = result
       this.data = result
@@ -722,6 +754,9 @@ export default {
             nickname: this.newModel.nickname,
             assign_mode: this.newModel.assignMode
           }
+          if (this.$store.getters.user.role === 'god') {
+            this.apiData.tags = this.editModel.tags
+          }
           this.$store.dispatch('setAPIStore', this.apiItem)
           var apiUrl = this.$store.getters.apiUrl
           return new Promise(async (resolve, reject) => {
@@ -764,6 +799,9 @@ export default {
             pid: this.editModel.pid,
             nickname: this.editModel.nickname,
             assign_mode: this.editModel.assignMode
+          }
+          if (this.$store.getters.user.role === 'god') {
+            this.apiData.tags = this.editModel.tags
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
           var apiUrl = this.$store.getters.apiUrl
