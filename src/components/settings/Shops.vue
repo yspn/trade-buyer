@@ -93,7 +93,14 @@
           </FormItem> -->
           <FormItem label="店铺分类标签" prop="tags" v-if="$store.getters.user.role==='god'">
             <CheckboxGroup v-model="newModel.tags">
-              <Checkbox v-for="(tag, idx) in shopTagDic" :key="idx" :label="tag"></Checkbox>
+              <Poptip trigger="hover" v-for="(tag, idx) in shopTagDic" :key="idx">
+                <Checkbox :label="tag"></Checkbox>
+                <div class="shoptag-manage" slot="content">
+                  <Button type="text" @click="editTagSpec(tag)">修改</Button>
+                  <Button type="text" @click="deleteTagSpec(tag)">删除</Button>
+                </div>
+              </Poptip>
+              <Button type="ghost" size="small" icon="plus" @click="addNewTagSpec">新增</Button>
             </CheckboxGroup>
           </FormItem>
         </Form>
@@ -140,7 +147,14 @@
           </FormItem> -->
           <FormItem label="店铺分类标签" prop="tags" v-if="$store.getters.user.role==='god'">
             <CheckboxGroup v-model="editModel.tags">
-              <Checkbox v-for="(tag, idx) in shopTagDic" :key="idx" :label="tag"></Checkbox>
+              <Poptip trigger="hover" v-for="(tag, idx) in shopTagDic" :key="idx">
+                <Checkbox :label="tag"></Checkbox>
+                <div class="shoptag-manage" slot="content">
+                  <Button type="text" @click="editTagSpec(tag)">修改</Button>
+                  <Button type="text" @click="deleteTagSpec(tag)">删除</Button>
+                </div>
+              </Poptip>
+              <Button type="ghost" size="small" icon="plus" @click="addNewTagSpec">新增</Button>
             </CheckboxGroup>
           </FormItem>
         </Form>
@@ -432,7 +446,8 @@ export default {
         id: null,
         name: ''
       },
-      shopTagDic: ['男装', '女装', '男鞋', '女鞋', '内衣', '童装', '童鞋', '收纳整理', '宠物', '餐饮具', '家居饰品', '流行饰品', '家具', '园艺', '成人', '车品', '3C']
+      shopTagDic: ['男装', '女装', '男鞋', '女鞋', '内衣', '童装', '童鞋', '收纳整理', '宠物', '餐饮具', '家居饰品', '流行饰品', '家具', '园艺', '成人', '车品', '3C'],
+      shopTagInOp: '' // 当前操作中的tag(增删改)
     }
   },
   created () {
@@ -443,9 +458,32 @@ export default {
   },
   mounted () {
     if (this.$store.getters.user.role === 'god') {
+      this.getShopSpecTagsDic().then(list => {
+        this.shopTagDic = list.map((item) => {
+          return item.tag
+        })
+      })
       this.columns.splice(3, 0, {
+        title: '店群ID',
+        key: 'group',
+        sortable: true,
+        searchable: true,
+        render: (h, params) => {
+          return h('span', {}, params.row.group)
+        }
+      })
+      this.columns.splice(4, 0, {
         title: '分类标签',
         key: 'tags',
+        sortable: true,
+        searchable: true,
+        sortMethod: (a, b, type) => {
+          if (type === 'asc') {
+            return a.localeCompare(b, 'zh-CN')
+          } else {
+            return b.localeCompare(a, 'zh-CN')
+          }
+        },
         render: (h, params) => {
           let tagsH = []
           if (params.row.tags && params.row.tags instanceof Array) {
@@ -461,7 +499,7 @@ export default {
           return h('div', {}, tagsH)
         }
       })
-      this.columns.splice(5, 2)
+      this.columns.splice(6, 2)
     }
     this.initDataTable().then(async (result) => {
       this.dataRaw = result
@@ -487,7 +525,9 @@ export default {
       })
     },
     'dataViewPage': function (newVal) {
-      this.updateShopAuthority()
+      if (this.$store.getters.user.role !== 'god') {
+        this.updateShopAuthority()
+      }
     },
     'pageCurrent': async function (newVal) {
       let vmInstance = this
@@ -889,6 +929,214 @@ export default {
             this.$Message.success('店铺删除成功!')
             this.$store.dispatch('setAPILastResponse', respBody)
             this.deleteModal = false
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
+    addNewTagSpec () {
+      this.$Modal.confirm({
+        title: '新增标签',
+        render: (h) => {
+          return h('Input', {
+            props: {
+              value: this.shopTagInOp,
+              autofocus: true,
+              placeholder: '分类标签名称'
+            },
+            on: {
+              input: (val) => {
+                this.shopTagInOp = val
+              }
+            }
+          })
+        },
+        onOk: () => {
+          if (!this.shopTagInOp) {
+            this.$Message.error('分类标签不能为空')
+          } else {
+            this.addShopSpecTagsDic(this.shopTagInOp).then(() => {
+              this.shopTagDic.push(this.shopTagInOp)
+              this.shopTagInOp = ''
+            }).catch((err) => {
+              this.$Message.error(err.message)
+            })
+          }
+        },
+        onCancel: () => {
+          this.shopTagInOp = ''
+        }
+      })
+    },
+    editTagSpec (tag) {
+      this.shopTagInOp = tag
+      this.$Modal.confirm({
+        title: '修改标签',
+        render: (h) => {
+          return h('Input', {
+            props: {
+              value: this.shopTagInOp,
+              autofocus: true,
+              placeholder: '分类标签名称'
+            },
+            on: {
+              input: (val) => {
+                this.shopTagInOp = val
+              }
+            }
+          })
+        },
+        onOk: () => {
+          if (!this.shopTagInOp) {
+            this.$Message.error('分类标签不能为空')
+          } else {
+            this.editShopSpecTagsDic(tag, this.shopTagInOp).then(() => {
+              this.shopTagDic.splice(this.shopTagDic.indexOf(tag), 1)
+              this.shopTagDic.push(this.shopTagInOp)
+              this.shopTagInOp = ''
+            }).catch((err) => {
+              this.$Message.error(err.message)
+            })
+          }
+        },
+        onCancel: () => {
+          this.shopTagInOp = ''
+        }
+      })
+    },
+    deleteTagSpec (tag) {
+      this.shopTagInOp = tag
+      this.$Modal.confirm({
+        title: '删除标签',
+        content: '确认删除标签\'' + tag + '\'么?',
+        onOk: () => {
+          if (!this.shopTagInOp) {
+            this.$Message.error('分类标签不能为空')
+          } else {
+            this.deleteShopSpecTagsDic(tag).then(() => {
+              this.shopTagDic.splice(this.shopTagDic.indexOf(tag), 1)
+              this.shopTagInOp = ''
+            }).catch((err) => {
+              this.$Message.error(err.message)
+            })
+          }
+        },
+        onCancel: () => {
+          this.shopTagInOp = ''
+        }
+      })
+    },
+    async getShopSpecTagsDic () {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'groups',
+        apiAction: 'listshoptagdic',
+        apiQuery: {}
+      }
+      this.apiData = {
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            // this.$Message.error('授权信息获取失败！(' + respBody.message + ')')
+            reject(new Error('失败！(' + respBody.message + ')'))
+          } else {
+            // this.$Message.success('列表载入成功!')
+            this.$store.dispatch('setAPILastResponse', respBody)
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
+    async addShopSpecTagsDic (tag) {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'groups',
+        apiAction: 'addshoptagdic',
+        apiQuery: {}
+      }
+      this.apiData = {
+        tag: tag
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            // this.$Message.error('授权信息获取失败！(' + respBody.message + ')')
+            reject(new Error('失败！(' + respBody.message + ')'))
+          } else {
+            // this.$Message.success('列表载入成功!')
+            this.$store.dispatch('setAPILastResponse', respBody)
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
+    async editShopSpecTagsDic (tag, tagNew) {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'groups',
+        apiAction: 'editshoptagdic',
+        apiQuery: {}
+      }
+      this.apiData = {
+        tag: tag,
+        tag_new: tagNew
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            // this.$Message.error('授权信息获取失败！(' + respBody.message + ')')
+            reject(new Error('失败！(' + respBody.message + ')'))
+          } else {
+            // this.$Message.success('列表载入成功!')
+            this.$store.dispatch('setAPILastResponse', respBody)
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
+    async deleteShopSpecTagsDic (tag) {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'groups',
+        apiAction: 'deleteshoptagdic',
+        apiQuery: {}
+      }
+      this.apiData = {
+        tag: tag
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            // this.$Message.error('授权信息获取失败！(' + respBody.message + ')')
+            reject(new Error('失败！(' + respBody.message + ')'))
+          } else {
+            // this.$Message.success('列表载入成功!')
+            this.$store.dispatch('setAPILastResponse', respBody)
             resolve(respBody.data)
           }
         }).catch(err => {
