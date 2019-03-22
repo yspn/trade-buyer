@@ -771,7 +771,7 @@ export default {
         }
         let date = new Date()
         for (let i = 1; i <= 6; i++) {
-          let curDate = date.setUTCHours(-24 * i)
+          let curDate = new Date(date).setUTCHours(-24 * i)
           await this.getDateShopTrades(curDate, [shop]).then(list => {
             if (list.length) {
               let shopData = list[0]
@@ -834,7 +834,7 @@ export default {
         }
         let date = new Date()
         for (let i = 1; i <= 6; i++) {
-          let curDate = date.setUTCHours(-24 * i)
+          let curDate = new Date(date).setUTCHours(-24 * i)
           await this.getDateShopTrades(curDate).then(list => {
             list.forEach((item) => {
               this.recentShopTrades['day' + i].total += item.tradeCount

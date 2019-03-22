@@ -636,16 +636,16 @@ export default {
       this.refreshList()
     },
     updateShopAuthority () {
-      this.data.forEach(async (shop) => {
-        if (!shop.trade_authorized || typeof shop.trade_authorized !== 'number' || new Date(shop.trade_authorized * 1000).getTime() <= new Date().getTime()) {
-          await this.getAuthorityStatus(shop.name).then((shopSaved) => {
-            this.$set(shop, 'trade_authorized', shopSaved.trade_authorized)
-          }).catch(err => {
-            console.log(err.message)
-            this.$Message.error('授权信息获取失败！(' + err.message + ')')
-          })
-        }
-      })
+      // this.data.forEach(async (shop) => {
+      //   if (!shop.trade_authorized || typeof shop.trade_authorized !== 'number' || new Date(shop.trade_authorized * 1000).getTime() <= new Date().getTime()) {
+      //     await this.getAuthorityStatus(shop.name).then((shopSaved) => {
+      //       this.$set(shop, 'trade_authorized', shopSaved.trade_authorized)
+      //     }).catch(err => {
+      //       console.log(err.message)
+      //       this.$Message.error('授权信息获取失败！(' + err.message + ')')
+      //     })
+      //   }
+      // })
     },
     async getAuthorityStatus (shopNick) {
       this.apiItem = {
