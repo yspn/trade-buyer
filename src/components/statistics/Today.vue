@@ -101,7 +101,7 @@
       </ul>
     </div>
     <div class="shop-ranks" v-if="['god'].indexOf($store.getters.user.role)>-1">
-      <Card class="today">
+      <Card class="today" v-if="todayShopRank && todayShopRank.length">
         <p slot="title">
           <Icon type="podium"></Icon>
           今日店铺订单排行
@@ -156,7 +156,7 @@
           </li>
         </ul>
       </Card>
-      <Card class="yesterday">
+      <Card class="yesterday" v-if="yesterdayShopRank && yesterdayShopRank.length">
         <p slot="title">
           <Icon type="podium"></Icon>
           昨日店铺订单排行
@@ -211,7 +211,7 @@
           </li>
         </ul>
       </Card>
-      <Card class="daybeforeyesterday">
+      <Card class="daybeforeyesterday" v-if="daybeforeyesterdayShopRank && daybeforeyesterdayShopRank.length">
         <p slot="title">
           <Icon type="podium"></Icon>
           前天店铺订单排行
@@ -266,9 +266,7 @@
           </li>
         </ul>
       </Card>
-    </div>
-    <div class="shop-ranks profit-rank" v-if="['god'].indexOf($store.getters.user.role)>-1">
-      <Card class="today">
+      <Card class="today" v-if="todayShopRank_Profit && todayShopRank_Profit.length">
         <p slot="title">
           <Icon type="podium"></Icon>
           昨日店铺利润排行
@@ -278,11 +276,172 @@
             <span class="rank-index"></span>
             <span class="rank-shopname">店铺</span>
             <span class="rank-group"><b>店群</b></span>
-            <span class="rank-tradecount">
+            <span class="rank-profit">
               利润
             </span>
+            <span class="rank-profitratio">
+              利润率
+            </span>
           </li>
-          <li v-for="(shop, idx) in todayShopRank_Profit" :key="idx">
+          <li v-for="(shop, idx) in todayShopRank_Profit.slice(0, 100)" :key="idx">
+            <span class="rank-index">{{ idx + 1 }}.</span>
+            <span class="rank-shopname">
+              <Poptip trigger="hover" :title="shop.name" @on-popper-show="getRankPoptipContent(shop.name)" @on-popper-hide="clearRankPoptipContent">
+                {{ shop.name }}
+                <div class="rank-shop-recent" slot="content" :ref="'rank-today-poptip-content-' + idx">
+                  <div v-if="!rankShopRecentTrades.shop">加载中...</div>
+                  <div class="recent" v-if="rankShopRecentTrades.shop">
+                    <div class="shop-tags">
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Button type="ghost" @click="editShopTags(shop.name)" size="small" icon="plus">标签</Button>
+                    </div>
+                    <ul>
+                      <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day3}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day4}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day5}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day6}}</span></li>
+                    </ul>
+                  </div>
+                  <div class="recent-chart" id="rankShopRecentChart" v-if="rankShopRecentTrades.shop"></div>
+                </div>
+              </Poptip>
+            </span>
+            <span class="rank-group">{{ shop.group }}</span>
+            <span class="rank-profit">
+              {{Math.round(shop.profit).toLocaleString()}}
+            </span>
+            <span class="rank-profitratio">
+              {{Math.round(shop.profitRatio*1000)/10}}%
+            </span>
+          </li>
+        </ul>
+      </Card>
+      <Card class="yesterday" v-if="yesterdayShopRank_Profit && yesterdayShopRank_Profit.length">
+        <p slot="title">
+          <Icon type="podium"></Icon>
+          前天店铺利润排行
+        </p>
+        <ul>
+          <li>
+            <span class="rank-index"></span>
+            <span class="rank-shopname">店铺</span>
+            <span class="rank-group"><b>店群</b></span>
+            <span class="rank-profit">
+              利润
+            </span>
+            <span class="rank-profitratio">
+              利润率
+            </span>
+          </li>
+          <li v-for="(shop, idx) in yesterdayShopRank_Profit.slice(0, 100)" :key="idx">
+            <span class="rank-index">{{ idx + 1 }}.</span>
+            <span class="rank-shopname">
+              <Poptip trigger="hover" :title="shop.name" @on-popper-show="getRankPoptipContent(shop.name)" @on-popper-hide="clearRankPoptipContent">
+                {{ shop.name }}
+                <div class="rank-shop-recent" slot="content" :ref="'rank-today-poptip-content-' + idx">
+                  <div v-if="!rankShopRecentTrades.shop">加载中...</div>
+                  <div class="recent" v-if="rankShopRecentTrades.shop">
+                    <div class="shop-tags">
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Button type="ghost" @click="editShopTags(shop.name)" size="small" icon="plus">标签</Button>
+                    </div>
+                    <ul>
+                      <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day3}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day4}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day5}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day6}}</span></li>
+                    </ul>
+                  </div>
+                  <div class="recent-chart" id="rankShopRecentChart" v-if="rankShopRecentTrades.shop"></div>
+                </div>
+              </Poptip>
+            </span>
+            <span class="rank-group">{{ shop.group }}</span>
+            <span class="rank-profit">
+              {{Math.round(shop.profit).toLocaleString()}}
+            </span>
+            <span class="rank-profitratio">
+              {{Math.round(shop.profitRatio*1000)/10}}%
+            </span>
+          </li>
+        </ul>
+      </Card>
+      <Card class="daybeforeyesterday" v-if="daybeforeyesterdayShopRank_Profit && daybeforeyesterdayShopRank_Profit.length">
+        <p slot="title">
+          <Icon type="podium"></Icon>
+          {{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}店铺利润排行
+        </p>
+        <ul>
+          <li>
+            <span class="rank-index"></span>
+            <span class="rank-shopname">店铺</span>
+            <span class="rank-group"><b>店群</b></span>
+            <span class="rank-profit">
+              利润
+            </span>
+            <span class="rank-profitratio">
+              利润率
+            </span>
+          </li>
+          <li v-for="(shop, idx) in daybeforeyesterdayShopRank_Profit.slice(0, 100)" :key="idx">
+            <span class="rank-index">{{ idx + 1 }}.</span>
+            <span class="rank-shopname">
+              <Poptip trigger="hover" :title="shop.name" @on-popper-show="getRankPoptipContent(shop.name)" @on-popper-hide="clearRankPoptipContent">
+                {{ shop.name }}
+                <div class="rank-shop-recent" slot="content" :ref="'rank-today-poptip-content-' + idx">
+                  <div v-if="!rankShopRecentTrades.shop">加载中...</div>
+                  <div class="recent" v-if="rankShopRecentTrades.shop">
+                    <div class="shop-tags">
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Button type="ghost" @click="editShopTags(shop.name)" size="small" icon="plus">标签</Button>
+                    </div>
+                    <ul>
+                      <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day3}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day4}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day5}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day6}}</span></li>
+                    </ul>
+                  </div>
+                  <div class="recent-chart" id="rankShopRecentChart" v-if="rankShopRecentTrades.shop"></div>
+                </div>
+              </Poptip>
+            </span>
+            <span class="rank-group">{{ shop.group }}</span>
+            <span class="rank-profit">
+              {{Math.round(shop.profit).toLocaleString()}}
+            </span>
+            <span class="rank-profitratio">
+              {{Math.round(shop.profitRatio*1000)/10}}%
+            </span>
+          </li>
+        </ul>
+      </Card>
+    </div>
+    <div class="shop-ranks tags-rank" v-if="['god'].indexOf($store.getters.user.role)>-1">
+      <Card class="today" v-for="(tagItem, tagIdx) in tagShopRanks" :key="'tagRank' + tagIdx">
+        <p slot="title">
+          <Icon type="podium"></Icon>
+          【{{tagItem.tag}}】{{tagItem.dateText}}店铺订单排行
+        </p>
+        <ul>
+          <li>
+            <span class="rank-index"></span>
+            <span class="rank-shopname">店铺</span>
+            <span class="rank-group"><b>店群</b></span>
+            <span class="rank-tradecount">
+              订单数
+            </span>
+            <span class="rank-shift">
+              对比
+            </span>
+          </li>
+          <li v-for="(shop, idx) in tagItem.data" :key="idx">
             <span class="rank-index">{{ idx + 1 }}.</span>
             <span class="rank-shopname">
               <Poptip trigger="hover" :title="shop.shop" @on-popper-show="getRankPoptipContent(shop.shop)" @on-popper-hide="clearRankPoptipContent">
@@ -309,167 +468,6 @@
             </span>
             <span class="rank-group">{{ shop.group }}</span>
             <span class="rank-tradecount">
-              {{shop.profit}}
-            </span>
-          </li>
-        </ul>
-      </Card>
-    </div>
-    <div class="shop-ranks pets-rank" v-if="['god'].indexOf($store.getters.user.role)>-1">
-      <Card class="today">
-        <p slot="title">
-          <Icon type="podium"></Icon>
-          【宠物】今日店铺订单排行
-        </p>
-        <ul>
-          <li>
-            <span class="rank-index"></span>
-            <span class="rank-shopname">店铺</span>
-            <span class="rank-group"><b>店群</b></span>
-            <span class="rank-tradecount">
-              订单数
-            </span>
-            <span class="rank-shift">
-              对比
-            </span>
-          </li>
-          <li v-for="(shop, idx) in todayShopRank_Pets" :key="idx">
-            <span class="rank-index">{{ idx + 1 }}.</span>
-            <span class="rank-shopname">
-              <Poptip trigger="hover" :title="shop.shop" @on-popper-show="getRankPoptipContent(shop.shop)" @on-popper-hide="clearRankPoptipContent">
-                {{ shop.shop }}
-                <div class="rank-shop-recent" slot="content" :ref="'rank-today-poptip-content-' + idx">
-                  <div v-if="!rankShopRecentTrades.shop">加载中...</div>
-                  <div class="recent" v-if="rankShopRecentTrades.shop">
-                    <div class="shop-tags">
-                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
-                      <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
-                    </div>
-                    <ul>
-                      <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day3}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day4}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day5}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day6}}</span></li>
-                    </ul>
-                  </div>
-                  <div class="recent-chart" id="rankShopRecentChart" v-if="rankShopRecentTrades.shop"></div>
-                </div>
-              </Poptip>
-            </span>
-            <span class="rank-group">{{ shop.group }}</span>
-            <span class="rank-tradecount">
-              {{shop.tradeCount}}
-            </span>
-            <span class="rank-shift">
-              <span v-if="shop.yesterdayRank==='300+'" class="font-green">↑300+</span>
-              <span v-else-if="shop.yesterdayRank > shop.rank" class="font-green">↑{{shop.yesterdayRank - shop.rank}}</span>
-              <span v-else-if="shop.rank > shop.yesterdayRank" class="font-red">↓{{shop.rank - shop.yesterdayRank}}</span>
-              <span v-else>--</span>
-            </span>
-          </li>
-        </ul>
-      </Card>
-      <Card class="yesterday">
-        <p slot="title">
-          <Icon type="podium"></Icon>
-          【宠物】昨日店铺订单排行
-        </p>
-        <ul>
-          <li>
-            <span class="rank-index"></span>
-            <span class="rank-shopname">店铺</span>
-            <span class="rank-group"><b>店群</b></span>
-            <span class="rank-tradecount">
-              订单数
-            </span>
-            <span class="rank-shift">
-              对比
-            </span>
-          </li>
-          <li v-for="(shop, idx) in yesterdayShopRank_Pets" :key="idx">
-            <span class="rank-index">{{ idx + 1 }}.</span>
-            <span class="rank-shopname">
-              <Poptip trigger="hover" :title="shop.shop" @on-popper-show="getRankPoptipContent(shop.shop)" @on-popper-hide="clearRankPoptipContent">
-                {{ shop.shop }}
-                <div class="rank-shop-recent" slot="content" :ref="'rank-yesterday-poptip-content-' + idx">
-                  <div v-if="!rankShopRecentTrades.shop">加载中...</div>
-                  <div class="recent" v-if="rankShopRecentTrades.shop">
-                    <div class="shop-tags">
-                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
-                      <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
-                    </div>
-                    <ul>
-                      <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day3}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day4}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day5}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day6}}</span></li>
-                    </ul>
-                  </div>
-                  <div class="recent-chart" id="rankShopRecentChart" v-if="rankShopRecentTrades.shop"></div>
-                </div>
-              </Poptip>
-            </span>
-            <span class="rank-group">{{ shop.group }}</span>
-            <span class="rank-tradecount">
-              {{shop.tradeCount}}
-            </span>
-            <span class="rank-shift">
-              <span v-if="shop.yesterdayRank==='300+'" class="font-green">↑300+</span>
-              <span v-else-if="shop.yesterdayRank > shop.rank" class="font-green">↑{{shop.yesterdayRank - shop.rank}}</span>
-              <span v-else-if="shop.rank > shop.yesterdayRank" class="font-red">↓{{shop.rank - shop.yesterdayRank}}</span>
-              <span v-else>--</span>
-            </span>
-          </li>
-        </ul>
-      </Card>
-      <Card class="daybeforeyesterday">
-        <p slot="title">
-          <Icon type="podium"></Icon>
-          【宠物】前天店铺订单排行
-        </p>
-        <ul>
-          <li>
-            <span class="rank-index"></span>
-            <span class="rank-shopname">店铺</span>
-            <span class="rank-group"><b>店群</b></span>
-            <span class="rank-tradecount">
-              订单数
-            </span>
-            <span class="rank-shift">
-              对比
-            </span>
-          </li>
-          <li v-for="(shop, idx) in daybeforeyesterdayShopRank_Pets" :key="idx">
-            <span class="rank-index">{{ idx + 1 }}.</span>
-            <span class="rank-shopname">
-              <Poptip trigger="hover" :title="shop.shop" @on-popper-show="getRankPoptipContent(shop.shop)" @on-popper-hide="clearRankPoptipContent">
-                {{ shop.shop }}
-                <div class="rank-shop-recent" slot="content" :ref="'rank-daybeforeyesterday-poptip-content-' + idx">
-                  <div v-if="!rankShopRecentTrades.shop">加载中...</div>
-                  <div class="recent" v-if="rankShopRecentTrades.shop">
-                    <div class="shop-tags">
-                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
-                      <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
-                    </div>
-                    <ul>
-                      <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day3}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day4}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day5}}</span></li>
-                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day6}}</span></li>
-                    </ul>
-                  </div>
-                  <div class="recent-chart" id="rankShopRecentChart" v-if="rankShopRecentTrades.shop"></div>
-                </div>
-              </Poptip>
-            </span>
-            <span class="rank-group">{{ shop.group }}</span>
-            <span class="rank-tradecount">
               {{shop.tradeCount}}
             </span>
             <span class="rank-shift">
@@ -482,6 +480,19 @@
         </ul>
       </Card>
     </div>
+    <Button type="ghost" shape="circle" icon="grid" long size="large" v-if="['god'].indexOf($store.getters.user.role)>-1" @click="godDashboardMngModal=true">管理看板</Button>
+    <Modal v-model="godDashboardMngModal" title="管理看板" v-if="['god'].indexOf($store.getters.user.role)>-1" @on-ok="setGodDashboardSettings">
+      <div>
+        <Transfer
+          :data="godDashboardsDic"
+          :target-keys="godDashboardSettings"
+          @on-change="changeGodDashboardSettingTransfer"
+        ></Transfer>
+        <!-- <CheckboxGroup v-model="godDashboardSettings">
+          <Checkbox v-for="(item, idx) in godDashboardsDic" :key="idx" :label="item.displayName" :true-value="item.name"></Checkbox>
+        </CheckboxGroup> -->
+      </div>
+    </Modal>
     <Modal v-model="showTagModal" title="店铺标签" v-if="['god'].indexOf($store.getters.user.role)>-1" @on-ok="setShopSpecTags">
       <div>
         <CheckboxGroup v-model="rankShopTags">
@@ -555,9 +566,47 @@ export default {
           shops: []
         }
       },
+      godDashboardMngModal: false,
+      godDashboardSettings: [], // god 看板列表
+      godDashboardsDic: [ // god 看板备选列表,增加tags
+        {
+          key: 0,
+          name: 'today-trades-rank',
+          label: '今日订单排序'
+        },
+        {
+          key: 1,
+          name: 'yesterday-trades-rank',
+          label: '昨日订单排序'
+        },
+        {
+          key: 2,
+          name: 'daybeforeyesterday-trades-rank',
+          label: '前天订单排序'
+        },
+        {
+          key: 3,
+          name: 'today-profit-rank',
+          label: '今日利润排序'
+        },
+        {
+          key: 4,
+          name: 'yesterday-profit-rank',
+          label: '昨日利润排序'
+        },
+        {
+          key: 5,
+          name: 'daybeforeyesterday-profit-rank',
+          label: '前天利润排序'
+        }
+      ],
       todayShopRank: [],
       yesterdayShopRank: [],
       daybeforeyesterdayShopRank: [],
+      todayShopRank_Profit: [],
+      yesterdayShopRank_Profit: [],
+      daybeforeyesterdayShopRank_Profit: [],
+      tagShopRanks: [],
       todayShopRank_Pets: [],
       yesterdayShopRank_Pets: [],
       daybeforeyesterdayShopRank_Pets: [],
@@ -580,13 +629,6 @@ export default {
   mounted () {
     this.colorSelections.sort(randomSort) // 随机排序颜色
     this.entrance()
-    if (this.$store.getters.user.role === 'god') {
-      this.getShopSpecTagsDic().then((list) => {
-        this.shopTagDic = list.map((item) => {
-          return item.tag
-        })
-      })
-    }
     // this.calcTodayProfit('today')
     // this.calcTodayProfit('monthly')
     // this.calcTodayProfit('total')
@@ -614,44 +656,198 @@ export default {
         this.getTodayStatistics()
         await this.getTodayShopTrades().then(async () => {
           if (this.$store.getters.user.role === 'god') {
+            console.log(1)
+            this.getShopSpecTagsDic().then((list) => {
+              this.shopTagDic = list.map((item) => {
+                return item.tag
+              })
+              list.forEach((item, index) => {
+                this.godDashboardsDic.push({
+                  key: 5 + (index * 3 + 1),
+                  name: 'today-trades-rank-tag',
+                  label: '【' + item.tag + '】今日订单排序',
+                  tag: item.tag
+                })
+                this.godDashboardsDic.push({
+                  key: 5 + (index * 3 + 2),
+                  name: 'yesterday-trades-rank-tag',
+                  label: '【' + item.tag + '】昨日订单排序',
+                  tag: item.tag
+                })
+                this.godDashboardsDic.push({
+                  key: 5 + (index * 3 + 3),
+                  name: 'yesterday-trades-rank-tag',
+                  label: '【' + item.tag + '】前天订单排序',
+                  tag: item.tag
+                })
+              })
+            })
             await this.getRecentShopTrades().then(() => {
               // for (let i = 0; i < this.todayShopTrades.length; i++) {
               //   this.drawRecentShopTradesChart(i)
               // }
             })
-            await this.getDateShopTradesRank().then((list) => {
-              this.todayShopRank = list.sort((a, b) => {
-                return b.tradeCount - a.tradeCount
-              })
-            })
-            await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
-              this.yesterdayShopRank = list.sort((a, b) => {
-                return b.tradeCount - a.tradeCount
-              })
-            })
-            await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
-              this.daybeforeyesterdayShopRank = list.sort((a, b) => {
-                return b.tradeCount - a.tradeCount
-              })
-            })
-            await this.getDateShopTradesRank(new Date().toISOString(), ['宠物']).then((list) => {
-              this.todayShopRank_Pets = list.sort((a, b) => {
-                return b.tradeCount - a.tradeCount
-              })
-            })
-            await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString(), ['宠物']).then((list) => {
-              this.yesterdayShopRank_Pets = list.sort((a, b) => {
-                return b.tradeCount - a.tradeCount
-              })
-            })
-            await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString(), ['宠物']).then((list) => {
-              this.daybeforeyesterdayShopRank_Pets = list.sort((a, b) => {
-                return b.tradeCount - a.tradeCount
-              })
-            })
+            this.initGodDashboard()
+            // await this.getDateShopTradesRank().then((list) => {
+            //   this.todayShopRank = list.sort((a, b) => {
+            //     return b.tradeCount - a.tradeCount
+            //   })
+            // })
+            // await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
+            //   this.yesterdayShopRank = list.sort((a, b) => {
+            //     return b.tradeCount - a.tradeCount
+            //   })
+            // })
+            // await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
+            //   this.daybeforeyesterdayShopRank = list.sort((a, b) => {
+            //     return b.tradeCount - a.tradeCount
+            //   })
+            // })
+            // await this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
+            //   this.todayShopRank_Profit = list.sort((a, b) => {
+            //     return b.profit - a.profit
+            //   })
+            // })
+            // await this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
+            //   this.yesterdayShopRank_Profit = list.sort((a, b) => {
+            //     return b.profit - a.profit
+            //   })
+            // })
+            // await this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 3)).toISOString()).then((list) => {
+            //   this.daybeforeyesterdayShopRank_Profit = list.sort((a, b) => {
+            //     return b.profit - a.profit
+            //   })
+            // })
+            // await this.getDateShopTradesRank(new Date().toISOString(), ['宠物']).then((list) => {
+            //   this.todayShopRank_Pets = list.sort((a, b) => {
+            //     return b.tradeCount - a.tradeCount
+            //   })
+            // })
+            // await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString(), ['宠物']).then((list) => {
+            //   this.yesterdayShopRank_Pets = list.sort((a, b) => {
+            //     return b.tradeCount - a.tradeCount
+            //   })
+            // })
+            // await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString(), ['宠物']).then((list) => {
+            //   this.daybeforeyesterdayShopRank_Pets = list.sort((a, b) => {
+            //     return b.tradeCount - a.tradeCount
+            //   })
+            // })
           }
         })
       }
+    },
+    initGodDashboard () {
+      window.chrome.storage.local.get(['widgetList'], (result) => {
+        let widgets = []
+        if (result.widgetList && result.widgetList instanceof Array) {
+          widgets = result.widgetList
+        }
+        widgets.forEach((widget) => {
+          let tag = widget.tag
+          switch (widget.name) {
+            case 'today-trades-rank':
+              this.getDateShopTradesRank().then((list) => {
+                this.todayShopRank = list.sort((a, b) => {
+                  return b.tradeCount - a.tradeCount
+                })
+              })
+              break
+            case 'yesterday-trades-rank':
+              this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
+                this.yesterdayShopRank = list.sort((a, b) => {
+                  return b.tradeCount - a.tradeCount
+                })
+              })
+              break
+            case 'daybeforeyesterday-trades-rank':
+              this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
+                this.daybeforeyesterdayShopRank = list.sort((a, b) => {
+                  return b.tradeCount - a.tradeCount
+                })
+              })
+              break
+            case 'today-profit-rank':
+              this.getDateShopProfitRank().then((list) => {
+                this.todayShopRank_Profit = list.sort((a, b) => {
+                  return b.tradeCount - a.tradeCount
+                })
+              })
+              break
+            case 'yesterday-profit-rank':
+              this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
+                this.yesterdayShopRank_Profit = list.sort((a, b) => {
+                  return b.tradeCount - a.tradeCount
+                })
+              })
+              break
+            case 'daybeforeyesterday-profit-rank':
+              this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
+                this.daybeforeyesterdayShopRank_Profit = list.sort((a, b) => {
+                  return b.tradeCount - a.tradeCount
+                })
+              })
+              break
+            case 'today-trades-rank-tag':
+              if (tag) {
+                this.getDateShopProfitRank(new Date().toISOString(), [tag]).then((list) => {
+                  this.tagShopRanks.push({
+                    tag: tag,
+                    date: 'today',
+                    dateText: '今日',
+                    data: list.sort((a, b) => {
+                      return b.tradeCount - a.tradeCount
+                    })
+                  })
+                })
+              }
+              break
+            case 'yesterday-trades-rank-tag':
+              if (tag) {
+                this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 1), [tag]).toISOString()).then((list) => {
+                  this.tagShopRanks.push({
+                    tag: tag,
+                    date: 'yesterday',
+                    dateText: '昨日',
+                    data: list.sort((a, b) => {
+                      return b.tradeCount - a.tradeCount
+                    })
+                  })
+                })
+              }
+              break
+            case 'daybeforeyesterday-trades-rank-tag':
+              if (tag) {
+                this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 2), [tag]).toISOString()).then((list) => {
+                  this.tagShopRanks.push({
+                    tag: tag,
+                    date: 'daybeforeyesterday',
+                    dateText: '前天',
+                    data: list.sort((a, b) => {
+                      return b.tradeCount - a.tradeCount
+                    })
+                  })
+                })
+              }
+              break
+          }
+        })
+      })
+    },
+    changeGodDashboardSettingTransfer (newTargetKeys, direction, moveKeys) {
+      this.godDashboardSettings = newTargetKeys
+    },
+    setGodDashboardSettings () {
+      let settings = []
+      this.godDashboardSettings.forEach((settingIdx) => {
+        settings.push(this.godDashboardsDic.filter((dic) => {
+          return dic.key === settingIdx
+        })[0])
+      })
+      // console.log(settings)
+      window.chrome.storage.local.set({'widgetList': settings}, (result) => {
+        this.initGodDashboard()
+      })
     },
     async getBuyers () {
       this.loading = true
@@ -980,6 +1176,37 @@ export default {
           apiHost: '',
           apiService: 'trades',
           apiAction: 'getdateshoptradesrank',
+          apiQuery: {}
+        }
+        this.apiData = {
+          date: date || new Date().toUTCString()
+        }
+        if (tags && tags instanceof Array && tags.length) {
+          this.apiData.tags = tags
+        }
+        this.$store.dispatch('setAPIStore', this.apiItem)
+        var apiUrl = this.$store.getters.apiUrl
+        this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            reject(new Error(respBody.message))
+            // this.$Message.error('今日店铺订单获取失败！(' + respBody.message + ')')
+          } else {
+            // this.$Message.success('列表载入成功!')
+            resolve(respBody.data)
+            this.$store.dispatch('setAPILastResponse', respBody)
+          }
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    getDateShopProfitRank (date, tags) {
+      return new Promise((resolve, reject) => {
+        this.apiItem = {
+          apiHost: '',
+          apiService: 'trades',
+          apiAction: 'getdateshopprofitrank',
           apiQuery: {}
         }
         this.apiData = {
@@ -1600,6 +1827,16 @@ ul {
         text-align: center;
       }
       .rank-tradecount {
+        width: 60px;
+        text-align: right;
+        font-weight: bold;
+      }
+      .rank-profit {
+        width: 100px;
+        text-align: right;
+        font-weight: bold;
+      }
+      .rank-profitratio {
         width: 60px;
         text-align: right;
         font-weight: bold;
