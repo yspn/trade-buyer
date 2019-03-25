@@ -127,7 +127,7 @@
                   <div v-if="!rankShopRecentTrades.shop">加载中...</div>
                   <div class="recent" v-if="rankShopRecentTrades.shop">
                     <div class="shop-tags">
-                      <Tag type="border" closable color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
                       <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
                     </div>
                     <ul>
@@ -181,6 +181,10 @@
                 <div class="rank-shop-recent" slot="content" :ref="'rank-yesterday-poptip-content-' + idx">
                   <div v-if="!rankShopRecentTrades.shop">加载中...</div>
                   <div class="recent" v-if="rankShopRecentTrades.shop">
+                    <div class="shop-tags">
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
+                    </div>
                     <ul>
                       <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
                       <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
@@ -232,6 +236,10 @@
                 <div class="rank-shop-recent" slot="content" :ref="'rank-daybeforeyesterday-poptip-content-' + idx">
                   <div v-if="!rankShopRecentTrades.shop">加载中...</div>
                   <div class="recent" v-if="rankShopRecentTrades.shop">
+                    <div class="shop-tags">
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
+                    </div>
                     <ul>
                       <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
                       <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
@@ -254,6 +262,54 @@
               <span v-else-if="shop.yesterdayRank > shop.rank" class="font-green">↑{{shop.yesterdayRank - shop.rank}}</span>
               <span v-else-if="shop.rank > shop.yesterdayRank" class="font-red">↓{{shop.rank - shop.yesterdayRank}}</span>
               <span v-else>--</span>
+            </span>
+          </li>
+        </ul>
+      </Card>
+    </div>
+    <div class="shop-ranks profit-rank" v-if="['god'].indexOf($store.getters.user.role)>-1">
+      <Card class="today">
+        <p slot="title">
+          <Icon type="podium"></Icon>
+          昨日店铺利润排行
+        </p>
+        <ul>
+          <li>
+            <span class="rank-index"></span>
+            <span class="rank-shopname">店铺</span>
+            <span class="rank-group"><b>店群</b></span>
+            <span class="rank-tradecount">
+              利润
+            </span>
+          </li>
+          <li v-for="(shop, idx) in todayShopRank_Profit" :key="idx">
+            <span class="rank-index">{{ idx + 1 }}.</span>
+            <span class="rank-shopname">
+              <Poptip trigger="hover" :title="shop.shop" @on-popper-show="getRankPoptipContent(shop.shop)" @on-popper-hide="clearRankPoptipContent">
+                {{ shop.shop }}
+                <div class="rank-shop-recent" slot="content" :ref="'rank-today-poptip-content-' + idx">
+                  <div v-if="!rankShopRecentTrades.shop">加载中...</div>
+                  <div class="recent" v-if="rankShopRecentTrades.shop">
+                    <div class="shop-tags">
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
+                    </div>
+                    <ul>
+                      <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*3)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day3}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*4)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day4}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*5)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day5}}</span></li>
+                      <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day6}}</span></li>
+                    </ul>
+                  </div>
+                  <div class="recent-chart" id="rankShopRecentChart" v-if="rankShopRecentTrades.shop"></div>
+                </div>
+              </Poptip>
+            </span>
+            <span class="rank-group">{{ shop.group }}</span>
+            <span class="rank-tradecount">
+              {{shop.profit}}
             </span>
           </li>
         </ul>
@@ -285,6 +341,10 @@
                 <div class="rank-shop-recent" slot="content" :ref="'rank-today-poptip-content-' + idx">
                   <div v-if="!rankShopRecentTrades.shop">加载中...</div>
                   <div class="recent" v-if="rankShopRecentTrades.shop">
+                    <div class="shop-tags">
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
+                    </div>
                     <ul>
                       <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
                       <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
@@ -336,6 +396,10 @@
                 <div class="rank-shop-recent" slot="content" :ref="'rank-yesterday-poptip-content-' + idx">
                   <div v-if="!rankShopRecentTrades.shop">加载中...</div>
                   <div class="recent" v-if="rankShopRecentTrades.shop">
+                    <div class="shop-tags">
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
+                    </div>
                     <ul>
                       <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
                       <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
@@ -387,6 +451,10 @@
                 <div class="rank-shop-recent" slot="content" :ref="'rank-daybeforeyesterday-poptip-content-' + idx">
                   <div v-if="!rankShopRecentTrades.shop">加载中...</div>
                   <div class="recent" v-if="rankShopRecentTrades.shop">
+                    <div class="shop-tags">
+                      <Tag type="border" color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
+                      <Button type="ghost" @click="editShopTags(shop.shop)" size="small" icon="plus">标签</Button>
+                    </div>
                     <ul>
                       <li><span class="recent-title">昨日:</span><span class="recent-digit">{{rankShopRecentTrades.day1}}</span></li>
                       <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*2)).Format('MM-dd')}}:</span><span class="recent-digit">{{rankShopRecentTrades.day2}}</span></li>
@@ -414,6 +482,14 @@
         </ul>
       </Card>
     </div>
+    <Modal v-model="showTagModal" title="店铺标签" v-if="['god'].indexOf($store.getters.user.role)>-1" @on-ok="setShopSpecTags">
+      <div>
+        <CheckboxGroup v-model="rankShopTags">
+          <Checkbox v-for="(tag, idx) in shopTagDic" :key="idx" :label="tag"></Checkbox>
+          <Button size="small" type="ghost" icon="plus" @click="addNewTagSpec">新增</Button>
+        </CheckboxGroup>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -494,6 +570,8 @@ export default {
         day5: 0,
         day6: 0
       },
+      showTagModal: false,
+      shopInOp: '', // 正在被操作的店铺
       rankShopTags: [],
       shopTagDic: ['男装', '女装', '男鞋', '女鞋', '内衣', '童装', '童鞋', '收纳整理', '宠物', '餐饮具', '家居饰品', '流行饰品', '家具', '园艺', '成人', '车品', '3C'],
       shopTagInOp: '' // 当前操作中的tag(增删改)
@@ -502,6 +580,13 @@ export default {
   mounted () {
     this.colorSelections.sort(randomSort) // 随机排序颜色
     this.entrance()
+    if (this.$store.getters.user.role === 'god') {
+      this.getShopSpecTagsDic().then((list) => {
+        this.shopTagDic = list.map((item) => {
+          return item.tag
+        })
+      })
+    }
     // this.calcTodayProfit('today')
     // this.calcTodayProfit('monthly')
     // this.calcTodayProfit('total')
@@ -1062,42 +1147,8 @@ export default {
       })
     },
     editShopTags (shop) {
-      this.$Modal.confirm({
-        title: '店铺标签',
-        render: (h) => {
-          let tags = []
-          if (this.rankShopTags instanceof Array) {
-            this.rankShopTags.forEach((tag) => {
-              tags.push(h('Tag', {
-                props: {
-                  type: 'border',
-                  closable: true,
-                  color: 'green'
-                }
-              }, tag))
-            })
-          }
-          return h('div', {}, [
-            h('div', {}, '店铺名称：' + shop), // <Tag type="border" closable color="green" v-for="(tag, idx) in rankShopTags" :key="idx">{{tag}}</Tag>
-            tags
-          ])
-        },
-        onOk: () => {
-          if (!this.shopTagInOp) {
-            this.$Message.error('分类标签不能为空')
-          } else {
-            this.addShopSpecTagsDic(this.shopTagInOp).then(() => {
-              this.shopTagDic.push(this.shopTagInOp)
-              this.shopTagInOp = ''
-            }).catch((err) => {
-              this.$Message.error(err.message)
-            })
-          }
-        },
-        onCancel: () => {
-          this.shopTagInOp = ''
-        }
-      })
+      this.showTagModal = true
+      this.shopInOp = shop
     },
     addNewTagSpec () {
       this.$Modal.confirm({
@@ -1287,6 +1338,36 @@ export default {
       }
       this.apiData = {
         tag: tag
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            // this.$Message.error('授权信息获取失败！(' + respBody.message + ')')
+            reject(new Error('失败！(' + respBody.message + ')'))
+          } else {
+            // this.$Message.success('列表载入成功!')
+            this.$store.dispatch('setAPILastResponse', respBody)
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
+    async setShopSpecTags () {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'shops',
+        apiAction: 'setshoptagsbyname',
+        apiQuery: {}
+      }
+      this.apiData = {
+        name: this.shopInOp,
+        tags: this.rankShopTags
       }
       this.$store.dispatch('setAPIStore', this.apiItem)
       var apiUrl = this.$store.getters.apiUrl
