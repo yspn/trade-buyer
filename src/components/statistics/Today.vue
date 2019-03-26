@@ -656,7 +656,6 @@ export default {
         this.getTodayStatistics()
         await this.getTodayShopTrades().then(async () => {
           if (this.$store.getters.user.role === 'god') {
-            console.log(1)
             this.getShopSpecTagsDic().then((list) => {
               this.shopTagDic = list.map((item) => {
                 return item.tag
@@ -740,6 +739,14 @@ export default {
     initGodDashboard () {
       window.chrome.storage.local.get(['widgetList'], (result) => {
         let widgets = []
+        this.godDashboardSettings = []
+        this.todayShopRank = []
+        this.yesterdayShopRank = []
+        this.daybeforeyesterdayShopRank = []
+        this.todayShopRank_Profit = []
+        this.yesterdayShopRank_Profit = []
+        this.daybeforeyesterdayShopRank_Profit = []
+        this.tagShopRanks = []
         if (result.widgetList && result.widgetList instanceof Array) {
           widgets = result.widgetList
         }
@@ -831,7 +838,15 @@ export default {
               }
               break
           }
+          this.godDashboardSettings.push(
+            this.godDashboardsDic.indexOf(
+              this.godDashboardsDic.filter((item, idx) => {
+                return item.name === widget.name
+              })[0]
+            )
+          )
         })
+        console.log(this.godDashboardSettings)
       })
     },
     changeGodDashboardSettingTransfer (newTargetKeys, direction, moveKeys) {
