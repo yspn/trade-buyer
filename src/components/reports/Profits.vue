@@ -89,6 +89,12 @@
                   </span>
                 </li>
                 <li>
+                  单均收入：
+                  <span>
+                    {{ shop.tradeCount ? (shop.tradeAmount / shop.tradeCount).toLocaleString() : 0 }}元
+                  </span>
+                </li>
+                <li>
                   支出：
                   <span>
                     {{ shop.orderAmount ? shop.orderAmount.toLocaleString() : 0 }}元

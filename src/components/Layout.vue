@@ -249,7 +249,7 @@ export default {
           this.listenCheckBlackListShop(request, sender, sendResponse)
         })
         this.listenOrderSubmitted()
-        this.listenTBSendListRequest() // 监听修改获取淘宝买手号已发货列表请求
+        // this.listenTBSendListRequest() // 监听修改获取淘宝买手号已发货列表请求
         this.listenModifyTaobaoBoughtItemsRequestHeaders()
         this.listenAddressAPIRequestHeaders() // 监听地址相关H5API，增加Referer
         this.listenTransLinkDetailedHistoryRequestHeaders() // 监视Detail页面，记录页面地址
@@ -302,24 +302,24 @@ export default {
      * 验证当前淘宝在线情况
      */
     checkTaobaoConnection () {
-      // let form = {
-      //   pageNum: 1,
-      //   pageSize: 10,
-      //   auctionStatus: 'SEND',
-      //   prePageNo: 1
-      // }
       let form = {
-        lastStartRow: null,
-        options: 0,
-        queryBizType: null,
-        queryOrder: 'desc',
-        tabCode: 'waitConfirm',
         pageNum: 1,
         pageSize: 10,
-        // auctionStatus: 'SEND',
-        orderStatus: 'SEND',
+        auctionStatus: 'SEND',
         prePageNo: 1
       }
+      // let form = {
+      //   lastStartRow: null,
+      //   options: 0,
+      //   queryBizType: null,
+      //   queryOrder: 'desc',
+      //   tabCode: 'waitConfirm',
+      //   pageNum: 1,
+      //   pageSize: 10,
+      //   // auctionStatus: 'SEND',
+      //   orderStatus: 'SEND',
+      //   prePageNo: 1
+      // }
       let url = 'https://buyertrade.taobao.com/trade/itemlist/asyncBought.htm?action=itemlist/BoughtQueryAction&event_submit_do_query=1&_input_charset=utf8'
       // url = 'https://www.easy-mock.com/mock/5ad70f9da675954fc238c33e/example/orders'
       this.$http.post(url, common.setQueryConfig(form))
@@ -332,11 +332,11 @@ export default {
             } else {
               this.getTBCookies((cookiesArr) => {
                 console.log(cookiesArr)
-                this.uploadTBCookies(cookiesArr).then(() => {
-                  this.downloadTBCookies(this.$store.getters.tbNick).then((res) => {
-                    console.log(res)
-                  })
-                })
+                // this.uploadTBCookies(cookiesArr).then(() => {
+                //   this.downloadTBCookies(this.$store.getters.tbNick).then((res) => {
+                //     console.log(res)
+                //   })
+                // })
               })
               this.currentTBNick = this.$store.getters.tbNick
             }
