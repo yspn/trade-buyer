@@ -302,24 +302,24 @@ export default {
      * 验证当前淘宝在线情况
      */
     checkTaobaoConnection () {
-      // let form = {
-      //   pageNum: 1,
-      //   pageSize: 10,
-      //   auctionStatus: 'SEND',
-      //   prePageNo: 1
-      // }
       let form = {
-        lastStartRow: null,
-        options: 0,
-        queryBizType: null,
-        queryOrder: 'desc',
-        tabCode: 'waitConfirm',
         pageNum: 1,
         pageSize: 10,
-        // auctionStatus: 'SEND',
-        orderStatus: 'SEND',
+        auctionStatus: 'SEND',
         prePageNo: 1
       }
+      // let form = {
+      //   lastStartRow: null,
+      //   options: 0,
+      //   queryBizType: null,
+      //   queryOrder: 'desc',
+      //   tabCode: 'waitConfirm',
+      //   pageNum: 1,
+      //   pageSize: 10,
+      //   // auctionStatus: 'SEND',
+      //   orderStatus: 'SEND',
+      //   prePageNo: 1
+      // }
       let url = 'https://buyertrade.taobao.com/trade/itemlist/asyncBought.htm?action=itemlist/BoughtQueryAction&event_submit_do_query=1&_input_charset=utf8'
       // url = 'https://www.easy-mock.com/mock/5ad70f9da675954fc238c33e/example/orders'
       this.$http.post(url, common.setQueryConfig(form))
@@ -332,11 +332,11 @@ export default {
             } else {
               this.getTBCookies((cookiesArr) => {
                 console.log(cookiesArr)
-                this.uploadTBCookies(cookiesArr).then(() => {
-                  this.downloadTBCookies(this.$store.getters.tbNick).then((res) => {
-                    console.log(res)
-                  })
-                })
+                // this.uploadTBCookies(cookiesArr).then(() => {
+                //   this.downloadTBCookies(this.$store.getters.tbNick).then((res) => {
+                //     console.log(res)
+                //   })
+                // })
               })
               this.currentTBNick = this.$store.getters.tbNick
             }
@@ -1083,24 +1083,24 @@ export default {
     },
     searchTBSendOrders (pageSize, pageNum) {
       return new Promise((resolve, reject) => {
-        // let form = {
-        //   pageNum: pageNum,
-        //   pageSize: pageSize,
-        //   auctionStatus: 'SEND',
-        //   prePageNo: pageNum === 1 ? 1 : pageNum - 1
-        // }
         let form = {
-          lastStartRow: null,
-          options: 0,
-          queryBizType: null,
-          queryOrder: 'desc',
-          tabCode: 'waitConfirm',
           pageNum: pageNum,
           pageSize: pageSize,
-          // auctionStatus: 'SEND',
-          orderStatus: 'SEND',
+          auctionStatus: 'SEND',
           prePageNo: pageNum === 1 ? 1 : pageNum - 1
         }
+        // let form = {
+        //   lastStartRow: null,
+        //   options: 0,
+        //   queryBizType: null,
+        //   queryOrder: 'desc',
+        //   tabCode: 'waitConfirm',
+        //   pageNum: pageNum,
+        //   pageSize: pageSize,
+        //   // auctionStatus: 'SEND',
+        //   orderStatus: 'SEND',
+        //   prePageNo: pageNum === 1 ? 1 : pageNum - 1
+        // }
         let url = 'https://buyertrade.taobao.com/trade/itemlist/asyncBought.htm?action=itemlist/BoughtQueryAction&event_submit_do_query=1&_input_charset=utf8'
         // url = 'https://www.easy-mock.com/mock/5ad70f9da675954fc238c33e/example/orders'
         this.$http.post(url, common.setQueryConfig(form))
@@ -1109,12 +1109,14 @@ export default {
               let result = response.data
               if (typeof result !== 'object') {
                 throw new Error('TAOBAO_REDIRECT')
+              } else if (result.url) {
+                throw new Error('遇到风控!请打开淘宝已买到宝贝-待收货并切换页码直至出现滑动验证码并通过')
               }
               resolve(result)
             } catch (err) {
               this.$Modal.error({
                 title: 'Taobao发生错误',
-                content: '检测到淘宝接口调用失败，可能需要重新登陆淘宝。'
+                content: '检测到淘宝接口调用失败，可能需要重新登陆淘宝。' + err.message
               })
               reject(err)
             }
