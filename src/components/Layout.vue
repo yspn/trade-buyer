@@ -249,7 +249,7 @@ export default {
           this.listenCheckBlackListShop(request, sender, sendResponse)
         })
         this.listenOrderSubmitted()
-        this.listenTBSendListRequest() // 监听修改获取淘宝买手号已发货列表请求
+        // this.listenTBSendListRequest() // 监听修改获取淘宝买手号已发货列表请求
         this.listenModifyTaobaoBoughtItemsRequestHeaders()
         this.listenAddressAPIRequestHeaders() // 监听地址相关H5API，增加Referer
         this.listenTransLinkDetailedHistoryRequestHeaders() // 监视Detail页面，记录页面地址

@@ -687,41 +687,6 @@ export default {
               // }
             })
             this.initGodDashboard()
-            // await this.getDateShopTradesRank().then((list) => {
-            //   this.todayShopRank = list.sort((a, b) => {
-            //     return b.tradeCount - a.tradeCount
-            //   })
-            // })
-            // await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
-            //   this.yesterdayShopRank = list.sort((a, b) => {
-            //     return b.tradeCount - a.tradeCount
-            //   })
-            // })
-            // await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
-            //   this.daybeforeyesterdayShopRank = list.sort((a, b) => {
-            //     return b.tradeCount - a.tradeCount
-            //   })
-            // })
-            // await this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
-            //   this.todayShopRank_Profit = list.sort((a, b) => {
-            //     return b.profit - a.profit
-            //   })
-            // })
-            // await this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
-            //   this.yesterdayShopRank_Profit = list.sort((a, b) => {
-            //     return b.profit - a.profit
-            //   })
-            // })
-            // await this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 3)).toISOString()).then((list) => {
-            //   this.daybeforeyesterdayShopRank_Profit = list.sort((a, b) => {
-            //     return b.profit - a.profit
-            //   })
-            // })
-            // await this.getDateShopTradesRank(new Date().toISOString(), ['宠物']).then((list) => {
-            //   this.todayShopRank_Pets = list.sort((a, b) => {
-            //     return b.tradeCount - a.tradeCount
-            //   })
-            // })
             // await this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString(), ['宠物']).then((list) => {
             //   this.yesterdayShopRank_Pets = list.sort((a, b) => {
             //     return b.tradeCount - a.tradeCount
@@ -775,21 +740,21 @@ export default {
               })
               break
             case 'today-profit-rank':
-              this.getDateShopProfitRank().then((list) => {
+              this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
                 this.todayShopRank_Profit = list.sort((a, b) => {
                   return b.tradeCount - a.tradeCount
                 })
               })
               break
             case 'yesterday-profit-rank':
-              this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
+              this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
                 this.yesterdayShopRank_Profit = list.sort((a, b) => {
                   return b.tradeCount - a.tradeCount
                 })
               })
               break
             case 'daybeforeyesterday-profit-rank':
-              this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
+              this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 3)).toISOString()).then((list) => {
                 this.daybeforeyesterdayShopRank_Profit = list.sort((a, b) => {
                   return b.tradeCount - a.tradeCount
                 })
@@ -797,7 +762,7 @@ export default {
               break
             case 'today-trades-rank-tag':
               if (tag) {
-                this.getDateShopProfitRank(new Date().toISOString(), [tag]).then((list) => {
+                this.getDateShopTradesRank(new Date().toISOString(), [tag]).then((list) => {
                   this.tagShopRanks.push({
                     tag: tag,
                     date: 'today',
@@ -811,7 +776,7 @@ export default {
               break
             case 'yesterday-trades-rank-tag':
               if (tag) {
-                this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 1), [tag]).toISOString()).then((list) => {
+                this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString(), [tag]).then((list) => {
                   this.tagShopRanks.push({
                     tag: tag,
                     date: 'yesterday',
@@ -825,7 +790,7 @@ export default {
               break
             case 'daybeforeyesterday-trades-rank-tag':
               if (tag) {
-                this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 2), [tag]).toISOString()).then((list) => {
+                this.getDateShopTradesRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString(), [tag]).then((list) => {
                   this.tagShopRanks.push({
                     tag: tag,
                     date: 'daybeforeyesterday',
