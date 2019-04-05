@@ -274,12 +274,42 @@ export default {
         { title: '授权状态',
           key: 'authority',
           render: (h, params) => {
-            return h('Tag', {
+            let statusText = this.getAuthorityStatusTagText(params.row.expired)
+            let renderObj = [h('Tag', {
               props: {
                 type: 'border',
-                color: this.getAuthorityStatusTagColor(params.row.trade_authorized)
+                color: this.getAuthorityStatusTagColor(params.row.expired)
               }
-            }, this.getAuthorityStatusTagText(params.row.trade_authorized))
+            }, this.getAuthorityStatusTagText(params.row.expired))]
+            if (statusText === '未授权' || statusText === '授权过期') {
+              renderObj.push(
+                h('Button', {
+                  props: {
+                    size: 'small',
+                    type: 'ghost'
+                  },
+                  on: {
+                    click: function () {
+                      window.open('https://fuwu.taobao.com/ser/detail.htm?service_code=FW_GOODS-1000228158&code=FW_GOODS-1000228158', '_blank')
+                    }
+                  }
+                }, '购买')
+              )
+              renderObj.push(
+                h('Button', {
+                  props: {
+                    size: 'small',
+                    type: 'ghost'
+                  },
+                  on: {
+                    click: function () {
+                      window.open('https://oauth.taobao.com/authorize?response_type=code&client_id=23396371&redirect_uri=http://auth.wgkyz.com/auth/23396371&view=web&state=', '_blank')
+                    }
+                  }
+                }, '去授权')
+              )
+            }
+            return h('div', {}, renderObj)
           }
         },
         // { title: '派单模式',
@@ -716,24 +746,35 @@ export default {
         })
       })
     },
-    getAuthorityStatusTagText (s) {
-      if (s && typeof s === 'number') {
-        let authorityDue = new Date(s * 1000).Format('yyyy-MM-dd hh:mm:ss')
-        if (new Date(s * 1000) > new Date().getTime()) {
-          return '授权正常 ' + authorityDue
+    getAuthorityStatusTagText (expired) {
+      if (expired) {
+        let s = expired['23396371']
+        if (s && s.expire_time) {
+          let authorityDue = new Date(s.expire_time).Format('yyyy-MM-dd hh:mm:ss')
+          let remainingDay = Math.ceil((new Date(s.expire_time).getTime() - new Date().getTime()) / 1000 / 60 / 60 / 24)
+          if (new Date(s.expire_time).getTime() > new Date().getTime()) {
+            return '' + remainingDay + '天后(' + authorityDue + ')'
+          } else {
+            return '授权过期'
+          }
         } else {
-          return '授权过期'
+          return '未授权'
         }
       } else {
         return '未授权'
       }
     },
-    getAuthorityStatusTagColor (s) {
-      if (s && typeof s === 'number') {
-        if (new Date(s * 1000) > new Date().getTime()) {
-          return 'green'
+    getAuthorityStatusTagColor (expired) {
+      if (expired) {
+        let s = expired['23396371']
+        if (s && s.expire_time) {
+          if (new Date(s.expire_time).getTime() > new Date().getTime()) {
+            return 'green'
+          } else {
+            return 'red'
+          }
         } else {
-          return 'red'
+          return 'default'
         }
       } else {
         return 'default'

@@ -655,10 +655,10 @@ export default {
       handler: async function (newVal, oldVal) {
         if (newVal._id) {
           if (!newVal.buyer_nick_decrypted) {
-            await this.updateDecrypted(newVal)
+            this.updateDecrypted(newVal)
           }
           if (!newVal.receiver_address_sync) {
-            await this.getReceiverAddress(newVal._id, newVal.tid_str, newVal.seller_nick).then(receiver => {
+            this.getReceiverAddress(newVal._id, newVal.tid_str, newVal.seller_nick).then(receiver => {
               newVal = Object.assign(newVal, receiver)
             })
           }
