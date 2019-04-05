@@ -273,6 +273,7 @@ export default {
         },
         { title: '授权状态',
           key: 'authority',
+          width: '240px',
           render: (h, params) => {
             let statusText = this.getAuthorityStatusTagText(params.row.expired)
             let renderObj = [h('Tag', {
