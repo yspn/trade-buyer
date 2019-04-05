@@ -1910,6 +1910,8 @@ export default {
       this.$http.get(window.chrome.extension.getURL('changelog.txt')).then((res) => {
         this.$Modal.info({
           title: '版本更新日志',
+          scrollable: true,
+          closable: true,
           content: '<pre>' + res.data + '</pre>',
           width: 600
         })
