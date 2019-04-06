@@ -654,9 +654,9 @@ export default {
     'detailedItem': {
       handler: async function (newVal, oldVal) {
         if (newVal._id) {
-          if (!newVal.buyer_nick_decrypted) {
-            this.updateDecrypted(newVal)
-          }
+          // if (!newVal.buyer_nick_decrypted) {
+          //   this.updateDecrypted(newVal)
+          // }
           if (!newVal.receiver_address_sync) {
             this.getReceiverAddress(newVal._id, newVal.tid_str, newVal.seller_nick).then(receiver => {
               newVal = Object.assign(newVal, receiver)
@@ -1700,14 +1700,14 @@ export default {
       this.apiItem = {
         apiHost: '',
         apiService: 'tao11',
-        apiAction: 'receiver',
+        apiAction: 'receivernew',
         apiQuery: {}
       }
       this.apiData = {
         tradeid: tradeId,
-        tid: tid,
-        nick: sellernick,
-        session: this.$store.getters.session
+        tid: tid
+        // nick: sellernick,
+        // session: this.$store.getters.session
       }
       this.$store.dispatch('setAPIStore', this.apiItem)
       var apiUrl = this.$store.getters.apiUrl
@@ -2132,19 +2132,19 @@ export default {
       return new Promise(async (resolve, reject) => {
         this.apiItem = {
           apiHost: '',
-          apiService: 'tao11',
-          apiAction: 'synctrade',
+          apiService: 'trades',
+          apiAction: 'gettrade',
           apiQuery: {}
         }
         this.apiData = {
-          tid: tid,
-          session: this.$store.getters.session
+          tid: tid
+          // session: this.$store.getters.session
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
         var apiUrl = this.$store.getters.apiUrl
         await this.$http.post(apiUrl, this.apiData).then(response => {
           try {
-            var respBody = response.data.data.trade_fullinfo_get_response.trade
+            var respBody = response.data.data
             if (respBody.status === 'fail') {
               reject(new Error('同步订单失败！(' + respBody.message + ')'))
             } else {

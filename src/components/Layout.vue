@@ -1109,8 +1109,10 @@ export default {
               let result = response.data
               if (typeof result !== 'object') {
                 throw new Error('TAOBAO_REDIRECT')
-              } else if (result.url) {
+              } else if (result.url && result.url.indexOf('punish') > -1) {
                 throw new Error('遇到风控!请打开淘宝已买到宝贝-待收货并切换页码直至出现滑动验证码并通过')
+              } else if (result.url && result.url.indexOf('login') > -1) {
+                throw new Error('淘宝账号登录过期')
               }
               resolve(result)
             } catch (err) {
