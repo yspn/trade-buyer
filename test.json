@@ -1,141 +1,240 @@
-[
-    {
-        "$match": {
-            "shop.group": 2,
-            "order_status": {
-                "$in": [
-                    "FINISHED",
-                    "PARTLY_FINISHED",
-                    "ORDERED",
-                    "PARTLY_ORDERED"
-                ]
-            },
-            "lastorder_time": {
-                "$gte": "2018-12-01T00:00:00.000Z",
-                "$lt": "2019-01-01T00:00:00.000Z"
-            }
-        }
-    },
-    {
-        "$match": {
-            "ordered": {
-                "$ne": null
-            }
-        }
-    },
-    {
-        "$project": {
-            "_id": 1,
-            "tid_str": 1,
-            "shop": 1,
-            "shopid": 1,
-            "orders": 1,
-            "payment": 1,
-            "last_assignbuyer": 1,
-            "lastorder_time": 1,
-            "finish_time": 1,
-            "ordered": 1,
-            "ordered_temp": {
-                "$filter": {
-                    "input": "$ordered",
-                    "as": "orderedItem",
-                    "cond": {
-                        "$lt": [
-                            "$$orderedItem.dismiss",
-                            null
-                        ]
-                    }
+{
+    "status": 1,
+    "totalNum": 24945,
+    "appName": "淘宝物流",
+    "appLink": "//trade.taobao.com/trade/itemlist/list_bought_items.htm",
+    "appDesc": "当订单发货、派件、签收时候的消息通知",
+    "appId": "1100111",
+    "msgList": [
+        {
+            "messageId": 300707808697,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=400555875907491764&seller_id=706335056&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：40055587590****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "卖家已经发货",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
                 }
             },
-            "orders_daixiao_temp": {
-                "$filter": {
-                    "input": "$orders.order",
-                    "as": "ordersItem",
-                    "cond": {
-                        "$eq": [
-                            "$$ordersItem.is_daixiao",
-                            true
-                        ]
-                    }
+            "picUrl": "//img.alicdn.com/tps/i3/706335056/O1CN011nDgybXrwTiJPAM_!!706335056.jpg_120x120.jpg",
+            "tips": "",
+            "createTime": "5分钟前",
+            "canblock": true
+        },
+        {
+            "messageId": 300706232944,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=400714435590491764&seller_id=14840254&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：40071443559****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "卖家已经发货",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
                 }
-            }
-        }
-    },
-    {
-        "$project": {
-            "_id": 1,
-            "tid_str": 1,
-            "shop": 1,
-            "shopid": 1,
-            "orders": 1,
-            "payment": 1,
-            "last_assignbuyer": 1,
-            "lastorder_time": 1,
-            "finish_time": 1,
-            "ordered_temp": 1,
-            "ordered_num": {
-                "$size": "$ordered_temp"
             },
-            "ordered_sum": {
-                "$sum": "$ordered_temp.buyer_fee"
+            "picUrl": "//img.alicdn.com/tps/i4/14840254/O1CN01WcVEGE1DkN778RGnR_!!14840254.jpg_120x120.jpg",
+            "tips": "",
+            "createTime": "半小时前",
+            "canblock": true
+        },
+        {
+            "messageId": 300706289052,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=400383522546491764&seller_id=14840254&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：40038352254****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "卖家已经发货",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
+                }
             },
-            "orders_daixiao_temp": 1
-        }
-    },
-    {
-        "$project": {
-            "_id": 1,
-            "tid_str": 1,
-            "shop": 1,
-            "shopid": 1,
-            "orders": 1,
-            "payment": 1,
-            "last_assignbuyer": 1,
-            "lastorder_time": 1,
-            "finish_time": 1,
-            "ordered_temp": 1,
-            "ordered_num": 1,
-            "ordered_sum": 1,
-            "profit": {
-                "$subtract": [
-                    {
-                        "$multiply": [
-                            "$payment",
-                            100
-                        ]
-                    },
-                    "$ordered_sum"
-                ]
+            "picUrl": "//img.alicdn.com/tps/i4/14840254/TB2XBB9biP85uJjSZFIXXXISXXa_!!14840254.jpg_120x120.jpg",
+            "tips": "",
+            "createTime": "半小时前",
+            "canblock": true
+        },
+        {
+            "messageId": 300706149338,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=398494624977491764&seller_id=688593899&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：39849462497****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "快递已签收",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
+                }
             },
-            "profit_ratio": {
-                "$divide": [
-                    {
-                        "$subtract": [
-                            {
-                                "$multiply": [
-                                    "$payment",
-                                    100
-                                ]
-                            },
-                            "$ordered_sum"
-                        ]
-                    },
-                    {
-                        "$multiply": [
-                            "$payment",
-                            100
-                        ]
-                    }
-                ]
-            }
+            "picUrl": "//img.alicdn.com/tps/i4/688593899/TB2thq4b56guuRkSmLyXXculFXa_!!688593899.jpg_120x120.jpg",
+            "tips": "",
+            "createTime": "1小时前",
+            "canblock": true
+        },
+        {
+            "messageId": 300706003923,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=399952225422491764&seller_id=439975852&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：39995222542****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "卖家已经发货",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
+                }
+            },
+            "picUrl": "//img.alicdn.com/tps/i3/439975852/O1CN01BpHlXH1t6GG6C52OX_!!439975852.jpg_120x120.jpg",
+            "tips": "",
+            "createTime": "1小时前",
+            "canblock": true
+        },
+        {
+            "messageId": 300706002945,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=399949569612491764&seller_id=439975852&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：39994956961****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "卖家已经发货",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
+                }
+            },
+            "picUrl": "//img.alicdn.com/tps/i4/TB1TV81HpXXXXaeXFXXXXXXXXXX_!!0-item_pic.jpg_120x120.jpg",
+            "tips": "",
+            "createTime": "1小时前",
+            "canblock": true
+        },
+        {
+            "messageId": 300706034433,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=400512899932491764&seller_id=439975852&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：40051289993****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "卖家已经发货",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
+                }
+            },
+            "picUrl": "//img.alicdn.com/tps/i3/439975852/TB2lqudfpXXXXXJXpXXXXXXXXXX_!!439975852.jpg_120x120.jpg",
+            "tips": "",
+            "createTime": "1小时前",
+            "canblock": true
+        },
+        {
+            "messageId": 300706002948,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=399655040641491764&seller_id=439975852&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：39965504064****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "卖家已经发货",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
+                }
+            },
+            "picUrl": "//img.alicdn.com/tps/i3/439975852/TB2v6NjnVXXXXcfXXXXXXXXXXXX_!!439975852.jpg_120x120.jpg",
+            "tips": "",
+            "createTime": "1小时前",
+            "canblock": true
+        },
+        {
+            "messageId": 300706022691,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=400409218864491764&seller_id=439975852&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：40040921886****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "卖家已经发货",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
+                }
+            },
+            "picUrl": "//img.alicdn.com/tps/i2/439975852/TB2_ZxlupXXXXbJXXXXXXXXXXXX_!!439975852.jpg_120x120.jpg",
+            "tips": "",
+            "createTime": "1小时前",
+            "canblock": true
+        },
+        {
+            "messageId": 300706014757,
+            "title": "你购买的宝贝有新的动态",
+            "actionUrl": "//wuliu.taobao.com/user/order_detail_new.htm?trade_id=400699811509491764&seller_id=439975852&scm=1229.1100111.11.20190406",
+            "contentMsg": {
+                "title": {
+                    "content": "订单号：40069981150****764",
+                    "templateId": "-1"
+                },
+                "info": {
+                    "content": "卖家已经发货",
+                    "templateId": "-1"
+                },
+                "actionName": {
+                    "content": "去看看",
+                    "templateId": "-1"
+                }
+            },
+            "picUrl": "//img.alicdn.com/tps/i1/439975852/TB2iihdrVXXXXcoXpXXXXXXXXXX_!!439975852.jpg_120x120.jpg",
+            "tips": "2件",
+            "createTime": "1小时前",
+            "canblock": true
         }
-    },
-    {
-        "$sort": {
-            "profit": -1
-        }
-    },
-    {
-        "$limit": 10
-    }
-]
+    ]
+}
