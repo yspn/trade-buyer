@@ -208,6 +208,7 @@
                       <Button size="large" type="success" @click.prevent.stop="goBuying(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '待下单' && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1 ">去下单</Button>
                       <Button size="large" type="success" @click.prevent.stop="goBuying(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已退单' && ['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1 && ['NO_REFUND', 'CLOSED'].indexOf(item.refund_status) > -1">去下单</Button>
                       <Button size="large" type="error" @click.prevent.stop="goDismiss(item)" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已下单'">撤销关联</Button>
+                      <Button size="large" type="warning" @click.prevent.stop="goCheckPriceChange(item)" v-if="!item.is_daixiao && (getSubOrderStatus(item).text === '已下单' || getSubOrderStatus(item).text === '已完成')">检查改价</Button>
                     </td>
                     <td v-else></td>
                   </tr>
@@ -1944,6 +1945,19 @@ export default {
           this.$Message.error('表单验证失败!')
         }
       })
+    },
+    goCheckPriceChange (sub) {
+      try {
+        let oid = sub.oid_str
+        let tradeId = this.detailedItem._id
+        let tbOrderNumber = this.detailedItem.ordered.filter((ordered) => {
+          return ordered.oid_str === oid
+        })[0].order_number
+        this.$emit('on-checkpricechange', tradeId, tbOrderNumber)
+      } catch (err) {
+        console.log(err)
+        this.$Message.error('检查改价失败！(' + err.message + ')')
+      }
     },
     goResign () {
       this.resignModal = true

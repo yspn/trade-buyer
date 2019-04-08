@@ -111,6 +111,7 @@
               @on-get-addresslist="getAddressList201807"
               @on-insertnewaddress="insertNewAddress"
               @on-searchbytid="searchTradeByTid"
+              @on-checkpricechange="checkPriceChange"
               :shopList="shopList"
               :orderFinished="orderFinished"
               :orderFailed="orderFailed"
@@ -253,6 +254,7 @@ export default {
         // this.listenTBSendListRequest() // 监听修改获取淘宝买手号已发货列表请求
         this.listenModifyTaobaoBoughtItemsRequestHeaders()
         this.listenBuyerLogisMsgRequestHeaders()
+        this.listenBoughtItemsTMDPunishRequestHeaders() // 调用滑动验证
         this.listenAddressAPIRequestHeaders() // 监听地址相关H5API，增加Referer
         this.listenTransLinkDetailedHistoryRequestHeaders() // 监视Detail页面，记录页面地址
         this.autoTracerSwitch = this.$store.getters.user.tracelogisticsEnable
@@ -807,6 +809,40 @@ export default {
         }
       })
     },
+    /**
+     * 原始订单备注
+     */
+    async setTradeMemo (tid, memo, flag) {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'tao11',
+        apiAction: 'setmemo',
+        apiQuery: {}
+      }
+      this.apiData = {
+        tid: tid,
+        memo: memo,
+        flag: flag || 0, // 备注颜色0-5,灰红黄绿蓝粉
+        session: this.$store.getters.session
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(response => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            this.$Message.error('备注原始订单失败！(' + respBody.message + ')')
+            reject(new Error(respBody.message))
+          } else {
+            this.$store.dispatch('setAPILastResponse', respBody)
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
     listenAddOrderBuyerMessage (tid) {
       if (!tid) {
         this.$Message.error('传入参数错误')
@@ -1020,6 +1056,7 @@ export default {
     getLogisticDetail (url) {
       return new Promise(async (resolve, reject) => {
         // await common.sleepES6(500) // 间隔500毫秒
+        console.log(url)
         this.$http.get(url).then((res) => {
           let securityIdentifier = '发现您的网络环境有异常，为保证正常使用，请验证'
           if (res.data.indexOf(securityIdentifier) >= 0) {
@@ -1083,7 +1120,7 @@ export default {
         this.logisticHistory.push(logisTransaction)
       })
     },
-    searchTBSendOrders (pageSize, pageNum) {
+    searchTBSendOrders (pageSize, pageNum, tid) {
       return new Promise((resolve, reject) => {
         let form = {
           pageNum: pageNum,
@@ -1103,6 +1140,12 @@ export default {
         //   orderStatus: 'SEND',
         //   prePageNo: pageNum === 1 ? 1 : pageNum - 1
         // }
+        if (tid) {
+          // tid不为空则为根据订单号查询
+          form.auctionTitle = tid
+          form.itemTitle = tid
+          delete form.auctionStatus
+        }
         let url = 'https://buyertrade.taobao.com/trade/itemlist/asyncBought.htm?action=itemlist/BoughtQueryAction&event_submit_do_query=1&_input_charset=utf8'
         // url = 'https://www.easy-mock.com/mock/5ad70f9da675954fc238c33e/example/orders'
         this.$http.post(url, common.setQueryConfig(form))
@@ -1112,6 +1155,7 @@ export default {
               if (typeof result !== 'object') {
                 throw new Error('TAOBAO_REDIRECT')
               } else if (result.url && result.url.indexOf('punish') > -1) {
+                window.open(result.url)
                 throw new Error('遇到风控!请打开淘宝已买到宝贝-待收货并切换页码直至出现滑动验证码并通过')
               } else if (result.url && result.url.indexOf('login') > -1) {
                 throw new Error('淘宝账号登录过期')
@@ -1167,13 +1211,94 @@ export default {
           requestHeaders: headers
         }
       }, {urls: ['*://msg.taobao.com/json/message_list_by_app.htm*']},
-      ['blocking', 'requestHeaders', 'extraHeaders']) // chrome 72+ 'extraHeaders'
+      ['blocking', 'requestHeaders']) // chrome 72+ 'extraHeaders'
+    },
+    listenBoughtItemsTMDPunishRequestHeaders () {
+      window.chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
+        let headers = details.requestHeaders
+        headers.push({
+          name: 'Referer',
+          value: 'https://buyertrade.taobao.com/trade/itemlist/list_bought_items.htm'
+        })
+        // headers.push({
+        //   name: 'user-agent',
+        //   value: 'zsea/fetch'
+        // })
+        return {
+          requestHeaders: headers
+        }
+      }, {urls: ['*://buyertrade.taobao.com:443//trade/itemlist/asyncBought.htm*']},
+      ['blocking', 'requestHeaders']) // chrome 72+ 'extraHeaders'
     },
     onAutoTracerInterval (val) {
       this.autoTracerInterval = val
     },
     onAutoTracerSwitch (val) {
       this.autoTracerSwitch = val
+    },
+    /**
+     * 获取买手号最后一条物流消息ID
+     * @param {String} [buyerNick] 买手旺旺
+     */
+    getBuyerLastLogisMsgId (buyerNick) {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'users',
+        apiAction: 'getlastlogismsgid',
+        apiQuery: {}
+      }
+      this.apiData = {
+        buyer_nick: buyerNick
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            reject(new Error(respBody.message))
+          } else {
+            this.$store.dispatch('setAPILastResponse', respBody)
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
+    /**
+     * 设置买手号最后一条物流消息ID
+     * @param {String} [buyerNick] 买手旺旺
+     * @param {Int} [msgId] 消息ID
+     */
+    setBuyerLastLogisMsgId (buyerNick, msgId) {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'users',
+        apiAction: 'setlastlogismsgid',
+        apiQuery: {}
+      }
+      this.apiData = {
+        buyer_nick: buyerNick,
+        msg_id: msgId
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            reject(new Error(respBody.message))
+          } else {
+            this.$store.dispatch('setAPILastResponse', respBody)
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
     },
     async traceOrderOnce () {
       await this.getUnpostTrades().then(async (trades) => {
@@ -1187,7 +1312,7 @@ export default {
       let lastMsgId = 0
       await this.getBuyerLastLogisMsgId(this.buyerNick).then((res) => {
         if (res.last_msg_id) {
-          lastMsgId = res.last_msg_id
+          lastMsgId = res.last_msg_id ? res.last_msg_id : 0
         }
       }).catch((err) => {
         this.$Notice.error({
@@ -1198,7 +1323,7 @@ export default {
       let mToken = this.cookiesArr.filter((item) => {
         return item.name === '_tb_token_'
       })[0].value.split('_')[0]
-      console.log(lastMsgId, mToken)
+      // console.log(lastMsgId, mToken)
       this.curLastMsgId = null // 本次发货查询最后一条消息的ID，将在全部完成后调用setbuyerlogismsgid
       let curPage = 1
       await this.tracerBuyerLogisMsg(this.buyerNick, mToken, curPage, lastMsgId).then(() => {
@@ -1207,6 +1332,7 @@ export default {
           desc: ''
         })
       }).catch(err => {
+        console.log(err)
         this.$Notice.error({
           title: '跟踪发货出错啦！',
           desc: err.message
@@ -1216,7 +1342,7 @@ export default {
     tracerBuyerLogisMsg (buyerNick, mToken, curPage, lastMsgId) {
       return new Promise(async (resolve, reject) => {
         await this.procBuyerLogisMsgs(mToken, curPage, lastMsgId).then(async (res) => {
-          console.log(res)
+          // console.log(res)
           if (this.curLastMsgId < res.curLastMsgId) {
             this.curLastMsgId = res.curLastMsgId
           }
@@ -1227,6 +1353,7 @@ export default {
             await this.tracerBuyerLogisMsg(buyerNick, mToken, curPage, lastMsgId)
           }
         }).catch(err => {
+          console.log(err)
           if (err.message === 'EOF') {
             this.setBuyerLastLogisMsgId(buyerNick, this.curLastMsgId)
             resolve()
@@ -1246,15 +1373,34 @@ export default {
         }
         let totalPage = 0
         await this.getBuyerLogisMsgs(mToken, curPage).then((msg) => {
+          // console.log(msg)
           if (msg && msg.totalNum) {
             totalPage = Math.ceil(msg.totalNum / 10)
+            // console.log(totalPage, curPage)
             if (totalPage < curPage) {
               reject(new Error('EOF'))
             }
             let msgList = msg.msgList.filter((msgItem) => {
+              // 首次执行只检查到6天前的消息
+              if (!lastMsgId) {
+                let acceptReg = /^刚刚|\d+分钟前|\d+小时前|半天前|\d+天前$/ // /^刚刚|\d+分钟前|\d+小时前|半天前|\d+天前$/
+                // console.log(acceptReg.test(msgItem.createTime), msgItem)
+                if (!acceptReg.test(msgItem.createTime)) {
+                  // console.log('eof', msgItem)
+                  reject(new Error('EOF'))
+                }
+              }
               return msgItem.contentMsg.info.content === '卖家已经发货'
             })
+            // console.log(msgList)
+            if (!msgList.length) {
+              resolve({
+                totalPage: totalPage,
+                curLastMsgId: null
+              })
+            }
             msgList.forEach(async (msgItem, idx) => {
+              // console.log(idx)
               await this.procBuyerLogisMsgUnit(msgItem, lastMsgId).catch(err => {
                 if (err.message === 'EOF') {
                   reject(new Error('EOF'))
@@ -1279,6 +1425,7 @@ export default {
      * @param {Int} lastMsgId 数据库存储的最后一条消息id
      */
     procBuyerLogisMsgUnit (msg, lastMsgId) {
+      // console.log(lastMsgId)
       return new Promise(async (resolve, reject) => {
         if (!msg || typeof msg !== 'object' || !lastMsgId) {
           reject(new Error('参数错误'))
@@ -1287,6 +1434,7 @@ export default {
         }
         let orderNumber = common.getQueryString('trade_id', msg.actionUrl)
         let sellerId = common.getQueryString('seller_id', msg.actionUrl)
+        // console.log(orderNumber, sellerId)
         let hit = this.unPostTrades.filter((trade) => {
           return trade.ordered.filter((ordered) => {
             return ordered.order_number === orderNumber
@@ -1319,8 +1467,10 @@ export default {
               }
             })
             .catch(err => {
-              throw err
+              reject(err)
             })
+        } else {
+          resolve()
         }
       })
     },
@@ -1335,7 +1485,7 @@ export default {
         let url = `https://msg.taobao.com/json/message_list_by_app.htm?appId=1100111&page=${page}&m_token=${mToken}&_input_charset=utf-8&callback=&t=${Date.now()}`
         this.$http.get(url)
           .then(response => {
-            resolve(response)
+            resolve(response.data)
           })
           .catch(err => {
             reject(err)
@@ -1541,6 +1691,37 @@ export default {
       })
     },
     /**
+     * 主动查询订单是否改价
+     */
+    checkPriceChange (tradeId, orderNumber) {
+      return new Promise(async (resolve, reject) => {
+        if (tradeId && orderNumber) {
+          await this.searchTBSendOrders(15, 1, orderNumber).then(async (batchOrders) => {
+            if (batchOrders && batchOrders.mainOrders.length) {
+              let order = batchOrders.mainOrders[0]
+              // 检测是否改价
+              let actualFee = order.payInfo.actualFee
+              let oldActualFee = order.payInfo.oldActualFee
+              if (oldActualFee) {
+                // 已改价
+                actualFee = parseFloat(actualFee) * 100
+                let actualPostFee = parseFloat(order.payInfo.postFees[0].value.replace(/￥/g, '')) * 100
+                this.$Notice.info({
+                  title: '发现订单改价',
+                  desc: '订单' + orderNumber + ' 改为:' + actualFee / 100 + '(邮费: ' + actualPostFee + ')'
+                })
+                this.changePrice(tradeId, orderNumber, actualFee, actualPostFee)
+              }
+            } else {
+              resolve()
+            }
+          })
+        } else {
+          reject(new Error('参数错误'))
+        }
+      })
+    },
+    /**
      * 改价
      * @param {String} [tradeId] 订单ID（Mongo）
      * @param {String} [orderNumber] 下单单号
@@ -1575,70 +1756,6 @@ export default {
         }).catch(err => {
           this.$Message.error('更新下单价格失败！(' + err + ')')
           reject(new Error(err.message))
-        })
-      })
-    },
-    /**
-     * 获取买手号最后一条物流消息ID
-     * @param {String} [buyerNick] 买手旺旺
-     */
-    getBuyerLastLogisMsgId (buyerNick) {
-      this.apiItem = {
-        apiHost: '',
-        apiService: 'users',
-        apiAction: 'getlastlogismsgid',
-        apiQuery: {}
-      }
-      this.apiData = {
-        buyer_nick: buyerNick
-      }
-      this.$store.dispatch('setAPIStore', this.apiItem)
-      var apiUrl = this.$store.getters.apiUrl
-      return new Promise(async (resolve, reject) => {
-        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
-          var respBody = response.data
-          if (respBody.status === 'fail') {
-            reject(new Error(respBody.message))
-          } else {
-            this.$store.dispatch('setAPILastResponse', respBody)
-            resolve(respBody.data)
-          }
-        }).catch(err => {
-          this.$store.dispatch('setAPILastResponse', err)
-          reject(err)
-        })
-      })
-    },
-    /**
-     * 设置买手号最后一条物流消息ID
-     * @param {String} [buyerNick] 买手旺旺
-     * @param {Int} [msgId] 消息ID
-     */
-    setBuyerLastLogisMsgId (buyerNick, msgId) {
-      this.apiItem = {
-        apiHost: '',
-        apiService: 'users',
-        apiAction: 'setlastlogismsgid',
-        apiQuery: {}
-      }
-      this.apiData = {
-        buyer_nick: buyerNick,
-        msg_id: msgId
-      }
-      this.$store.dispatch('setAPIStore', this.apiItem)
-      var apiUrl = this.$store.getters.apiUrl
-      return new Promise(async (resolve, reject) => {
-        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
-          var respBody = response.data
-          if (respBody.status === 'fail') {
-            reject(new Error(respBody.message))
-          } else {
-            this.$store.dispatch('setAPILastResponse', respBody)
-            resolve(respBody.data)
-          }
-        }).catch(err => {
-          this.$store.dispatch('setAPILastResponse', err)
-          reject(err)
         })
       })
     },
