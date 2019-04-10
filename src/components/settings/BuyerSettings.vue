@@ -4,6 +4,16 @@
       <!-- <FormItem label="上线接单" prop="isEnable">
         <i-switch v-model="settings.isEnable"></i-switch>
       </FormItem> -->
+      <FormItem label="发货跟踪模式">
+        <RadioGroup v-model="autoTracerMode">
+          <Radio label="模式1"></Radio>
+          <Radio label="模式2"></Radio>
+        </RadioGroup>
+        <p class="font-grey">
+          - 选择模式1时，请务必在淘宝消息设置中打开“物流消息”，初次使用会耗时较长，为避免重复跟踪，请适当延长下方“发货检查间隔”时间，建议填写60分钟<br>
+          - 选择模式2时，有可能会遇到淘宝风控，此时会弹出滑动验证窗口，通过后重新打开发货即可，如未弹出滑动验证，请进入我的淘宝-已买到的宝贝-选择“待收货选项卡”，并随意切换页码，直至弹出滑动验证并通过。
+        </p>
+      </FormItem>
       <FormItem label="发货跟踪">
         <i-switch v-model="autoTracerSwitch"></i-switch>
       </FormItem>
@@ -43,8 +53,9 @@ export default {
         defaultMemoFlag: 3 // 备注颜色0-5,灰红黄绿蓝粉
       },
       succeed: false,
-      autoTracerInterval: 10, // 十分钟开始一次物流查询遍历
-      autoTracerSwitch: this.$store.getters.user.tracelogisticsEnable
+      autoTracerInterval: this.$store.getters.user.tracelogisticsInterval, // 十分钟开始一次物流查询遍历
+      autoTracerSwitch: this.$store.getters.user.tracelogisticsEnable,
+      autoTracerMode: this.$store.getters.user.tracelogisticsMode
     }
   },
   watch: {
@@ -58,6 +69,9 @@ export default {
     },
     'autoTracerSwitch': function (newVal) {
       this.$emit('on-autotracerswitch', newVal)
+    },
+    'autoTracerMode': function (newVal) {
+      this.$emit('on-autotracermode', newVal)
     }
   },
   mounted () {

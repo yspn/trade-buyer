@@ -15,8 +15,8 @@
     </RadioGroup>
     <ul class="metro-ul">
       <li :style="{background: colorSelections[1]}" class="quarter">
-        <span class="title">订单数：</span>
-        <span class="num">{{finishedTrades.tradeCount ? finishedTrades.tradeCount.toLocaleString() : 0}}</span>
+        <span class="title">订单数/子订单：</span>
+        <span class="num">{{finishedTrades.tradeCount ? finishedTrades.tradeCount.toLocaleString() : 0}}/{{finishedTrades.subCount ? finishedTrades.subCount.toLocaleString() : 0}}</span>
       </li>
       <li :style="{background: colorSelections[2]}" class="quarter">
         <span class="title">下单数：</span>
@@ -60,6 +60,12 @@
                   订单：
                   <span>
                     {{ shop.tradeCount ? shop.tradeCount.toLocaleString() : 0 }}
+                  </span>
+                </li>
+                <li>
+                  子订单：
+                  <span>
+                    {{ shop.subCount ? shop.subCount.toLocaleString() : 0 }}
                   </span>
                 </li>
                 <li>
@@ -138,6 +144,12 @@
                   订单：
                   <span>
                     {{ buyer.tradeCount ? buyer.tradeCount.toLocaleString() : 0 }}
+                  </span>
+                </li>
+                <li>
+                  子订单：
+                  <span>
+                    {{ buyer.subCount ? buyer.subCount.toLocaleString() : 0 }}
                   </span>
                 </li>
                 <li>
