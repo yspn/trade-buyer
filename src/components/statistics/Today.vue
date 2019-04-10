@@ -71,17 +71,18 @@
     </div>
     <div class="today-shop-trades" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role)>-1">
       <div class="today-trade-total">
-        <span class="title">今日订单：</span>
-        <span class="num">{{todayShopTradeTotal}}</span>
+        <span class="title">今日订单/子订单：</span>
+        <span class="num">{{todayShopTradeTotal}}/{{todayShopOrderTotal}}</span>
       </div>
       <ul class="shop-ul">
         <li v-for="(shop, index) in todayShopTrades" :key="index" @mouseenter="drawRecentShopTradesChart(index)">
           <span class="title">{{shop.shop}}：</span>
-          <span class="num">{{shop.tradeCount}}</span>
-          <span class="num-yesterday" v-if="$store.getters.user.role==='god'">
+          <span class="num">{{shop.tradeCount}}/{{shop.orderCount}}</span>
+          <span class="num-yesterday" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">
             昨:{{recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}
+            /{{recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0].orderCount:0}}
           </span>
-          <div class="recent" :id="'recentShopTable-'+index" v-if="$store.getters.user.role==='god'">
+          <div class="recent" :id="'recentShopTable-'+index" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">
             <ul>
               <li><span class="recent-title">今日:</span><span class="recent-digit">{{shop.tradeCount}}</span></li>
               <li>&nbsp;</li>
@@ -93,8 +94,8 @@
               <li><span class="recent-title">{{new Date(new Date().setUTCHours(-24*6)).Format('MM-dd')}}:</span><span class="recent-digit">{{recentShopTrades.day6.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day6.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}</span></li>
             </ul>
           </div>
-          <div class="recent-chart" :id="'recentShopChart-'+index" v-if="$store.getters.user.role==='god'"></div>
-          <div class="recent-table-visibility" v-if="$store.getters.user.role==='god'" @click="toggleRecentShopChart(index)">
+          <div class="recent-chart" :id="'recentShopChart-'+index" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1"></div>
+          <div class="recent-table-visibility" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1" @click="toggleRecentShopChart(index)">
             <Icon type="ios-glasses-outline"></Icon>
           </div>
         </li>
@@ -640,6 +641,13 @@ export default {
         total += item.tradeCount
       })
       return total
+    },
+    todayShopOrderTotal: function () {
+      let total = 0
+      this.todayShopTrades.forEach((item) => {
+        total += item.orderCount
+      })
+      return total
     }
   },
   methods: {
@@ -697,6 +705,12 @@ export default {
             //     return b.tradeCount - a.tradeCount
             //   })
             // })
+          } else if (this.$store.getters.user.role === 'boss') {
+            await this.getRecentShopTrades().then(() => {
+              // for (let i = 0; i < this.todayShopTrades.length; i++) {
+              //   this.drawRecentShopTradesChart(i)
+              // }
+            })
           }
         })
       }

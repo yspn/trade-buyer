@@ -1383,7 +1383,7 @@ export default {
             let msgList = msg.msgList.filter((msgItem) => {
               // 首次执行只检查到6天前的消息
               if (!lastMsgId) {
-                let acceptReg = /^刚刚|\d+分钟前|\d+小时前|半天前|\d+天前$/ // /^刚刚|\d+分钟前|\d+小时前|半天前|\d+天前$/
+                let acceptReg = /^刚刚|\d+分钟前|半小时前|\d+小时前|半天前|\d+天前$/ // /^刚刚|\d+分钟前|\d+小时前|半天前|\d+天前$/
                 // console.log(acceptReg.test(msgItem.createTime), msgItem)
                 if (!acceptReg.test(msgItem.createTime)) {
                   // console.log('eof', msgItem)
