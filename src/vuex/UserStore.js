@@ -10,6 +10,10 @@ export const userStore = {
       token: '',
       // 自动跟踪物流开关
       tracelogisticsEnable: false,
+      // 发货检查间隔时间（分钟）
+      tracelogisticsInterval: 10,
+      // 发货检查模式
+      tracelogisticsMode: '模式1',
       defaultBuyerMessage: '',
       defaultMemoFlag: 0
     }
@@ -25,12 +29,20 @@ export const userStore = {
         session: data.session,
         token: data.token,
         tracelogisticsEnable: data.tracelogistics_enable || false,
+        tracelogisticsInterval: data.tracelogistics_interval || 10,
+        tracelogisticsMode: data.tracelogistics_mode || '模式1',
         defaultBuyerMessage: data.defaultbuyermessage || '',
         defaultMemoFlag: data.defaultmemoflag || 0
       }
     },
     SET_TRACE_LOGISTICS_ENABLE (state, data) {
       state.user.tracelogisticsEnable = data
+    },
+    SET_TRACE_LOGISTICS_MODE (state, data) {
+      state.user.tracelogisticsMode = data
+    },
+    SET_TRACE_LOGISTICS_INTERVAL (state, data) {
+      state.user.tracelogisticsInterval = data
     },
     SET_DEFAULT_BUYER_MESSAGE (state, data) {
       state.user.defaultBuyerMessage = data
@@ -45,6 +57,12 @@ export const userStore = {
     },
     setTraceLogisticsEnable ({ commit }, data) {
       commit('SET_TRACE_LOGISTICS_ENABLE', data)
+    },
+    setTraceLogisticsInterval ({ commit }, data) {
+      commit('SET_TRACE_LOGISTICS_INTERVAL', data)
+    },
+    setTraceLogisticsMode ({ commit }, data) {
+      commit('SET_TRACE_LOGISTICS_MODE', data)
     },
     setDefaultBuyerMessage ({ commit }, data) {
       commit('SET_DEFAULT_BUYER_MESSAGE', data)
