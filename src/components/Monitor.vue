@@ -20,7 +20,7 @@
         <div class="module-normal today-new-trades">
           <div class="title">
             <div class="pull-left">
-              今日订单：<b>{{todayNewTradesCount.toLocaleString()}}</b>
+              今日订单/子订单：<b>{{todayNewTradesCount.toLocaleString()}}/{{todayNewOrdersCount.toLocaleString()}}</b>
             </div>
             <div class="pull-right">
               <span :style="{color:todayNewTradesRatio?'#70ff70':'#ff4f4f'}"><b>{{todayNewTradesRatio>=0?'+'+todayNewTradesRatio:todayNewTradesRatio}} %</b></span>
@@ -240,6 +240,16 @@ export default {
     }, 1000)
   },
   computed: {
+    todayNewOrdersCount: function () {
+      let lastVal = 0
+      for (let i = this.sysStatsData.today.length; i > 0; i--) {
+        if (this.sysStatsData.today[i - 1] && this.sysStatsData.today[i - 1].newOrdersCount) {
+          lastVal = this.sysStatsData.today[i - 1].newOrdersCount
+          break
+        }
+      }
+      return lastVal
+    },
     todayNewTradesCount: function () {
       let lastVal = 0
       for (let i = this.sysStatsData.today.length; i > 0; i--) {
@@ -569,6 +579,7 @@ export default {
                 if (yestData.length) {
                   yestVal = {
                     newTradeCount: yestData[0].newTradeCount,
+                    newOrdersCount: yestData[0].newOrdersCount,
                     finishTradeCount: yestData[0].finishTradeCount,
                     orderedTradeCount: yestData[0].orderedTradeCount,
                     resignedTradeCount: yestData[0].resignedTradeCount
@@ -577,6 +588,7 @@ export default {
                   if (i === 0) {
                     yestVal = {
                       newTradeCount: 0,
+                      newOrdersCount: 0,
                       finishTradeCount: 0,
                       orderedTradeCount: 0,
                       resignedTradeCount: 0
@@ -584,6 +596,7 @@ export default {
                   } else {
                     yestVal = {
                       newTradeCount: yesterday[yesterday.length - 1].newTradeCount,
+                      newOrdersCount: yesterday[yesterday.length - 1].newOrdersCount,
                       finishTradeCount: yesterday[yesterday.length - 1].finishTradeCount,
                       orderedTradeCount: yesterday[yesterday.length - 1].orderedTradeCount,
                       resignedTradeCount: yesterday[yesterday.length - 1].resignedTradeCount
@@ -606,6 +619,7 @@ export default {
                 if (todayData.length) {
                   todayVal = {
                     newTradeCount: todayData[0].newTradeCount,
+                    newOrdersCount: todayData[0].newOrdersCount,
                     finishTradeCount: todayData[0].finishTradeCount,
                     orderedTradeCount: todayData[0].orderedTradeCount,
                     resignedTradeCount: todayData[0].resignedTradeCount
@@ -614,6 +628,7 @@ export default {
                   if (i === 0) {
                     todayVal = {
                       newTradeCount: 0,
+                      newOrdersCount: 0,
                       finishTradeCount: 0,
                       orderedTradeCount: 0,
                       resignedTradeCount: 0
@@ -627,6 +642,7 @@ export default {
                     // }
                     todayVal = {
                       newTradeCount: null,
+                      newOrdersCount: null,
                       finishTradeCount: null,
                       orderedTradeCount: null,
                       resignedTradeCount: null
@@ -707,7 +723,7 @@ export default {
             smooth: true,
             showSymbol: false,
             data: this.sysStatsData.today.map((item) => {
-              return item.newTradeCount
+              return item.newOrdersCount
             })
           },
           {
@@ -719,7 +735,7 @@ export default {
             smooth: true,
             showSymbol: false,
             data: this.sysStatsData.yesterday.map((item) => {
-              return item.newTradeCount
+              return item.newOrdersCount
             })
           }
         ]
@@ -844,6 +860,7 @@ export default {
                 if (curData.length) {
                   data.push({
                     newTradeCount: curData[0].newTradeCount,
+                    newOrdersCount: curData[0].newOrdersCount,
                     finishTradeCount: curData[0].finishTradeCount,
                     orderedTradeCount: curData[0].orderedTradeCount,
                     resignedTradeCount: curData[0].resignedTradeCount
@@ -851,6 +868,7 @@ export default {
                 } else {
                   data.push({
                     newTradeCount: 0,
+                    newOrdersCount: 0,
                     finishTradeCount: 0,
                     orderedTradeCount: 0,
                     resignedTradeCount: 0
@@ -953,6 +971,17 @@ export default {
               showSymbol: false,
               data: data.map((item) => {
                 return item.newTradeCount
+              })
+            },
+            {
+              name: '子订单数量',
+              type: 'line',
+              areaStyle: {
+                color: 'rgba(40, 97, 137, 0.1)'
+              },
+              showSymbol: false,
+              data: data.map((item) => {
+                return item.newOrdersCount
               })
             },
             {
