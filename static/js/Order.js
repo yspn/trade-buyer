@@ -34,6 +34,7 @@ $(document).ready(function () {
     window.setTimeout(function () {
       console.log(orderInfo, oneKeyOrderInstance)
       buyerOrder = getOrdersFeesOnload(orderInfo)
+      console.log(buyerOrder)
       window.chrome.runtime.sendMessage({ cmd: 'set_orderbought_temp', value: buyerOrder }, (response) => {
         if (response !== 'ok') {
           window.setTimeout(function () {
