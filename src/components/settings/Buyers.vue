@@ -10,7 +10,7 @@
         <Button type="ghost" icon="ios-search" @click="searchRemote"></Button>
       </div>
       <Button-group>
-        <Button type="ghost" icon="document" @click="newModal=true" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">新增</Button>
+        <Button type="ghost" icon="document" @click="newModal=true" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role)>-1">新增</Button>
         <Button type="ghost" icon="ios-refresh-empty" @click="refreshBuyerList">刷新</Button>
       </Button-group>
     </div>
@@ -59,7 +59,7 @@
         <div style="float: left;">
           <Page :total="dataBuyer.length" :page-size-opts="[10,20,50,100]" @on-change="changePage" @on-page-size-change="changePageSize" :current="pageCurrent" show-sizer show-total show-elevator></Page>
         </div>
-        <Button size="large" @click="newModal=true" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">新增</Button>
+        <Button size="large" @click="newModal=true" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role)>-1">新增</Button>
         <Button size="large" @click="detailModal=false;detailByShopid=null;detailByUserid=null">关闭</Button>
       </div>
     </Modal>
@@ -321,7 +321,7 @@ export default {
           fixed: 'right',
           width: 180,
           render: (h, params) => {
-            if (['god', 'boss'].indexOf(this.$store.getters.user.role) > -1) {
+            if (['god', 'boss', 'manager'].indexOf(this.$store.getters.user.role) > -1) {
               return h('Button-group', [
                 h('Button', {
                   props: {
@@ -419,7 +419,7 @@ export default {
           fixed: 'right',
           width: 180,
           render: (h, params) => {
-            if (['god', 'boss'].indexOf(this.$store.getters.user.role) > -1) {
+            if (['god', 'boss', 'manager'].indexOf(this.$store.getters.user.role) > -1) {
               return h('Button-group', [
                 h('Button', {
                   props: {

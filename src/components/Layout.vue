@@ -128,6 +128,7 @@
       2011-2019 &copy; YSPN Studio &nbsp;&nbsp;当前版本：{{currentVersion?currentVersion.versionName:'未知'}}
       <Button type="ghost" size="small" @click="checkLatestVersion">检查更新</Button>
       <Button type="text" size="small" @click="showChangeLogs">更新日志</Button>
+      <Button @click="x5Test">test</Button>
     </Footer>
   </Layout>
 </template>
@@ -1241,7 +1242,7 @@ export default {
         return {
           requestHeaders: headers
         }
-      }, {urls: ['*://buyertrade.taobao.com:443//trade/itemlist/asyncBought.htm*']},
+      }, {urls: ['*://buyertrade.taobao.com//trade/itemlist/asyncBought.htm*']},
       ['blocking', 'requestHeaders']) // chrome 72+ 'extraHeaders'
     },
     onAutoTracerInterval (val) {
@@ -2309,6 +2310,9 @@ export default {
           width: 600
         })
       })
+    },
+    x5Test () {
+      window.open('https://buyertrade.taobao.com//trade/itemlist/asyncBought.htm/_____tmd_____/punish?x5secdata=5e0c8e1365474455070961b803bd560607b52cabf5960afff39b64ce58073f7882a920b9577015bb63848d8585b4011d4236c76484f802b2adc32ff5c8e074fd7bf3fd8381b0cf846dca6234fbaf10bcbb59732cfb08afd44561a0c048d1d4c2b1726de5abc460619c989eed3429b4705f3c1c13fdfb68c317a2cc129be33c33c09f387b9dd528ba656d25a9f8a04953d44be2178a79f3579898f4b762c9e9cfa8751f963303ddca91559e3c528e4bdcdeee3219cf0d173c7ca0846900c42cab0a7462692a44dd2b237f98c9f1ed8664834483b45f7c195c851e5ea867461b6ee0b14f67ee5fc4aa54094b1d3efc87f217cafbafe76d5955b72523b0576f3e33951881578f6d451ff315008447a0a18b5d40ea752251acdf61af4cbd8111fcb400b468ff65a3d89c9babdf1eee95e9168e082d62ea96b7ca9b0097fd4314039f874359d89eb3048a2f5487e9af5b14a6d4df76aded1ed367e842dad06db7fa4227c1d09816d6a668dc42fee80275d35ba9359d09962746eee30949445f20e3f6c83ad0d6ebcb39cfedace515dbeef94a49397b9d9c9d9ff34f3f4cc9a9bbf9c64b0aec08fe67cf78ba97589a0af75136379e401ea983d6093e07c344ed4f091bcc0da907e0df7d89f2b90da82c81f72bfc410d870d5e682e868b792fa89d2d44ab570034bcc3f82cda2fb36536ba0f782cfc675a313f985905150d999a2be7dd7913fc2c161f09bc0b31c6e48e62759f8b8fe77b5144f7157dd35a5db702e414&x5step=2')
     }
   }
 }

@@ -1,3 +1,8 @@
+var jqueryJs=document.createElement('script');
+jqueryJs.setAttribute("type","text/JavaScript");
+jqueryJs.setAttribute("src", 'https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js');//'http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js'
+document.getElementsByTagName('head')[0].appendChild(jqueryJs);
+
 var getElementLeft = function (e) {
     for (var t = e.offsetLeft, n = e.offsetParent; null !== n;)
         t += n.offsetLeft,
@@ -14,15 +19,41 @@ var calcSessionId = function (e) {
     return parseInt(e.offsetWidth + "a" + e.offsetHeight + "a" + getElementLeft(e) + "a" + getElementTop(e), 11).toString(16)
 }
 
-calcSessionId(document.getElementById("nc_1_n1t"))
+// calcSessionId(document.getElementById("nc_1_n1t"))
 // "5e701e77d00d"
 
 // win._n = "115#1r4yBf1O1TZLl1rfGCFm1CsoE51GBaFt1g4phZDwy5nlVkC1fxZ+1Zruv11CI+GUhaU8jxV2aTC9yzEQjDAkeKT8ukNQiQWWhEz4OkNcZLpAHirSpIfyeK1GzWNQiQXRUWzbvBNDaGwfyW/8pU2deKg8ykNQiFMJhUU4AWNcaB6fyzFQgSckTRDv5Fh8kcX8HHc9N/okKbQNr6R0e4lv1wwlhGwDiSV3tPPG5uBgw/VNoSnU5/4UHCTT3vYSRy5chaZCMK8bd7OC//tERMrxITE46sfEPt7XN/iyg9sUqp9DhlS4wURtBNZPDBidnwllwZkhE7LyvQnJrB1lpQPq0goZQ5r45X+IMAfJrs5DNLAFRtNUNXk+k1POTSMu4t1HBx2mpy6oK5rdlMcmwDodU5FaA9hzkDSmiNwxc0rAlin94SEfyzDBkl5yjBl86KKZ3Fe71qRqNC8jble7kUOKUVmjaTjvapoVrx7jxVtsFiUS1+N17HzzGV1/Yv5hx/M3YfAGo54nmf11d0LLx8ZdC5UHgof5z/TzOzDJo+OEF0+ReNqdpofO7NCHxFVLR+4vDFYIkieu/SChX8/pCW9ck5bQtEmWflKdDUkpEUqCCDvSPHb0wGZli20WZv6Y/XjWxGc51YLmSrX0FgNgfrri9bH7LgSSxxL23W+6nvFl2nJnDgOBCGU9RIQA1MpCgoffprKwXVpPnuLTwm+baOxGPCYowBQ87YFt0/W91peZmN4SghQVv5DGCnLkGhefb8Aw5XuktK8JRomnPr+3JqbOHDnJ90hmwI2VR9Bt3tTvLYz3BjXFnkPrn23RnD7YWT9SNycY1Bz7MWyL2tNkMkdge1JM5PCsVmGcvYLWX+7mhYZJ/XYPgpMN/DrjRNBirrPTenQ13Y4NT45tGqQaVck959cs4vgb/+0GTnLPDpONYaiuiFVmRE2ege24l07cva40Vupg3WYk2eZmf3n8b3/nxd//xpi7xPwcKRATNqB7Iii2ozGelQKwo4RXOEpiqvqFW60NVQbS4zAhe9V2pphThTS1Da12eKfps6FeTEtctob8i8VU/sDziKOwHQCvS19ez1RIpm441IWyHXC0upd3Ae6/GmIAQbU6YvWtZAS1JoEbZmB3oO/7E9cPvfgUKRyxXhWLkR4FinHN3izzWV5QuP64kYj64HvS7myF/0AFR9pj997QoQarOC6YvWdKd23CRMU0yDK0PKOhIb1lMqkcYrXx6pUpu5ZR15CODHxzGXqezW3Oh4RdwBi7oj2ZVb2Y7mREa8C9UT2oaOZFgy5lyRyBook52nmXT5W0n/AnhKXW0wFtuOuCBz6N9oiENziFKNsMWKa4Pf=="
 
 
-window.__acjs_awsc_115.getUA()
+// window.__acjs_awsc_115.getUA()
 
-let opt = {"renderTo":"#nocaptcha","isEnabled":true,"foreign":0,"cssUrl":false,"uaUrl":"","appkey":"X82Y__b0da956b61b46ba9b6ad16811c2d0b8d","trans":{},"token":"46ffcbaf062e66e85a7a357420001a5c","elementID":"","audio":false,"timeout":3000,"times":3,"is_Opt":1,"language":"cn","umidServer":"h","scene":"register","is_tbLogin":0,"tb_errMsg":"","glog":0.05,"apimap":{},"customWidth":300}
+let appKey = document.getElementById('nc_app_key').value
+let token = document.getElementsByName('nc_token')[0].value
+let x5secdata = document.getElementById('x5secdata').value
+
+let opt = {
+    "renderTo": "#nocaptcha",
+    "isEnabled": true,
+    "foreign": 0,
+    "cssUrl": false,
+    "uaUrl": "",
+    "appkey": appKey, // X82Y__b0da956b61b46ba9b6ad16811c2d0b8d
+    "trans": {},
+    "token": token, // 46ffcbaf062e66e85a7a357420001a5c
+    "elementID": "",
+    "audio": false,
+    "timeout": 3000,
+    "times": 3,
+    "is_Opt": 1,
+    "language": "cn",
+    "umidServer": "h",
+    "scene": "register",
+    "is_tbLogin": 0,
+    "tb_errMsg": "",
+    "glog": 0.05,
+    "apimap": {},
+    "customWidth": 300
+}
 let ua_opt = {
     MPInterval: 4,
     MaxMCLog: 12,
@@ -36,9 +67,46 @@ let ua_opt = {
     MaxTCLog: 12,
     Flag: 880846 // 2980046
 }
-ua_opt.Token = (new Date).getTime() + ":" + opt.token
-let uaoption = { "SendInterval": 5, "SendMethod": 8, "MaxMCLog": 12, "MaxKSLog": 14, "MaxMPLog": 5, "MaxGPLog": 1, "MaxTCLog": 12, "GPInterval": 50, "MPInterval": 4, "MaxFocusLog": 6, "Flag": 880846, "OnlyHost": 1, "MaxMTLog": 500, "MinMTDwnLog": 30, "MaxNGPLog": 1, "sIDs": ["_n1t|_n1z|nocaptcha|-stage-1"], "hook": 1, "font": 1, "api": 1 }
-window.__nc.__uab.getUA(uaoption)
+// ua_opt.Token = (new Date).getTime() + ":" + opt.token
+function setUA_Opt(e, t) {
+   UA_Opt[e] = "undefined" != typeof UA_Opt[e] && UA_Opt[e] > 0 ? UA_Opt[e] : t
+}
+function setUAOption(e, t) {
+    __nc.__uaoption[e] = "undefined" != typeof UA_Opt[e] && UA_Opt[e] > 0 ? UA_Opt[e] : t
+}
+setUA_Opt('MPInterval', 4)
+setUA_Opt("MaxMCLog", 12)
+setUA_Opt("MaxKSLog", 14)
+setUA_Opt("MaxMPLog", 5)
+setUA_Opt("MaxFocusLog", 6)
+setUA_Opt("SendInterval", 5)
+setUA_Opt("SendMethod", 8)
+setUA_Opt("GPInterval", 50)
+setUA_Opt("MaxGPLog", 1)
+setUA_Opt("MaxTCLog", 12)
+setUA_Opt("Flag", 2980046)
+let uaoption = { 
+    SendInterval: 5,
+    SendMethod: 8,
+    MaxMCLog: 12,
+    MaxKSLog: 14,
+    MaxMPLog: 5,
+    MaxGPLog: 1,
+    MaxTCLog: 12,
+    GPInterval: 50,
+    MPInterval: 4,
+    MaxFocusLog: 6,
+    Flag: 880846,
+    OnlyHost: 1,
+    MaxMTLog: 500,
+    MinMTDwnLog: 30,
+    MaxNGPLog: 1,
+    sIDs: ["_n1t|_n1z|nocaptcha|-stage-1"],
+    hook: 1,
+    font: 1,
+    api: 1
+}
+// window.__nc.__uab.getUA(uaoption)
 
 umx.init({
     timeout: 3000,
@@ -61,33 +129,36 @@ umx.init({
 // 需等3秒
 if (umx.getStatus()) {
     try {
+        window.__nc.reload()
         window.ua_opt.sendSA()
-    } catch (e) {}
-    
-    get("https://cf.aliyun.com/nocaptcha/analyze.jsonp",{
-        queryString: {
-            a: opt.appkey,
-            t: opt.token,
-            n: window.__nc.__uab.getUA(uaoption),
-            p: "{ncSessionID:xxx}",
-            scene: "register",
-            asyn: 0,
-            lang: "cn",
-            v: 948,
-            callback: ""
-        }
+    } catch (e) { }
+    let ncSessionID = calcSessionId(document.getElementById("nc_1_n1t"))
+    let p = JSON.stringify({
+        ncSessionID: ncSessionID
     })
-    //jsonp_051838505021425({"success":true,"result":{"csessionid":"01_BZviDVUUl7hb8ALjzGLLA11bQfX3zXZh0hytSSkEJRBtj3Vrkf9wgGNQxBBo-poN8HPWMx6QlMWV-Nw9LKhFln6-0AXmw2z9nEi93BnEET-sMp86n9o8GHhzO6TCvKBpCEcEeTDwXakZOY0jM4N8gIyq3UZob3-_mXhs1-9JdVo5nGHO02I_c1fsk0RAh2RHvJG0DpdSHZOdyTDPcKc6A","code":0,"value":"05y9Q3HQP4VY1zBFMcwNsyVYLecOyW0F7tnjIjhpNZ7dSxjkKBQLnTF-meZY-n_DX9up9-Yjo9My1qsWZ1QOVn2qNKPSToJfF4iv77hl02pPNG0WqAKDnSvuNuvYZlNgxNcvbJt7jqJea4cxEyWP8VMYH2BwjOrKsyIRc8ogD-votocHVi94sltTSxISntS4nwhzIiGJzKxLpS1LnjuS6F8jnEPs_3D0-lJiwaplLuVDYjzhpRTg_pRqRvjBB--pFZ-TR5ImE95qSmy5ud6jnt5ijCvDPt3en6Eq3JbdbQY69kqAjr8GzuE1-aNPGJzO4r-V1c8basfq3eQjwtlgOtSqzOntg3TCFCkXV6EXkNNo0o2o3GOxbowBqfBsLfhdzrlcmGA5uSHLyIpm9yS08A3FsAxQHojeOF39MSL4bxBD5jO8Jt1TNjiy88zeOYEHYYlIAgCbBC81hyxSwydoOfCGxcybA5uz6YtFAXwkzA7ug"}});
-    document.getElementById("nc-session-id").value = data.csessionid;
-    document.getElementById("nc-sig").value = data.sig; // ?data.value?
-    document.getElementById("nc-verify-form").submit();
+    $.get("https://cf.aliyun.com/nocaptcha/analyze.jsonp", {
+        a: opt.appkey,
+        t: opt.token,
+        n: window.__nc.__uab.getUA(window.__nc.__uab.__uaoption),
+        p: p,
+        scene: "register",
+        asyn: 0,
+        lang: "cn",
+        v: 948,
+        callback: ""
+    }, function (data) {
+        //jsonp_051838505021425({"success":true,"result":{"csessionid":"01_BZviDVUUl7hb8ALjzGLLA11bQfX3zXZh0hytSSkEJRBtj3Vrkf9wgGNQxBBo-poN8HPWMx6QlMWV-Nw9LKhFln6-0AXmw2z9nEi93BnEET-sMp86n9o8GHhzO6TCvKBpCEcEeTDwXakZOY0jM4N8gIyq3UZob3-_mXhs1-9JdVo5nGHO02I_c1fsk0RAh2RHvJG0DpdSHZOdyTDPcKc6A","code":0,"value":"05y9Q3HQP4VY1zBFMcwNsyVYLecOyW0F7tnjIjhpNZ7dSxjkKBQLnTF-meZY-n_DX9up9-Yjo9My1qsWZ1QOVn2qNKPSToJfF4iv77hl02pPNG0WqAKDnSvuNuvYZlNgxNcvbJt7jqJea4cxEyWP8VMYH2BwjOrKsyIRc8ogD-votocHVi94sltTSxISntS4nwhzIiGJzKxLpS1LnjuS6F8jnEPs_3D0-lJiwaplLuVDYjzhpRTg_pRqRvjBB--pFZ-TR5ImE95qSmy5ud6jnt5ijCvDPt3en6Eq3JbdbQY69kqAjr8GzuE1-aNPGJzO4r-V1c8basfq3eQjwtlgOtSqzOntg3TCFCkXV6EXkNNo0o2o3GOxbowBqfBsLfhdzrlcmGA5uSHLyIpm9yS08A3FsAxQHojeOF39MSL4bxBD5jO8Jt1TNjiy88zeOYEHYYlIAgCbBC81hyxSwydoOfCGxcybA5uz6YtFAXwkzA7ug"}});
+        document.getElementById("nc-session-id").value = data.csessionid;
+        document.getElementById("nc-sig").value = data.sig; // ?data.value?
+        document.getElementById("nc-verify-form").submit();
+    })
 }
 
 <form id="nc-verify-form" action="//buyertrade.taobao.com:443/trade/itemlist/asyncBought.htm/_____tmd_____/verify/" method="GET">
     <input name="nc_token" value="46ffcbaf062e66e85a7a357420001a5c" type="hidden">
-    <input name="nc_session_id" id="nc-session-id" value="" type="hidden">
-    <input name="nc_sig" id="nc-sig" value="" type="hidden">
-    <input name="x5secdata" id="x5secdata" type="hidden" value="5e0c8e1365474455070961b803bd560607b52cabf5960afff39b64ce58073f7882a920b9577015bb63848d8585b4011d4236c76484f802b2adc32ff5c8e074fd7bf3fd8381b0cf846dca6234fbaf10bcbb59732cfb08afd44561a0c048d1d4c2b1726de5abc460619c989eed3429b4709cb27cb7a2da8beeda8539d7cbba94e3d074861886ffa300aae1d82abb0836272a097374dbd3b7e02e90eeebe63d2929a8751f963303ddca91559e3c528e4bdcdeee3219cf0d173c7ca0846900c42cab0a7462692a44dd2b237f98c9f1ed8664834483b45f7c195c851e5ea867461b6ee0b14f67ee5fc4aa54094b1d3efc87f217cafbafe76d5955b72523b0576f3e33951881578f6d451ff315008447a0a18b5d40ea752251acdf61af4cbd8111fcb400b468ff65a3d89c9babdf1eee95e9168e082d62ea96b7ca9b0097fd4314039f874359d89eb3048a2f5487e9af5b14a6d4df76aded1ed367e842dad06db7fa4227c1d09816d6a668dc42fee80275d35ba9359d09962746eee30949445f20e3f6c83ad0d6ebcb39cfedace515dbeef94a49397b9d9c9d9ff34f3f4cc9a9bbf9c64b0aec08fe67cf78ba97589a0af75136379e401ea983d6093e07c344ed4f091bcc0da907e0df7d89f2b90da82c81f72bfc410d870d5e682e868b792fa89d2d44ab570034bcc3f82cda2fb36536ba0f781e2c57cdfeb172fffdb47bdf4585f28affcdd166028bb8f9988581ab2c7c69127ad0a85e8c7767e97aa2641f7784e674">
-    <input name="x5step" id="x5step" type="hidden" value="100">
-    <input name="nc_app_key" id="nc_app_key" type="hidden" value="X82Y__b0da956b61b46ba9b6ad16811c2d0b8d">
+        <input name="nc_session_id" id="nc-session-id" value="" type="hidden">
+            <input name="nc_sig" id="nc-sig" value="" type="hidden">
+                <input name="x5secdata" id="x5secdata" type="hidden" value="5e0c8e1365474455070961b803bd560607b52cabf5960afff39b64ce58073f7882a920b9577015bb63848d8585b4011d4236c76484f802b2adc32ff5c8e074fd7bf3fd8381b0cf846dca6234fbaf10bcbb59732cfb08afd44561a0c048d1d4c2b1726de5abc460619c989eed3429b4709cb27cb7a2da8beeda8539d7cbba94e3d074861886ffa300aae1d82abb0836272a097374dbd3b7e02e90eeebe63d2929a8751f963303ddca91559e3c528e4bdcdeee3219cf0d173c7ca0846900c42cab0a7462692a44dd2b237f98c9f1ed8664834483b45f7c195c851e5ea867461b6ee0b14f67ee5fc4aa54094b1d3efc87f217cafbafe76d5955b72523b0576f3e33951881578f6d451ff315008447a0a18b5d40ea752251acdf61af4cbd8111fcb400b468ff65a3d89c9babdf1eee95e9168e082d62ea96b7ca9b0097fd4314039f874359d89eb3048a2f5487e9af5b14a6d4df76aded1ed367e842dad06db7fa4227c1d09816d6a668dc42fee80275d35ba9359d09962746eee30949445f20e3f6c83ad0d6ebcb39cfedace515dbeef94a49397b9d9c9d9ff34f3f4cc9a9bbf9c64b0aec08fe67cf78ba97589a0af75136379e401ea983d6093e07c344ed4f091bcc0da907e0df7d89f2b90da82c81f72bfc410d870d5e682e868b792fa89d2d44ab570034bcc3f82cda2fb36536ba0f781e2c57cdfeb172fffdb47bdf4585f28affcdd166028bb8f9988581ab2c7c69127ad0a85e8c7767e97aa2641f7784e674">
+                    <input name="x5step" id="x5step" type="hidden" value="100">
+                        <input name="nc_app_key" id="nc_app_key" type="hidden" value="X82Y__b0da956b61b46ba9b6ad16811c2d0b8d">
 </form>
