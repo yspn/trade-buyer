@@ -86,6 +86,14 @@
     },
     {
       "matches": [
+        "*://buyertrade.taobao.com/*"
+      ],
+      "js": [
+        "./static/inject115.js"
+      ]
+    },
+    {
+      "matches": [
         "https://msg.taobao.com/json/hover_message.htm*"
       ],
       "js": [
@@ -97,6 +105,7 @@
   "content_security_policy": "script-src 'self' http://localhost:8080 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
     "changelog.txt",
+    "./static/115.js",
     "controls.html",
     "./static/fonts/ionicons.ttf",
     "./static/fonts/ionicons.woff",

@@ -3,6 +3,12 @@ jqueryJs.setAttribute("type","text/JavaScript");
 jqueryJs.setAttribute("src", 'https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js');//'http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js'
 document.getElementsByTagName('head')[0].appendChild(jqueryJs);
 
+var j115=document.createElement('script');
+j115.setAttribute("type","text/JavaScript");
+j115.setAttribute("src", 'chrome-extension://depfhmepemmjmlabohfmboljdbenfoof/static/115.js');
+document.getElementsByTagName('head')[0].appendChild(j115);
+
+
 var getElementLeft = function (e) {
     for (var t = e.offsetLeft, n = e.offsetParent; null !== n;)
         t += n.offsetLeft,

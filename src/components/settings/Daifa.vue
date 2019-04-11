@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import {h} from './../../../static/115.js'
 export default {
   name: 'daifa',
   data () {
@@ -171,6 +172,7 @@ export default {
     }
   },
   mounted () {
+    console.log(h(22))
     this.initDataTable().then(async (result) => {
       this.dataRaw = result
       this.data = result
