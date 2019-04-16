@@ -1951,7 +1951,7 @@ export default {
         let oid = sub.oid_str
         let tradeId = this.detailedItem._id
         let tbOrderNumber = this.detailedItem.ordered.filter((ordered) => {
-          return ordered.oid_str === oid
+          return ordered.oid_str === oid && !ordered.dismiss
         })[0].order_number
         this.$emit('on-checkpricechange', tradeId, tbOrderNumber)
       } catch (err) {
