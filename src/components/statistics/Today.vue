@@ -756,21 +756,21 @@ export default {
             case 'today-profit-rank':
               this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 1)).toISOString()).then((list) => {
                 this.todayShopRank_Profit = list.sort((a, b) => {
-                  return b.tradeCount - a.tradeCount
+                  return b.profit - a.profit
                 })
               })
               break
             case 'yesterday-profit-rank':
               this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 2)).toISOString()).then((list) => {
                 this.yesterdayShopRank_Profit = list.sort((a, b) => {
-                  return b.tradeCount - a.tradeCount
+                  return b.profit - a.profit
                 })
               })
               break
             case 'daybeforeyesterday-profit-rank':
               this.getDateShopProfitRank(new Date(new Date().setUTCHours(-24 * 3)).toISOString()).then((list) => {
                 this.daybeforeyesterdayShopRank_Profit = list.sort((a, b) => {
-                  return b.tradeCount - a.tradeCount
+                  return b.profit - a.profit
                 })
               })
               break

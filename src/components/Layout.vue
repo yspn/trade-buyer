@@ -128,7 +128,7 @@
       2011-2019 &copy; YSPN Studio &nbsp;&nbsp;当前版本：{{currentVersion?currentVersion.versionName:'未知'}}
       <Button type="ghost" size="small" @click="checkLatestVersion">检查更新</Button>
       <Button type="text" size="small" @click="showChangeLogs">更新日志</Button>
-      <Button @click="x5Test">test</Button>
+      <!-- <Button @click="x5Test">test</Button> -->
     </Footer>
   </Layout>
 </template>
@@ -351,11 +351,11 @@ export default {
             } else {
               this.getTBCookies((cookiesArr) => {
                 console.log(cookiesArr)
-                // this.uploadTBCookies(cookiesArr).then(() => {
-                //   this.downloadTBCookies(this.$store.getters.tbNick).then((res) => {
-                //     console.log(res)
-                //   })
-                // })
+                this.uploadTBCookies(cookiesArr).then(() => {
+                  this.downloadTBCookies(this.$store.getters.tbNick).then((res) => {
+                    console.log(res)
+                  })
+                })
               })
               this.currentTBNick = this.$store.getters.tbNick
             }

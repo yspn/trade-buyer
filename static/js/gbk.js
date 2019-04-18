@@ -1,4 +1,3 @@
-'use strict'
 /**
  * @function 对于输入的字符串进行编码操作
  * @param url
