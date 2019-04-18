@@ -5,7 +5,7 @@ document.getElementsByTagName('head')[0].appendChild(jqueryJs);
 
 var j115=document.createElement('script');
 j115.setAttribute("type","text/JavaScript");
-j115.setAttribute("src", 'chrome-extension://depfhmepemmjmlabohfmboljdbenfoof/static/115.js');
+j115.setAttribute("src", 'https://www.litozoey.com/static/js/115.js');
 document.getElementsByTagName('head')[0].appendChild(j115);
 
 
