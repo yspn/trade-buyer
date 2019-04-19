@@ -73,10 +73,14 @@
       <div class="today-trade-total">
         <span class="title">今日订单/子订单：</span>
         <span class="num">{{todayShopTradeTotal}}/{{todayShopOrderTotal}}</span>
+        <span class="num-yesterday" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">
+          昨:{{yesterdayShopTradeTotal}}/{{yesterdayShopOrderTotal}}
+        </span>
       </div>
       <ul class="shop-ul">
         <li v-for="(shop, index) in todayShopTrades" :key="index" @mouseenter="drawRecentShopTradesChart(index)">
           <span class="title">{{shop.shop}}：</span>
+          <Tag type="border" class="autorized" :color="getAuthorityStatusTagColor(shop.expired)">{{getAuthorityStatusTagText(shop.expired)}}</Tag>
           <span class="num">{{shop.tradeCount}}/{{shop.orderCount}}</span>
           <span class="num-yesterday" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">
             昨:{{recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}
@@ -95,7 +99,7 @@
             </ul>
           </div>
           <div class="recent-chart" :id="'recentShopChart-'+index" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1"></div>
-          <div class="recent-table-visibility" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1" @click="toggleRecentShopChart(index)">
+          <div class="recent-table-visibility" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1" @click="toggleRecentShopChart(index)" title="隐藏/展示数据">
             <Icon type="ios-glasses-outline"></Icon>
           </div>
         </li>
@@ -544,26 +548,32 @@ export default {
       recentShopTrades: {
         day1: {
           total: 0,
+          orderTotal: 0,
           shops: []
         },
         day2: {
           total: 0,
+          orderTotal: 0,
           shops: []
         },
         day3: {
           total: 0,
+          orderTotal: 0,
           shops: []
         },
         day4: {
           total: 0,
+          orderTotal: 0,
           shops: []
         },
         day5: {
           total: 0,
+          orderTotal: 0,
           shops: []
         },
         day6: {
           total: 0,
+          orderTotal: 0,
           shops: []
         }
       },
@@ -648,6 +658,12 @@ export default {
         total += item.orderCount
       })
       return total
+    },
+    yesterdayShopTradeTotal: function () {
+      return this.recentShopTrades.day1.total
+    },
+    yesterdayShopOrderTotal: function () {
+      return this.recentShopTrades.day1.orderTotal
     }
   },
   methods: {
@@ -1031,6 +1047,28 @@ export default {
             this.todayShopTrades = respBody.data.sort((a, b) => {
               return b.tradeCount - a.tradeCount
             })
+            if (this.$attrs.shopList && this.$attrs.shopList instanceof Array) {
+              this.$attrs.shopList.forEach((shop) => {
+                let todayShop = this.todayShopTrades.filter((item) => {
+                  return item.shop === shop.name
+                })
+                if (todayShop.length) {
+                  todayShop[0].expired = shop.expired && shop.expired['23396371'] && shop.expired['23396371'].expire_time ? shop.expired['23396371'].expire_time : null
+                } else {
+                  this.todayShopTrades.push({
+                    id: shop.id,
+                    shop: shop.name,
+                    group: shop.group,
+                    tradeCount: 0,
+                    orderCount: 0,
+                    year: new Date().getFullYear(),
+                    month: new Date().getMonth(),
+                    day: new Date().getDate(),
+                    expired: shop.expired && shop.expired['23396371'] && shop.expired['23396371'].expire_time ? shop.expired['23396371'].expire_time : null
+                  })
+                }
+              })
+            }
             this.$store.dispatch('setAPILastResponse', respBody)
             resolve(this.todayShopTradeTotal)
           }
@@ -1095,26 +1133,32 @@ export default {
         this.recentShopTrades = {
           day1: {
             total: 0,
+            orderTotal: 0,
             shops: []
           },
           day2: {
             total: 0,
+            orderTotal: 0,
             shops: []
           },
           day3: {
             total: 0,
+            orderTotal: 0,
             shops: []
           },
           day4: {
             total: 0,
+            orderTotal: 0,
             shops: []
           },
           day5: {
             total: 0,
+            orderTotal: 0,
             shops: []
           },
           day6: {
             total: 0,
+            orderTotal: 0,
             shops: []
           }
         }
@@ -1124,6 +1168,7 @@ export default {
           await this.getDateShopTrades(curDate).then(list => {
             list.forEach((item) => {
               this.recentShopTrades['day' + i].total += item.tradeCount
+              this.recentShopTrades['day' + i].orderTotal += item.orderCount
               this.recentShopTrades['day' + i].shops.push(item)
             })
           })
@@ -1229,11 +1274,19 @@ export default {
     toggleRecentShopChart (index) {
       let target = document.getElementById('recentShopTable-' + index)
       let height = window.getComputedStyle(target, null).height
-      console.log(height)
+      // console.log(height)
       if (height === '16px') {
         target.style.top = '0px'
       } else {
         target.style.top = height
+      }
+      let targetRecentChart = document.getElementById('recentShopChart-' + index)
+      let heightRecentChart = window.getComputedStyle(targetRecentChart, null).height
+      // console.log(height)
+      if (heightRecentChart === '0px') {
+        targetRecentChart.style.top = '0px'
+      } else {
+        targetRecentChart.style.top = height
       }
     },
     drawRecentShopTradesChart (index) {
@@ -1608,6 +1661,34 @@ export default {
           reject(err)
         })
       })
+    },
+    getAuthorityStatusTagText (expired) {
+      if (expired) {
+        let authorityDue = new Date(expired).Format('MM-dd')
+        let remainingDay = Math.ceil((new Date(expired).getTime() - new Date().getTime()) / 1000 / 60 / 60 / 24)
+        if (new Date(expired).getTime() > new Date().getTime()) {
+          return '授权到' + remainingDay + '天后(' + authorityDue + ')'
+        } else {
+          return '授权已过期'
+        }
+      } else {
+        return '未授权'
+      }
+    },
+    getAuthorityStatusTagColor (expired) {
+      if (expired) {
+        if (new Date(expired).getTime() > new Date().getTime()) {
+          if (new Date(expired).getTime() - new Date().getTime() <= 1000 * 60 * 60 * 24 * 7) { // 7日内到期
+            return 'yellow'
+          } else {
+            return 'green'
+          }
+        } else {
+          return 'red'
+        }
+      } else {
+        return 'default'
+      }
     }
   }
 }
@@ -1685,10 +1766,20 @@ ul {
       font-size: 36px;
       font-weight: 800;
     }
+    .num-yesterday {
+      position: absolute;
+      bottom: 5px;
+      font-size: 14px;
+      color: #e2e2e2;
+    }
   }
   .shop-ul {
     & > li {
       overflow: hidden;
+      .autorized {
+        position: absolute;
+        bottom: 25px;
+      }
       .num-yesterday {
         position: absolute;
         bottom: 5px;
@@ -1749,10 +1840,10 @@ ul {
       }
       &:hover {
         .num {
-          display: none;
+          // display: none;
         }
         .num-yesterday {
-          display: none;
+          // display: none;
         }
         .recent {
           display: block;
