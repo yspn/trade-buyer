@@ -80,7 +80,9 @@
       <ul class="shop-ul">
         <li v-for="(shop, index) in todayShopTrades" :key="index" @mouseenter="drawRecentShopTradesChart(index)">
           <span class="title">{{shop.shop}}：</span>
-          <Tag type="border" class="autorized" :color="getAuthorityStatusTagColor(shop.expired)">{{getAuthorityStatusTagText(shop.expired)}}</Tag>
+          <div class="autorized" @click="clickAuthorityStatusTag(shop.expired)">
+            <Tag type="border" :color="getAuthorityStatusTagColor(shop.expired)">{{getAuthorityStatusTagText(shop.expired)}}</Tag>
+          </div>
           <span class="num">{{shop.tradeCount}}/{{shop.orderCount}}</span>
           <span class="num-yesterday" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">
             昨:{{recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0]?recentShopTrades.day1.shops.filter((item)=>{return item.shop===shop.shop})[0].tradeCount:0}}
@@ -100,7 +102,7 @@
           </div>
           <div class="recent-chart" :id="'recentShopChart-'+index" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1"></div>
           <div class="recent-table-visibility" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1" @click="toggleRecentShopChart(index)" title="隐藏/展示数据">
-            <Icon type="ios-glasses-outline"></Icon>
+            <Icon type="stats-bars"></Icon>
           </div>
         </li>
       </ul>
@@ -1664,10 +1666,10 @@ export default {
     },
     getAuthorityStatusTagText (expired) {
       if (expired) {
-        let authorityDue = new Date(expired).Format('MM-dd')
+        // let authorityDue = new Date(expired).Format('MM-dd')
         let remainingDay = Math.ceil((new Date(expired).getTime() - new Date().getTime()) / 1000 / 60 / 60 / 24)
         if (new Date(expired).getTime() > new Date().getTime()) {
-          return '授权到' + remainingDay + '天后(' + authorityDue + ')'
+          return '授权到' + remainingDay + '天后'
         } else {
           return '授权已过期'
         }
@@ -1688,6 +1690,21 @@ export default {
         }
       } else {
         return 'default'
+      }
+    },
+    clickAuthorityStatusTag (expired) {
+      if (expired) {
+        if (new Date(expired).getTime() > new Date().getTime()) {
+          if (new Date(expired).getTime() - new Date().getTime() <= 1000 * 60 * 60 * 24 * 7) { // 7日内到期,点击去授权
+            window.open('https://fuwu.taobao.com/ser/detail.htm?service_code=FW_GOODS-1000228158&code=FW_GOODS-1000228158', '_blank')
+          } else {
+            this.$router.push('/shops')
+          }
+        } else {
+          window.open('https://fuwu.taobao.com/ser/detail.htm?service_code=FW_GOODS-1000228158&code=FW_GOODS-1000228158', '_blank')
+        }
+      } else {
+        window.open('https://oauth.taobao.com/authorize?response_type=code&client_id=23396371&redirect_uri=http://auth.wgkyz.com/auth/23396371&view=web&state=', '_blank')
       }
     }
   }
@@ -1761,7 +1778,7 @@ ul {
     }
     .num {
       position: absolute;
-      bottom: 10px;
+      bottom: 25px;
       right: 20px;
       font-size: 36px;
       font-weight: 800;
@@ -1769,19 +1786,29 @@ ul {
     .num-yesterday {
       position: absolute;
       bottom: 5px;
+      right: 20px;
       font-size: 14px;
       color: #e2e2e2;
     }
   }
   .shop-ul {
     & > li {
+      padding: 5px;
       overflow: hidden;
       .autorized {
         position: absolute;
+        bottom: 5px;
+      }
+      .num {
+        position: absolute;
         bottom: 25px;
+        right: 5px;
+        font-size: 32px;
+        font-weight: 800;
       }
       .num-yesterday {
         position: absolute;
+        right: 5px;
         bottom: 5px;
         font-size: 14px;
         color: #999;
@@ -1833,10 +1860,10 @@ ul {
       .recent-table-visibility {
         display: none;
         position: absolute;
-        top: 3px;
+        top: -5px;
         right: 3px;
         z-index: 101;
-        color: #e2e2e2;
+        color: #ccc;
       }
       &:hover {
         .num {
@@ -1860,7 +1887,7 @@ ul {
         .recent-table-visibility {
           display: block;
           &:hover {
-            color: #fff;
+            color: #000;
             cursor: pointer;
           }
         }
