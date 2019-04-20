@@ -143,10 +143,10 @@ const orderBoughtTempResponse = (request, sender, sendResponse) => {
 
 const getOrdersFees = (order) => {
   // console.log('triggered')
-  if ($('.order-order').length > 1) {
-    alert('请单次下单一件商品！')
-    window.history.go(-1)
-  } else {
+  // if ($('.order-order').length > 1) {
+  //   alert('请单次下单一件商品！')
+  //   window.history.go(-1)
+  // } else {
     var postFee, itemUrl, num, buyerFee, shopSeller
     var tradePayment = oneKeyOrderInstance.payment
     var orderedPayedTotal = 0
@@ -204,7 +204,7 @@ const getOrdersFees = (order) => {
       buyUrl: itemUrl,
       buyerPostFee: postFee
     }
-  }
+  // }
 }
 const getOrdersFeesOnload = (order) => {
   var postFee, itemUrl, num, buyerFee, shopSeller
