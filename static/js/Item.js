@@ -8,10 +8,15 @@
  */
 var cookieArr = []
 var addressAdded
+var itemId = '' // 当前浏览商品ID
+var historyBought = []
+var userRole = 'employer'
 
 window.onload = () => {
   cookieArr = []
   addressAdded = {}
+  itemId = getQueryString('id')
+  // console.log(itemId)
   window.chrome.runtime.sendMessage({ cmd: 'get_cookies' }, (response) => {
     if (response !== 'ok') {
       window.setTimeout(function () {
@@ -20,11 +25,30 @@ window.onload = () => {
     }
     console.log('获取Cookies：' + response)
   })
+  window.chrome.runtime.sendMessage({ cmd: 'get_user_role' }, (response) => {
+    if (response !== 'ok') {
+      window.setTimeout(function () {
+        window.chrome.runtime.sendMessage({ cmd: 'get_user_role' })
+      }, 2000)
+    }
+    console.log('获取Role：' + response)
+
+  })
+  window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId }, (response) => {
+    if (response !== 'ok') {
+      window.setTimeout(function () {
+        window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId })
+      }, 2000)
+    }
+    console.log('获取历史下单：' + response)
+  })
 }
 
 window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   cookieResponse(request, sender, sendResponse)
   orderInfoResponse(request, sender, sendResponse)
+  historyBoughtResponse(request, sender, sendResponse)
+  userRoleResponse(request, sender, sendResponse)
 })
 
 const cookieResponse = (request, sender, sendResponse) => {
@@ -38,6 +62,62 @@ const cookieResponse = (request, sender, sendResponse) => {
       }
       console.log('获取订单信息：' + response)
     })
+    sendResponse('ok')
+  }
+}
+const initHistoryBoughtWindow = () => {
+  var container = document.createElement('div')
+  container.id = 'oneKeyOrder_HistoryBought_container'
+  container.className = 'active'
+  var icon = document.createElement('div')
+  icon.className = 'historyBought-icon'
+  icon.title = '查询历史下单'
+  var iconText = document.createTextNode('查询总店')
+  icon.appendChild(iconText)
+  container.appendChild(icon)
+  var infoBox = document.createElement('div')
+  infoBox.className = 'historyBought-wrapper'
+  var orderSummary = document.createElement('div')
+  orderSummary.className = 'historyBought-box'
+  infoBox.appendChild(orderSummary)
+  container.appendChild(infoBox)
+  document.querySelector('body').appendChild(container)
+  $('#oneKeyOrder_HistoryBought_container historyBought-icon').on('click', function (e) {
+    $('#oneKeyOrder_HistoryBought_container').toggleClass('active')
+  })
+  if (historyBought.length) {
+    for (var j = 0; j < historyBought.length; j++) {
+      var insertData =
+        '<div class=\'oneKeyOrder_purchasedDetail\'>' +
+          '<div class=\'oneKeyOrder_purchasePrice\'>' +
+            '<span class=\'bold\'>' + (historyBought[j].buyer_fee / historyBought[j].num / 100).toFixed(2)  + '元</span>' +
+            '<span>(邮费:' + historyBought[j].post_fee + '元)</span>' +
+          '</div>' +
+          '<div class=\'oneKeyOrder_purchaseNum\'><span class=\'bold\'>' + historyBought[j].num + '件</span></div>' +
+          '<a class=\'oneKeyOrder_purchaseLink\' href=\'' + historyBought[j].buy_url + '\'>去下单</div>' +
+        '</div>'
+      $(insertData).appendTo($(orderSummary))
+    }
+  } else {
+    $('<span>没有找到总店信息</span>').appendTo($(orderSummary))
+  }
+}
+const historyBoughtResponse = (request, sender, sendResponse) => {
+  if (request.cmd === 'get_history_bought_response') {
+    if (request.err) {
+      console.log('获取历史下单信息失败！' + err.message)
+    } else {
+      historyBought = request.value
+      console.log(request.value)
+      initHistoryBoughtWindow()
+    }
+    sendResponse('ok')
+  }
+}
+
+const userRoleResponse = (request, sender, sendResponse) => {
+  if (request.cmd === 'get_user_role_response') {
+    userRole = request.value
     sendResponse('ok')
   }
 }
@@ -479,9 +559,9 @@ function selectSku (skuProperty, skuName) {
     let pName = $(this).find('.tb-property-type').text().trim()
     if (pName === skuProperty) {
       let propSelections = $(this).find('dd ul li')
-      propSelections.each(function () { //TODO: 单一SKU选项默认已选，不能再点击
+      propSelections.each(function () {
         let propLi = $(this)
-        if (propLi.find('a span').text().trim() === skuName) {
+        if (propSelections.length > 1 && propLi.find('a span').text().trim() === skuName) {
           propLi.click()
         }
       })

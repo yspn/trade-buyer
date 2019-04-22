@@ -9,6 +9,7 @@
 let orderInfo, buyerOrder, oneKeyOrderInstance
 let shopInBlackList = false
 window.onload = () => {
+  window.document.querySelector('.go-btn').style.display = 'none'
   window.chrome.runtime.sendMessage({ cmd: 'get_orderinfo' }, (response) => {
     if (response !== 'ok') {
       // window.setTimeout(function () {
@@ -40,12 +41,14 @@ $(document).ready(function () {
           window.setTimeout(function () {
             buyerOrder = getOrdersFeesOnload(orderInfo)
             window.chrome.runtime.sendMessage({ cmd: 'set_orderbought_temp', value: buyerOrder })
-          }, 2000)
+          }, 200)
           alert('选品信息暂存失败！请刷新本页面。')
         }
+        console.log('1123', window.document.querySelector('.go-btn'))
         console.log('选品信息暂存：' + response)
       })
-    }, 2000)
+    }, 200)
+    
     $('body').delegate('.go-btn', 'click', function (e) {
       e.preventDefault()
       e.stopPropagation()
@@ -56,7 +59,7 @@ $(document).ready(function () {
             window.setTimeout(function () {
               buyerOrder = getOrdersFees(orderInfo)
               window.chrome.runtime.sendMessage({ cmd: 'set_orderbought_temp', value: buyerOrder })
-            }, 2000)
+            }, 500)
             alert('选品信息暂存失败！请刷新本页面。')
           }
           console.log('选品信息暂存：' + response)
@@ -137,6 +140,8 @@ const orderBoughtTempResponse = (request, sender, sendResponse) => {
     console.log(request.text)
     if (!request.value) {
       alert('数据回传失败！' + request.text)
+    } else {
+      window.document.querySelector('.go-btn').style.display = ''
     }
   }
 }

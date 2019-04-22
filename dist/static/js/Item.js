@@ -8,14 +8,25 @@
  */
 var cookieArr = []
 var addressAdded
+var itemId = '' // 当前浏览商品ID
 
 window.onload = () => {
   cookieArr = []
   addressAdded = {}
+  itemId = getQueryString('id')
+  // console.log(itemId)
   window.chrome.runtime.sendMessage({ cmd: 'get_cookies' }, (response) => {
     if (response !== 'ok') {
       window.setTimeout(function () {
         window.chrome.runtime.sendMessage({ cmd: 'get_cookies' })
+      }, 2000)
+    }
+    console.log('获取Cookies：' + response)
+  })
+  window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId }, (response) => {
+    if (response !== 'ok') {
+      window.setTimeout(function () {
+        window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId })
       }, 2000)
     }
     console.log('获取Cookies：' + response)
@@ -479,9 +490,9 @@ function selectSku (skuProperty, skuName) {
     let pName = $(this).find('.tb-property-type').text().trim()
     if (pName === skuProperty) {
       let propSelections = $(this).find('dd ul li')
-      propSelections.each(function () { //TODO: 单一SKU选项默认已选，不能再点击
+      propSelections.each(function () {
         let propLi = $(this)
-        if (propLi.find('a span').text().trim() === skuName) {
+        if (propSelections.length > 1 && propLi.find('a span').text().trim() === skuName) {
           propLi.click()
         }
       })

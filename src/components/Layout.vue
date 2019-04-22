@@ -264,6 +264,8 @@ export default {
           this.listenOneKeyOrderSuccess(request, sender, sendResponse) // 监听Alipay页面询问订单是否成功
           this.listenTransLink(request, sender, sendResponse)
           this.listenCheckBlackListShop(request, sender, sendResponse)
+          this.listenGetHistoryPurchase(request, sender, sendResponse)
+          this.listenGetUserRole(request, sender, sendResponse)
         })
         this.listenOrderSubmitted()
         // this.listenTBSendListRequest() // 监听修改获取淘宝买手号已发货列表请求
@@ -568,6 +570,19 @@ export default {
         sendResponse('ok')
       }
     },
+    listenGetUserRole (request, sender, sendResponse) {
+      if (request.cmd === 'get_user_role') {
+        common.sendMessageToCurrentContentScript({ cmd: 'get_user_role_response', value: this.$store.getters.user.role }, (response) => {
+          if (response !== 'ok') {
+            window.setTimeout(function () {
+              common.sendMessageToCurrentContentScript({ cmd: 'get_user_role_response', value: this.$store.getters.user.role })
+            }, 2000)
+          }
+          console.log('返回Cookies：' + response)
+        })
+        sendResponse('ok')
+      }
+    },
     listenGetOrderInfo (request, sender, sendResponse) {
       if (request.cmd === 'get_orderinfo') {
         sendResponse('ok')
@@ -668,6 +683,55 @@ export default {
         }).catch(err => {
           this.$Message.error('获取商品转链失败！(' + err + ')')
           reject(new Error(err.message))
+        })
+      })
+    },
+    // 获取历史下单
+    listenGetHistoryPurchase (request, sender, sendResponse) {
+      if (request.cmd === 'get_history_bought') {
+        let numiid = request.value ? parseInt(request.value) : null
+        this.getHistoryPurchase(numiid).then((list) => {
+          common.sendMessageToCurrentContentScript({ cmd: 'get_history_bought_response', value: list }, (response) => {
+            if (response !== 'ok') {
+              window.setTimeout(function () {
+                common.sendMessageToCurrentContentScript({ cmd: 'get_history_bought_response', value: list })
+              }, 2000)
+            }
+            console.log('返回Cookies：' + response)
+          })
+          sendResponse('ok')
+        }).catch((err) => {
+          common.sendMessageToCurrentContentScript({ cmd: 'get_history_bought_response', err: err })
+        })
+      }
+    },
+    async getHistoryPurchase (numiid) {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'trades', // tao11, trades
+        apiAction: 'gethistoryboughts', // hisbuy, gethistoryboughts
+        apiQuery: {}
+      }
+      this.apiData = {
+        numiid: numiid,
+        session: this.$store.getters.session
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(response => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            this.$Message.error('历史下单获取失败！(' + respBody.message + ')')
+            reject(new Error(respBody.message))
+          } else {
+            // this.$Message.success('列表载入成功!')
+            this.$store.dispatch('setAPILastResponse', respBody)
+            resolve(respBody.data) // respBody.data.all,respBody.data
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
         })
       })
     },
