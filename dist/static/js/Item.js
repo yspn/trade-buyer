@@ -9,6 +9,8 @@
 var cookieArr = []
 var addressAdded
 var itemId = '' // 当前浏览商品ID
+var historyBought = []
+var userRole = 'employer'
 
 window.onload = () => {
   cookieArr = []
@@ -23,19 +25,30 @@ window.onload = () => {
     }
     console.log('获取Cookies：' + response)
   })
-  window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId }, (response) => {
+  window.chrome.runtime.sendMessage({ cmd: 'get_user_role' }, (response) => {
     if (response !== 'ok') {
       window.setTimeout(function () {
-        window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId })
+        window.chrome.runtime.sendMessage({ cmd: 'get_user_role' })
       }, 2000)
     }
-    console.log('获取Cookies：' + response)
+    console.log('获取Role：' + response)
+
+  })
+  window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId }, (response) => {
+    // if (response !== 'ok') {
+    //   window.setTimeout(function () {
+    //     window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId })
+    //   }, 2000)
+    // }
+    console.log('获取历史下单：' + response)
   })
 }
 
 window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   cookieResponse(request, sender, sendResponse)
   orderInfoResponse(request, sender, sendResponse)
+  historyBoughtResponse(request, sender, sendResponse)
+  userRoleResponse(request, sender, sendResponse)
 })
 
 const cookieResponse = (request, sender, sendResponse) => {
@@ -49,6 +62,98 @@ const cookieResponse = (request, sender, sendResponse) => {
       }
       console.log('获取订单信息：' + response)
     })
+    sendResponse('ok')
+  }
+}
+const initHistoryBoughtWindow = () => {
+  var container = document.createElement('div')
+  container.id = 'oneKeyOrder_HistoryBought_container'
+  container.className = '' // active 开启
+  var icon = document.createElement('div')
+  icon.className = 'historyBought-icon'
+  icon.title = '查询总店历史下单'
+  var iconText = document.createTextNode('查')
+  icon.appendChild(iconText)
+  container.appendChild(icon)
+  var infoBox = document.createElement('div')
+  infoBox.className = 'historyBought-wrapper'
+  var orderSummary = document.createElement('div')
+  orderSummary.className = 'historyBought-box'
+  infoBox.appendChild(orderSummary)
+  container.appendChild(infoBox)
+  document.querySelector('body').appendChild(container)
+  $('#oneKeyOrder_HistoryBought_container .historyBought-icon').on('click', function (e) {
+    $('#oneKeyOrder_HistoryBought_container').toggleClass('active')
+  })
+  if (historyBought.length) {
+    for (var j = 0; j < historyBought.length; j++) {
+      var insertData =
+        '<div class=\'oneKeyOrder_purchasedDetail\'>' +
+          '<div class=\'oneKeyOrder_purchasePrice\'>' +
+            '<span class=\'bold\'>' + (historyBought[j].buyer_fee / historyBought[j].num / 100).toFixed(2)  + '元</span>' +
+            '<span>(邮费:' + historyBought[j].post_fee + '元)</span>' +
+          '</div>' +
+          '<div class=\'oneKeyOrder_purchaseNum\'><span class=\'bold\'>' + historyBought[j].times + '次</span></div>' +
+          '<a class=\'oneKeyOrder_purchaseLink\' href=\'' + historyBought[j].buy_url + '\'>去看看</div>' +
+        '</div>'
+      $(insertData).appendTo($(orderSummary))
+    }
+  } else {
+    $('<span>没有找到总店信息</span>').appendTo($(orderSummary))
+  }
+}
+const historyBoughtResponse = async (request, sender, sendResponse) => {
+  if (request.cmd === 'get_history_bought_response') {
+    if (request.err) {
+      console.log('获取历史下单信息失败！' + err.message)
+    } else {
+      let list = request.value
+      let hisList = []
+      list.sort((a, b) => {
+        return a.buyer_fee - b.buyer_fee
+      })
+      for (let i = 0; i <= list.length;) {
+        await (() => {
+          return new Promise((resolve, reject) => {
+            try {
+              let his = list[i]
+              let existHis = hisList.filter((hisListItem) => {
+                return hisListItem.buyer_fee === his.buyer_fee &&
+                  hisListItem.post_fee === his.post_fee &&
+                  hisListItem.num === his.num
+              })
+              if (!existHis.length) {
+                his.times = 1
+                hisList.push(his)
+              } else {
+                existHis[0].times += 1
+              }
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
+          })
+        })(i).then(() => {
+          i++
+        }).catch((e) => {
+          console.log(e)
+          i++
+        })
+        if (i >= list.length) {
+          break
+        }
+      }
+      historyBought = hisList
+      console.log(request.value)
+      initHistoryBoughtWindow()
+    }
+    sendResponse('ok')
+  }
+}
+
+const userRoleResponse = (request, sender, sendResponse) => {
+  if (request.cmd === 'get_user_role_response') {
+    userRole = request.value
     sendResponse('ok')
   }
 }
