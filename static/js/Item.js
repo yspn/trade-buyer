@@ -35,11 +35,11 @@ window.onload = () => {
 
   })
   window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId }, (response) => {
-    if (response !== 'ok') {
-      window.setTimeout(function () {
-        window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId })
-      }, 2000)
-    }
+    // if (response !== 'ok') {
+    //   window.setTimeout(function () {
+    //     window.chrome.runtime.sendMessage({ cmd: 'get_history_bought', value: itemId })
+    //   }, 2000)
+    // }
     console.log('获取历史下单：' + response)
   })
 }
@@ -68,11 +68,11 @@ const cookieResponse = (request, sender, sendResponse) => {
 const initHistoryBoughtWindow = () => {
   var container = document.createElement('div')
   container.id = 'oneKeyOrder_HistoryBought_container'
-  container.className = 'active'
+  container.className = '' // active 开启
   var icon = document.createElement('div')
   icon.className = 'historyBought-icon'
-  icon.title = '查询历史下单'
-  var iconText = document.createTextNode('查询总店')
+  icon.title = '查询总店历史下单'
+  var iconText = document.createTextNode('查')
   icon.appendChild(iconText)
   container.appendChild(icon)
   var infoBox = document.createElement('div')
@@ -82,7 +82,7 @@ const initHistoryBoughtWindow = () => {
   infoBox.appendChild(orderSummary)
   container.appendChild(infoBox)
   document.querySelector('body').appendChild(container)
-  $('#oneKeyOrder_HistoryBought_container historyBought-icon').on('click', function (e) {
+  $('#oneKeyOrder_HistoryBought_container .historyBought-icon').on('click', function (e) {
     $('#oneKeyOrder_HistoryBought_container').toggleClass('active')
   })
   if (historyBought.length) {
@@ -93,8 +93,8 @@ const initHistoryBoughtWindow = () => {
             '<span class=\'bold\'>' + (historyBought[j].buyer_fee / historyBought[j].num / 100).toFixed(2)  + '元</span>' +
             '<span>(邮费:' + historyBought[j].post_fee + '元)</span>' +
           '</div>' +
-          '<div class=\'oneKeyOrder_purchaseNum\'><span class=\'bold\'>' + historyBought[j].num + '件</span></div>' +
-          '<a class=\'oneKeyOrder_purchaseLink\' href=\'' + historyBought[j].buy_url + '\'>去下单</div>' +
+          '<div class=\'oneKeyOrder_purchaseNum\'><span class=\'bold\'>' + historyBought[j].times + '次</span></div>' +
+          '<a class=\'oneKeyOrder_purchaseLink\' href=\'' + historyBought[j].buy_url + '\'>去看看</div>' +
         '</div>'
       $(insertData).appendTo($(orderSummary))
     }
@@ -102,12 +102,48 @@ const initHistoryBoughtWindow = () => {
     $('<span>没有找到总店信息</span>').appendTo($(orderSummary))
   }
 }
-const historyBoughtResponse = (request, sender, sendResponse) => {
+const historyBoughtResponse = async (request, sender, sendResponse) => {
   if (request.cmd === 'get_history_bought_response') {
     if (request.err) {
       console.log('获取历史下单信息失败！' + err.message)
     } else {
-      historyBought = request.value
+      let list = request.value
+      let hisList = []
+      list.sort((a, b) => {
+        return a.buyer_fee - b.buyer_fee
+      })
+      for (let i = 0; i <= list.length;) {
+        await (() => {
+          return new Promise((resolve, reject) => {
+            try {
+              let his = list[i]
+              let existHis = hisList.filter((hisListItem) => {
+                return hisListItem.buyer_fee === his.buyer_fee &&
+                  hisListItem.post_fee === his.post_fee &&
+                  hisListItem.num === his.num
+              })
+              if (!existHis.length) {
+                his.times = 1
+                hisList.push(his)
+              } else {
+                existHis[0].times += 1
+              }
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
+          })
+        })(i).then(() => {
+          i++
+        }).catch((e) => {
+          console.log(e)
+          i++
+        })
+        if (i >= list.length) {
+          break
+        }
+      }
+      historyBought = hisList
       console.log(request.value)
       initHistoryBoughtWindow()
     }

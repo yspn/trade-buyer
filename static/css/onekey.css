@@ -354,3 +354,55 @@
   font-weight: 800 !important;
   color: rgb(29, 150, 35) !important;
 }
+
+/*
+  历史下单查询
+*/
+#oneKeyOrder_HistoryBought_container {
+  position: fixed;
+  z-index: 100000100;
+  left: 10px;
+  top: 20px;
+  font-size: 14px;
+  transition: all 0.3s linear 0s;
+}
+.historyBought-icon {
+  position: relative;
+  left: 32px;
+  background: #11b68c;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 900;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  transition: all .3s ease-in-out;
+}
+.historyBought-icon:hover {
+  background: #0b6e55;
+  color: #fff;
+}
+#oneKeyOrder_HistoryBought_container .historyBought-wrapper {
+  visibility: hidden;
+  opacity: 0;
+  height: 90vh;
+  width: 0;
+  transition: all .3s linear;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+#oneKeyOrder_HistoryBought_container.active .historyBought-wrapper {
+  visibility: visible;
+  opacity: 1;
+  min-height: 280px;
+  /* min-height: 200px;*/
+  /* max-height: 560px; */
+  width: 280px;
+  background: rgba(236, 250, 253, .85);
+  box-shadow: 0 0 10px #555;
+  border: 2px solid #fff;
+  /* overflow: hidden; */
+}
