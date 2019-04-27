@@ -77,7 +77,7 @@ export default {
           //   return value.indexOf(row.shopid) > -1
           // },
           filterRemote: (value, row) => {
-            this.filterShop = value
+            this.filterShop = value[0]
           },
           render: (h, params) => {
             return h('span', {}, params.row.shop.name)
@@ -190,6 +190,7 @@ export default {
     }
   },
   mounted () {
+    this.filterShop = this.shopList.length ? this.shopList[0].id : null
     this.initDataTable().then(async (result) => {
       this.dataRaw = result
       this.data = result
