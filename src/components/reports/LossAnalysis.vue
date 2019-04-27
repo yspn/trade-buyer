@@ -72,7 +72,7 @@ export default {
               value: item.id
             }
           }),
-          filterMultiple: true,
+          filterMultiple: false,
           // filterMethod (value, row) {
           //   return value.indexOf(row.shopid) > -1
           // },
@@ -230,11 +230,11 @@ export default {
     },
     'filterShop': async function (newVal) {
       if (newVal) {
-        // this.refreshList()
-        let templist = this.data.slice(0)
-        this.data = templist.filter((item) => {
-          return newVal.indexOf(item.shopid) > -1
-        })
+        this.refreshList()
+        // let templist = this.data.slice(0)
+        // this.data = templist.filter((item) => {
+        //   return newVal.indexOf(item.shopid) > -1
+        // })
       }
     },
     timespan: function (newVal) {
@@ -304,11 +304,14 @@ export default {
       if (this.searchModel) {
         this.apiData.search = this.searchModel
       }
-      // if (this.filterShop && this.filterShop.length) {
-      //   this.apiData.shops = {
-      //     $in: this.filterShop
-      //   }
-      // }
+      if (this.filterShop && this.filterShop.length) {
+        // this.apiData.shops = {
+        //   $in: this.filterShop
+        // }
+        this.apiData.shop = {
+          id: this.filterShop
+        }
+      }
       this.$store.dispatch('setAPIStore', this.apiItem)
       var apiUrl = this.$store.getters.apiUrl
       return new Promise(async (resolve, reject) => {
