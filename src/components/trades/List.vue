@@ -104,7 +104,7 @@
                   <td colspan="4">
                     <p><b>
                       {{detailedItem.receiver_name}}
-                      ({{detailedItem.receiver_mobile}}<span v-if="detailedItem.receiver_phone"> {{detailedItem.receiver_phone}}</span>)
+                      ({{detailedItem.receiver_mobile}}<span v-if="detailedItem.receiver_phone"> {{detailedItem.receiver_phone}}</span>) <Tag type="border" :color="recentOrderCount > 1 ? 'red' : 'green'" v-if="recentOrderCount">近24小时：{{recentOrderCount}}次</Tag>
                       <Button type="text" @click="editReceiverMobile=true;editReceiverMobileModel.receiverMobile=detailedItem.receiver_mobile;editReceiverMobileModel.receiverPhone=detailedItem.receiver_phone;" size="small">改电话</Button>
                       </b>
                     </p>
@@ -563,7 +563,8 @@ export default {
         receiverPhone: ''
       },
       editBuyerMessage: false,
-      editBuyerMessageModel: ''
+      editBuyerMessageModel: '',
+      recentOrderCount: 0 // 买家近期下单数量
     }
   },
   created () {
@@ -654,6 +655,7 @@ export default {
     },
     'detailedItem': {
       handler: async function (newVal, oldVal) {
+        this.recentOrderCount = 0
         if (newVal._id) {
           // if (!newVal.buyer_nick_decrypted) {
           //   this.updateDecrypted(newVal)
@@ -683,6 +685,16 @@ export default {
               })
               .catch(err => {
                 this.$Message.error('同步订单失败！(' + err.message + ')')
+              })
+            await this.checkReceiverRecentOrders(this.detailedItem.tid_str)
+              .then((res) => {
+                this.recentOrderCount = res.count
+                if (res.count > 1) {
+                  this.$Modal.warning({
+                    title: '恶意下单预警',
+                    content: '该买家近期已下单' + res.count + '笔，请注意防范恶意下单风险！'
+                  })
+                }
               })
           }
           this.prepareTradeOperationHistory(newVal)
@@ -2171,6 +2183,38 @@ export default {
           // console.log(err)
           this.$store.dispatch('setAPILastResponse', err)
           reject(new Error('同步订单失败！(' + err + ')'))
+        })
+      })
+    },
+    async checkReceiverRecentOrders (tid) {
+      return new Promise(async (resolve, reject) => {
+        this.apiItem = {
+          apiHost: '',
+          apiService: 'trades',
+          apiAction: 'checkrecentorder',
+          apiQuery: {}
+        }
+        this.apiData = {
+          tid: tid
+          // session: this.$store.getters.session
+        }
+        this.$store.dispatch('setAPIStore', this.apiItem)
+        var apiUrl = this.$store.getters.apiUrl
+        await this.$http.post(apiUrl, this.apiData).then(response => {
+          try {
+            var respBody = response.data.data
+            if (respBody.status === 'fail') {
+              reject(new Error('检查恶意下单失败！(' + respBody.message + ')'))
+            } else {
+              resolve(respBody)
+            }
+          } catch (err) {
+            reject(err)
+          }
+        }).catch(err => {
+          // console.log(err)
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(new Error('检查恶意下单失败！(' + err + ')'))
         })
       })
     },
