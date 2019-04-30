@@ -96,8 +96,9 @@ function getOneKeyOrderInfo (callback) {
                   '<span>(邮费:' + info.orders.order[i].history_purchase[j].post_fee + '元)</span>' +
                 '</div>' +
                 '<div class=\'oneKeyOrder_purchaseNum\'><span class=\'bold\'>' + info.orders.order[i].history_purchase[j].num + '件</span></div>' +
-                '<a class=\'oneKeyOrder_purchaseLink\' href=\'' + info.orders.order[i].history_purchase[j].buy_url + '\'>去下单</div>' +
+                '<a class=\'oneKeyOrder_purchaseLink\' href=\'' + getLinkHref(info.orders.order[i].history_purchase[j].buy_url) + '\'>去下单</div>' +
               '</div>'
+            // console.log(insertData)
             $(insertData).appendTo($(orderedItem))
           }
           // let image = new Image()
@@ -147,6 +148,14 @@ function getOneKeyOrderInfo (callback) {
       }
     }
   })
+}
+
+function getLinkHref (link) {
+  let linkHref = link
+  if (/^\d+$/.test(link)) {
+    linkHref = 'https://item.taobao.com/item.htm?id=' + link
+  }
+  return linkHref
 }
 
 function getBase64Image (img) {

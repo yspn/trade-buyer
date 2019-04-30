@@ -31,9 +31,20 @@
       </div>
     </div>
     <Modal v-model="detailed" :transfer="false" :mask-closable="true" width="1200" v-if="detailedItem.tid_str">
-      <p slot="header" style="text-align:center">
+      <p slot="header" style="text-align:center;height:initial">
         <Icon type="information-circled"></Icon>
         <span>订单详情[{{detailedItem.tid_str}}]</span>
+        <Tag type="border" :color="recentOrderCount > 1 ? 'red' : 'green'" v-if="recentOrderCount">打假风险预警（测试）：{{recentOrderCount>1?'危险':'安全'}}</Tag>
+        <Poptip placement="top" trigger="hover" v-if="recentOrderCount>1">
+          <Icon type="help-circled"></Icon>
+          <div slot="content" style="white-space:wrap;">
+            <div>提示风险的订单，可能为以下情况：</div>
+            <div>1、职业打假人恶意购买。</div>
+            <div>2、正常用户同一账号短时间内多次下单。</div>
+            <div>3、同行同一买手账号代购多次下单。</div>
+            <div>请确认后确定是否下单。</div>
+          </div>
+        </Poptip>
       </p>
       <div>
         <Tabs value="order-info" type="card">
@@ -91,7 +102,7 @@
                         </span>
                       </b>)
                     </span>
-                    <a :href="detailedItem.ordered[detailedItem.ordered.length - 1].buy_url" target="_blank">下单链接</a>
+                    <a :href="getLinkHref(detailedItem.ordered[detailedItem.ordered.length - 1].buy_url)" target="_blank">下单链接</a>
                   </td>
                 </tr>
                 <tr>
@@ -104,7 +115,7 @@
                   <td colspan="4">
                     <p><b>
                       {{detailedItem.receiver_name}}
-                      ({{detailedItem.receiver_mobile}}<span v-if="detailedItem.receiver_phone"> {{detailedItem.receiver_phone}}</span>) <Tag type="border" :color="recentOrderCount > 1 ? 'red' : 'green'" v-if="recentOrderCount">近24小时：{{recentOrderCount}}次</Tag>
+                      ({{detailedItem.receiver_mobile}}<span v-if="detailedItem.receiver_phone"> {{detailedItem.receiver_phone}}</span>)
                       <Button type="text" @click="editReceiverMobile=true;editReceiverMobileModel.receiverMobile=detailedItem.receiver_mobile;editReceiverMobileModel.receiverPhone=detailedItem.receiver_phone;" size="small">改电话</Button>
                       </b>
                     </p>
@@ -691,8 +702,8 @@ export default {
                 this.recentOrderCount = res.count
                 if (res.count > 1) {
                   this.$Modal.warning({
-                    title: '恶意下单预警',
-                    content: '该买家近期已下单' + res.count + '笔，请注意防范恶意下单风险！'
+                    title: '打假风险预警',
+                    content: '该订单被系统识别可能存在打假风险，可能的原因包括但不限于：<br>1、职业打假人恶意购买。<br>2、正常用户同一账号短时间内多次下单。<br>3、同行同一买手账号代购多次下单。<br><strong>请确认后确定是否下单。</strong>'
                   })
                 }
               })
@@ -2601,6 +2612,13 @@ export default {
       } else {
         return ''
       }
+    },
+    getLinkHref (link) {
+      let linkHref = link
+      if (/^\d+$/.test(link)) {
+        linkHref = 'https://item.taobao.com/item.htm?id=' + link
+      }
+      return linkHref
     },
     async goJoin (sub, url) { // BOSS点击“关联”
       if (!sub) {

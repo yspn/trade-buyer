@@ -94,13 +94,20 @@ const initHistoryBoughtWindow = () => {
             '<span>(邮费:' + historyBought[j].post_fee + '元)</span>' +
           '</div>' +
           '<div class=\'oneKeyOrder_purchaseNum\'><span class=\'bold\'>' + historyBought[j].times + '次</span></div>' +
-          '<a class=\'oneKeyOrder_purchaseLink\' href=\'' + historyBought[j].buy_url + '\'>去看看</div>' +
+          '<a class=\'oneKeyOrder_purchaseLink\' href=\'' + getLinkHref(historyBought[j].buy_url) + '\'>去看看</div>' +
         '</div>'
       $(insertData).appendTo($(orderSummary))
     }
   } else {
     $('<span>没有找到总店信息</span>').appendTo($(orderSummary))
   }
+}
+function getLinkHref (link) {
+  let linkHref = link
+  if (/^\d+$/.test(link)) {
+    linkHref = 'https://item.taobao.com/item.htm?id=' + link
+  }
+  return linkHref
 }
 const historyBoughtResponse = async (request, sender, sendResponse) => {
   if (request.cmd === 'get_history_bought_response') {
