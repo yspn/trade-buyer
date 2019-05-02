@@ -706,6 +706,8 @@ export default {
                     content: '该订单被系统识别可能存在打假风险，可能的原因包括但不限于：<br>1、职业打假人恶意购买。<br>2、正常用户同一账号短时间内多次下单。<br>3、同行同一买手账号代购多次下单。<br><strong>请确认后确定是否下单。</strong>'
                   })
                 }
+              }).catch((err) => {
+                console.log(err.message)
               })
           }
           this.prepareTradeOperationHistory(newVal)
