@@ -2213,11 +2213,11 @@ export default {
         var apiUrl = this.$store.getters.apiUrl
         await this.$http.post(apiUrl, this.apiData).then(response => {
           try {
-            var respBody = response.data.data
+            var respBody = response.data
             if (respBody.status === 'fail') {
               reject(new Error('检查恶意下单失败！(' + respBody.message + ')'))
             } else {
-              resolve(respBody)
+              resolve(respBody.data)
             }
           } catch (err) {
             reject(err)
