@@ -9,7 +9,7 @@
 let orderInfo, buyerOrder, oneKeyOrderInstance
 let shopInBlackList = false
 window.onload = () => {
-  // window.document.querySelector('.go-btn').style.display = 'none'
+  window.document.querySelector('.go-btn').style.display = 'none'
   window.chrome.runtime.sendMessage({ cmd: 'get_orderinfo' }, (response) => {
     if (response !== 'ok') {
       // window.setTimeout(function () {
@@ -47,7 +47,7 @@ $(document).ready(function () {
         // console.log('1123', window.document.querySelector('.go-btn'))
         console.log('选品信息暂存：' + response)
       })
-    }, 200)
+    }, 2000)
     
     $('body').delegate('.go-btn', 'click', function (e) {
       e.preventDefault()
@@ -141,7 +141,7 @@ const orderBoughtTempResponse = (request, sender, sendResponse) => {
     if (!request.value) {
       alert('数据回传失败！' + request.text)
     } else {
-      // window.document.querySelector('.go-btn').style.display = ''
+      window.document.querySelector('.go-btn').style.display = ''
     }
   }
 }

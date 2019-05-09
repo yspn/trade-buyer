@@ -31,10 +31,15 @@
       <div class="modal-content">
         <Form ref="translinkForm" :model="translinkModel" :rules="ruleValidateTransLink" :label-width="120">
           <FormItem label="转链模式">
-            <i-switch v-model="translinkModel.transMode" size="large" true-value="normal" false-value="yitao">
+            <!-- <i-switch v-model="translinkModel.transMode" size="large" true-value="normal" false-value="yitao">
               <span slot="open">第三方</span>
               <span slot="close">一淘</span>
-            </i-switch>
+            </i-switch> -->
+            <RadioGroup v-model="translinkModel.transMode" type="button" size="large">
+              <Radio label="yitao">一淘</Radio>
+              <Radio label="normal">独立转链</Radio>
+              <Radio label="pool">转链池</Radio>
+            </RadioGroup>
             <p>
               <span>一淘模式下系统将自动记录历史转链记录，为之后的下单提供转链服务。第三方转链服务提供在线实时转链服务。</span>
             </p>
