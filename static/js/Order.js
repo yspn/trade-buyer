@@ -44,10 +44,10 @@ $(document).ready(function () {
           }, 200)
           alert('选品信息暂存失败！请刷新本页面。')
         }
-        console.log('1123', window.document.querySelector('.go-btn'))
+        // console.log('1123', window.document.querySelector('.go-btn'))
         console.log('选品信息暂存：' + response)
       })
-    }, 200)
+    }, 2000)
     
     $('body').delegate('.go-btn', 'click', function (e) {
       e.preventDefault()
