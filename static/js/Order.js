@@ -9,6 +9,10 @@
 let orderInfo, buyerOrder, oneKeyOrderInstance
 let shopInBlackList = false
 window.onload = () => {
+  
+}
+
+$(document).ready(function () {
   window.document.querySelector('.go-btn').style.display = 'none'
   window.chrome.runtime.sendMessage({ cmd: 'get_orderinfo' }, (response) => {
     if (response !== 'ok') {
@@ -19,9 +23,6 @@ window.onload = () => {
     }
     console.log('获取订单信息：' + response)
   })
-}
-
-$(document).ready(function () {
   window.chrome.storage.local.get('one_key_order', function (store) {
     console.log(store)
     oneKeyOrderInstance = store.one_key_order
