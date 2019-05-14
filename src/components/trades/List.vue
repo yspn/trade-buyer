@@ -178,6 +178,9 @@
                 </tr>
               </table>
               <div class="padding-top-20"></div>
+              <div v-if="detailedItem.orders.order.length > 1" style="float:right;">
+                拆单发货：<i-switch v-model="separateLogis"></i-switch>
+              </div>
               <table class="brief-table">
                 <thead>
                   <tr>
@@ -575,7 +578,8 @@ export default {
       },
       editBuyerMessage: false,
       editBuyerMessageModel: '',
-      recentOrderCount: 0 // 买家近期下单数量
+      recentOrderCount: 0, // 买家近期下单数量
+      separateLogis: false // 订单拆单发货
     }
   },
   created () {
@@ -676,6 +680,7 @@ export default {
               newVal = Object.assign(newVal, receiver)
             })
           }
+          this.separateLogis = newVal.separate_logis ? newVal.separate_logis : false
           this.lastTradeStatusCheckTime = null
           if (['UNASSIGNED', 'ASSIGNED', 'PARTLY_ORDERED'].indexOf(newVal.order_status) > -1) {
             await this.syncTradeStatus(this.detailedItem.tid_str)
@@ -844,6 +849,9 @@ export default {
       if (newVal) {
         this.syncBuyerListByShopId(this.detailedItem.shop.id)
       }
+    },
+    'separateLogis': function (newVal) {
+      this.setSeparateLogis(newVal)
     }
   },
   computed: {
@@ -3249,6 +3257,33 @@ export default {
         // console.log(err)
         this.$store.dispatch('setAPILastResponse', err)
         this.$Message.error('修改买家留言失败！(' + err + ')')
+      })
+    },
+    async setSeparateLogis () {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'trades',
+        apiAction: 'setseparatelogis',
+        apiQuery: {}
+      }
+      this.apiData = {
+        tradeid: this.detailedItem._id || this.detailedItem.id,
+        separate: this.separateLogis
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      await this.$http.post(apiUrl, this.apiData).then(response => {
+        var respBody = response.data
+        if (respBody.status === 'fail') {
+          this.$Message.error('设置拆单发货失败！(' + respBody.message + ')')
+        } else {
+          Object.assign(this.detailedItem, respBody.data)
+          this.$store.dispatch('setAPILastResponse', respBody)
+        }
+      }).catch(err => {
+        // console.log(err)
+        this.$store.dispatch('setAPILastResponse', err)
+        this.$Message.error('设置拆单发货失败！(' + err + ')')
       })
     }
   }
