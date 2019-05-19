@@ -178,6 +178,9 @@
                 </tr>
               </table>
               <div class="padding-top-20"></div>
+              <div v-if="detailedItem.orders.order.length > 1" style="float:right;">
+                拆单发货：<i-switch v-model="separateLogis"></i-switch>
+              </div>
               <table class="brief-table">
                 <thead>
                   <tr>
@@ -275,9 +278,6 @@
         </Tabs>
       </div>
       <div slot="footer">
-        <div v-if="detailedItem.orders.order.length > 1">
-          拆单发货：<i-switch v-model="separateLogis"></i-switch>
-        </div>
         <Button size="large" type="warning" @click="assignModal=true" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1&&['UNASSIGNED', 'RESIGNED', 'ASSIGNED'].indexOf(detailedItem.order_status) >= 0">分配给...</Button>
         <Button size="large" type="error" @click="goResign" v-if="['service'].indexOf($store.getters.user.role) < 0 && ['ORDERED', 'PARTLY_ORDERED', 'RESIGNED', 'PARTLY_FINISHED', 'FINISHED'].indexOf(detailedItem.order_status) < 0">退单</Button>
         <Button size="large" type="default" @click="setMemoModal">订单备注</Button>

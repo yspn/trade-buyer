@@ -44,8 +44,9 @@ function getOneKeyOrderInfo (callback) {
       icon.title = '一键下单'
       icon.width = 32
       icon.height = 32
-      // icon.src = chrome.extension.getURL('/logo.png')
-      icon.src = 'http://store.tao11.la/favicon.ico'
+      // icon.src = window.chrome.extension.getURL('/static/logo.png')
+      // console.log(window.chrome.extension.getURL('/static/favicon.ico'))
+      icon.src = 'https://dingdanweb.oss-cn-beijing.aliyuncs.com/favicon.ico'
       container.appendChild(icon)
       var infoBox = document.createElement('div')
       infoBox.id = 'oneKeyOrder_orderInfo'

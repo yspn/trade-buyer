@@ -605,6 +605,7 @@ function selectSku (skuProperty, skuName) {
       propSelections.each(function () {
         let propLi = $(this)
         if (propSelections.length > 1 && propLi.find('a span').text().trim() === skuName) {
+          // console.log(skuName + ' clicked')
           propLi.click()
         }
       })
