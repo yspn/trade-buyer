@@ -272,6 +272,7 @@ export default {
         this.listenModifyTaobaoBoughtItemsRequestHeaders()
         this.listenBuyerLogisMsgRequestHeaders()
         this.listenBoughtItemsTMDPunishRequestHeaders() // 调用滑动验证
+        this.listenH5APITMDPunishRequestHeaders()
         this.listenAddressAPIRequestHeaders() // 监听地址相关H5API，增加Referer
         this.listenTransLinkDetailedHistoryRequestHeaders() // 监视Detail页面，记录页面地址
         this.autoTracerSwitch = this.$store.getters.user.tracelogisticsEnable
@@ -1309,6 +1310,23 @@ export default {
       }, {urls: ['*://buyertrade.taobao.com//trade/itemlist/asyncBought.htm*']},
       ['blocking', 'requestHeaders']) // chrome 72+ 'extraHeaders'
     },
+    listenH5APITMDPunishRequestHeaders () {
+      window.chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
+        let headers = details.requestHeaders
+        headers.push({
+          name: 'Referer',
+          value: 'https://member1.taobao.com/member/fresh/deliver_address.htm'
+        })
+        // headers.push({
+        //   name: 'user-agent',
+        //   value: 'zsea/fetch'
+        // })
+        return {
+          requestHeaders: headers
+        }
+      }, {urls: ['*://h5api.m.taobao.com:443//h5/*/_____tmd_____/punish*']},
+      ['blocking', 'requestHeaders']) // chrome 72+ 'extraHeaders'
+    },
     onAutoTracerInterval (val) {
       this.autoTracerInterval = val
     },
@@ -2086,6 +2104,9 @@ export default {
             } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('TOKEN_EXOIRED') > -1) {
               reject(new Error('TAOBAO_TOKEN_EXOIRED'))
             } else {
+              if (json.data.url && json.data.url.indexOf('punish') > -1) {
+                window.open(json.data.url)
+              }
               reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
             }
           })
@@ -2151,6 +2172,9 @@ export default {
             } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('TOKEN_EXOIRED') > -1) {
               reject(new Error('TAOBAO_TOKEN_EXOIRED'))
             } else {
+              if (json.data.url && json.data.url.indexOf('punish') > -1) {
+                window.open(json.data.url)
+              }
               reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
             }
           })
@@ -2230,6 +2254,9 @@ export default {
             } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('518') > -1) {
               reject(new Error('TAOBAO_ADDRESSLIST_FULL'))
             } else {
+              if (json.data.url && json.data.url.indexOf('punish') > -1) {
+                window.open(json.data.url)
+              }
               reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
             }
           })
@@ -2276,6 +2303,9 @@ export default {
             } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('TOKEN_EXOIRED') > -1) {
               reject(new Error('TAOBAO_TOKEN_EXOIRED'))
             } else {
+              if (json.data.url && json.data.url.indexOf('punish') > -1) {
+                window.open(json.data.url)
+              }
               reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
             }
           })
