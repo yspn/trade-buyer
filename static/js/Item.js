@@ -14,6 +14,7 @@ var userRole = 'employer'
 
 // window.onload = () => {
 $(document).ready(function () {
+  console.log('ready')
   cookieArr = []
   addressAdded = {}
   itemId = getQueryString('id')
@@ -603,12 +604,14 @@ function selectSku (skuProperty, skuName) {
     let property = $(this)
     let pName = $(this).find('.tb-property-type').text().trim()
     if (pName === skuProperty) {
+      console.log('Sku Property Hit!', pName)
       let propSelections = $(this).find('dd ul li')
       propSelections.each(function () {
         let propLi = $(this)
         if (propSelections.length > 1 && propLi.find('a span').text().trim() === skuName) {
-          // console.log(skuName + ' clicked')
+          console.log(skuName + ' clicked')
           propLi.click()
+          propLi.addClass('tb-selected')
         }
       })
     }
