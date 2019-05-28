@@ -2427,7 +2427,7 @@ export default {
             defaultAddress = list.filter((item) => {
               return item.defaultAddress
             })
-            if (defaultAddress) {
+            if (defaultAddress.length) {
               defaultAddress = defaultAddress[0]
             } else {
               defaultAddress = list[0]
@@ -2441,6 +2441,7 @@ export default {
             //   })
             // }
           })
+          console.log(defaultAddress)
           await this.updateAddress201807(defaultAddress.deliverId, address)
           // this.insertNewAddress(address)
           return false
