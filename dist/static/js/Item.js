@@ -12,7 +12,8 @@ var itemId = '' // 当前浏览商品ID
 var historyBought = []
 var userRole = 'employer'
 
-window.onload = () => {
+// window.onload = () => {
+$(document).ready(function () {
   cookieArr = []
   addressAdded = {}
   itemId = getQueryString('id')
@@ -42,7 +43,8 @@ window.onload = () => {
     // }
     console.log('获取历史下单：' + response)
   })
-}
+// }
+})
 
 window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   cookieResponse(request, sender, sendResponse)

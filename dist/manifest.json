@@ -98,6 +98,7 @@
   "web_accessible_resources": [
     "changelog.txt",
     "controls.html",
+    "./static/inject_item.js",
     "./static/fonts/ionicons.ttf",
     "./static/fonts/ionicons.woff",
     "./static/fonts/img/logo.png"

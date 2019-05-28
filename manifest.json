@@ -106,6 +106,7 @@
   "web_accessible_resources": [
     "changelog.txt",
     "./static/115.js",
+    "./static/inject_item.js",
     "controls.html",
     "./static/fonts/ionicons.ttf",
     "./static/fonts/ionicons.woff",
