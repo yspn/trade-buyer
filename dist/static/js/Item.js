@@ -12,8 +12,9 @@ var itemId = '' // 当前浏览商品ID
 var historyBought = []
 var userRole = 'employer'
 
-// window.onload = () => {
-$(document).ready(function () {
+window.onload = () => {
+// $(document).ready(function () {
+  console.log('ready')
   cookieArr = []
   addressAdded = {}
   itemId = getQueryString('id')
@@ -43,8 +44,13 @@ $(document).ready(function () {
     // }
     console.log('获取历史下单：' + response)
   })
+<<<<<<< HEAD
 // }
 })
+=======
+}
+// })
+>>>>>>> 0d55118372864be64cc4d0e3450618b789a243d0
 
 window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   cookieResponse(request, sender, sendResponse)
@@ -603,11 +609,12 @@ function selectSku (skuProperty, skuName) {
     let property = $(this)
     let pName = $(this).find('.tb-property-type').text().trim()
     if (pName === skuProperty) {
+      console.log('Sku Property Hit!', pName)
       let propSelections = $(this).find('dd ul li')
       propSelections.each(function () {
         let propLi = $(this)
         if (propSelections.length > 1 && propLi.find('a span').text().trim() === skuName) {
-          // console.log(skuName + ' clicked')
+          console.log(skuName + ' clicked')
           propLi.click()
         }
       })

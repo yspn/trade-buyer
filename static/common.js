@@ -127,6 +127,56 @@ const focusOrCreateTab = (url, refresh) => {
     }
   })
 }
+/**
+ * 保持滑动只有一个窗口
+ * @param {*} url 
+ * @param {*} refresh 
+ */
+const focusOrCreateTMDTab = (url, refresh) => {
+  if (refresh === undefined || refresh === null) {
+    refresh = false
+  }
+  window.chrome.windows.getAll({ 'populate': true }, (windows) => {
+    var existingTab = null
+    for (var i in windows) {
+      var tabs = windows[i].tabs
+      for (var j in tabs) {
+        var tab = tabs[j]
+        if (tab.url.indexOf('_____tmd_____/punish') > -1) {
+          existingTab = tab
+          break
+        }
+      }
+    }
+    if (existingTab) {
+      if (refresh) {
+        window.chrome.tabs.reload(existingTab.id)
+      } else {
+        window.chrome.tabs.highlight({tabs: [existingTab.id]})
+      }
+    } else {
+      window.chrome.tabs.create({ 'url': url, 'active': true })
+    }
+  })
+}
+const closeTMDVerifyTab = () => {
+  window.chrome.windows.getAll({ 'populate': true }, (windows) => {
+    var existingTab = null
+    for (var i in windows) {
+      var tabs = windows[i].tabs
+      for (var j in tabs) {
+        var tab = tabs[j]
+        if (tab.url.indexOf('_____tmd_____/verify') > -1) {
+          existingTab = tab
+          break
+        }
+      }
+    }
+    if (existingTab) {
+      window.chrome.tabs.remove(existingTab.id)
+    }
+  })
+}
 
 /**
  * 转换为Unicode
@@ -214,6 +264,8 @@ module.exports = {
   getQueryString,
   addressDetailFilter,
   focusOrCreateTab,
+  focusOrCreateTMDTab,
+  closeTMDVerifyTab,
   encodeUnicode,
   decodeUnicode,
   sendMessageToCurrentContentScript,

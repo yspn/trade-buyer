@@ -272,6 +272,8 @@ export default {
         this.listenModifyTaobaoBoughtItemsRequestHeaders()
         this.listenBuyerLogisMsgRequestHeaders()
         this.listenBoughtItemsTMDPunishRequestHeaders() // 调用滑动验证
+        this.listenH5APITMDPunishRequestHeaders()
+        this.listenH5APITMDVerifyRequestHeaders()
         this.listenAddressAPIRequestHeaders() // 监听地址相关H5API，增加Referer
         this.listenTransLinkDetailedHistoryRequestHeaders() // 监视Detail页面，记录页面地址
         this.autoTracerSwitch = this.$store.getters.user.tracelogisticsEnable
@@ -289,6 +291,7 @@ export default {
     await this.getCurrentVersion().then(() => {
       this.checkLatestVersion()
     })
+    console.log('v0528 14.37')
   },
   computed: {
   },
@@ -1309,6 +1312,29 @@ export default {
       }, {urls: ['*://buyertrade.taobao.com//trade/itemlist/asyncBought.htm*']},
       ['blocking', 'requestHeaders']) // chrome 72+ 'extraHeaders'
     },
+    listenH5APITMDPunishRequestHeaders () {
+      window.chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
+        let headers = details.requestHeaders
+        headers.push({
+          name: 'Referer',
+          value: 'https://member1.taobao.com/member/fresh/deliver_address.htm'
+        })
+        // headers.push({
+        //   name: 'user-agent',
+        //   value: 'zsea/fetch'
+        // })
+        return {
+          requestHeaders: headers
+        }
+      }, {urls: ['*://h5api.m.taobao.com:443//h5*_____tmd_____/punish*']},
+      ['blocking', 'requestHeaders']) // chrome 72+ 'extraHeaders'
+    },
+    listenH5APITMDVerifyRequestHeaders () {
+      window.chrome.webRequest.onCompleted.addListener((details) => {
+        console.log('tmd verified!')
+        common.closeTMDVerifyTab()
+      }, {urls: ['*://h5api.m.taobao.com:443//h5*_____tmd_____/verify*']}, ['responseHeaders'])
+    },
     onAutoTracerInterval (val) {
       this.autoTracerInterval = val
     },
@@ -2086,6 +2112,10 @@ export default {
             } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('TOKEN_EXOIRED') > -1) {
               reject(new Error('TAOBAO_TOKEN_EXOIRED'))
             } else {
+              if (json.data.url && json.data.url.indexOf('punish') > -1) {
+                common.focusOrCreateTMDTab(json.data.url)
+                // window.open(json.data.url)
+              }
               reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
             }
           })
@@ -2151,6 +2181,9 @@ export default {
             } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('TOKEN_EXOIRED') > -1) {
               reject(new Error('TAOBAO_TOKEN_EXOIRED'))
             } else {
+              if (json.data.url && json.data.url.indexOf('punish') > -1) {
+                common.focusOrCreateTMDTab(json.data.url)
+              }
               reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
             }
           })
@@ -2230,6 +2263,89 @@ export default {
             } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('518') > -1) {
               reject(new Error('TAOBAO_ADDRESSLIST_FULL'))
             } else {
+              if (json.data.url && json.data.url.indexOf('punish') > -1) {
+                common.focusOrCreateTMDTab(json.data.url)
+              }
+              reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
+            }
+          })
+          .catch(err => {
+            console.log(err)
+            reject(err)
+          })
+      })
+    },
+    async updateAddress201807 (deliverId, address) {
+      return new Promise(async (resolve, reject) => {
+        let validAddress = {}
+        await this.validateNewAddress201807(address).then((addr) => {
+          validAddress = addr
+        }).catch((err) => {
+          console.log(err)
+          reject(err)
+        })
+        let m5Token = null
+        try {
+          m5Token = this.cookiesArr.filter((item) => {
+            return item.name === '_m_h5_tk'
+          })[0].value.split('_')[0]
+        } catch (e) {
+          reject(new Error('TAOBAO_TOKEN_EXOIRED'))
+        }
+        let i = new Date().getTime()
+        let appKey = '12574478'
+        // console.log(data)
+        let dataStr = JSON.stringify({
+          'divisionCode': validAddress.divisionCode || address.town || '',
+          'townDivisionCode': validAddress.townDivisionCode || address.town || '',
+          'addressDetail': address.addressDetail,
+          'postCode': address.post ? address.post : '000000',
+          'overseaAddress': false,
+          'fullName': address.fullName,
+          'mobileCode': 86,
+          'mobile': address.mobile,
+          'phoneInternationalCode': 86,
+          'phoneAreaCode': address.phoneSection,
+          'phoneNumber': address.phoneCode,
+          'phoneExtension': address.phoneExt,
+          'defaultDeliverAddress': true,
+          'deliverId': deliverId
+        })
+        // console.log(dataStr)
+        // let dataStr = '{"divisionCode":"410105011","townDivisionCode":"410105011","addressDetail":"阳光新城19号楼9楼026","longitude":"113.704274","latitude":"34.797823","postCode":"","overseaAddress":false,"fullName":"杨硕","mobileCode":86,"mobile":"18625587270","phoneInternationalCode":86,"phoneAreaCode":"","phoneNumber":"","phoneExtension":"","defaultDeliverAddress":true}' // {"sn":"suibianchuan"}
+        let md5 = this.md5Encode(m5Token + '&' + i + '&' + appKey + '&' + dataStr)
+        let url = 'https://h5api.m.taobao.com/h5/mtop.taobao.mbis.updatedeliveraddress/1.0/?jsv=2.4.2&appKey=12574478&t=' + i + '&sign=' + md5 + '&api=mtop.taobao.mbis.updateDeliverAddress&v=1.0&ecode=1&needLogin=true&timeout=20000&dataType=jsonp&type=jsonp&callback=mtopjsonp17&data=' + encodeURIComponent(dataStr)
+        this.$http.get(url)
+          .then(response => {
+            // console.log(response)
+            let data = response.data.trim()
+            let json = JSON.parse(data.substring(12, data.length - 1))
+            if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0] === 'SUCCESS') {
+              let jsonData = json.data
+              if (jsonData.success === 'true') {
+                try {
+                  let addressnew = JSON.parse(jsonData.returnValue)
+                  if (addressnew.deliverId) {
+                    resolve(addressnew.deliverId)
+                  } else {
+                    reject(new Error('UNKNOWN'))
+                  }
+                } catch (err) {
+                  reject(err)
+                }
+              } else {
+                reject(new Error('API_RESPONSE_ERROR'))
+              }
+            } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('SESSION_EXPIRED') > -1) {
+              reject(new Error('TAOBAO_SESSION_EXPIRED'))
+            } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('TOKEN_EXOIRED') > -1) {
+              reject(new Error('TAOBAO_TOKEN_EXOIRED'))
+            } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('518') > -1) {
+              reject(new Error('TAOBAO_ADDRESSLIST_FULL'))
+            } else {
+              if (json.data.url && json.data.url.indexOf('punish') > -1) {
+                common.focusOrCreateTMDTab(json.data.url)
+              }
               reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
             }
           })
@@ -2276,6 +2392,9 @@ export default {
             } else if (json.ret && json.ret[0] && json.ret[0].indexOf('::') > -1 && json.ret[0].split('::')[0].indexOf('TOKEN_EXOIRED') > -1) {
               reject(new Error('TAOBAO_TOKEN_EXOIRED'))
             } else {
+              if (json.data.url && json.data.url.indexOf('punish') > -1) {
+                common.focusOrCreateTMDTab(json.data.url)
+              }
               reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
             }
           })
@@ -2303,17 +2422,28 @@ export default {
           message = '淘宝TOKEN过期！请重新登陆淘宝，然后再试一次'
           this.getTBCookies()
         } else if (err.message === 'TAOBAO_ADDRESSLIST_FULL') {
-          await this.getAddressList201807().then((list) => {
-            if (list instanceof Array) {
-              list.forEach((addr) => {
-                this.deleteAddress201807(addr).catch((err) => {
-                  console.log(err)
-                  this.$Message.error('删除地址失败!' + err.message)
-                })
-              })
+          let defaultAddress = null
+          await this.getAddressList201807().then(async (list) => {
+            defaultAddress = list.filter((item) => {
+              return item.defaultAddress
+            })
+            if (defaultAddress.length) {
+              defaultAddress = defaultAddress[0]
+            } else {
+              defaultAddress = list[0]
             }
+            // if (list instanceof Array) {
+            //   list.forEach((addr) => {
+            //     this.deleteAddress201807(addr).catch((err) => {
+            //       console.log(err)
+            //       this.$Message.error('删除地址失败!' + err.message)
+            //     })
+            //   })
+            // }
           })
-          this.insertNewAddress(address)
+          console.log(defaultAddress)
+          await this.updateAddress201807(defaultAddress.deliverId, address)
+          // this.insertNewAddress(address)
           return false
         }
         alert('新增地址失败！请手工添加地址。\r\n' + message)

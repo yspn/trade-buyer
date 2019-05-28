@@ -1,21 +1,23 @@
-var skus = null;
+var sku = null;
 
 function getHubConfigs () {
   var hub = window.Hub;
+  console.log(hub)
   if (hub) {
-    return hub.config.config.sku;
+    return hub.config.config.sku.valItemInfo;
   } else {
     return false;
   }
 }
 
 function sendSkusToBackground () {
-  window.postMessage({'skus': skus}, '*');
+  window.postMessage({'sku': sku}, '*');
 }
 
 function documentReady () {
   if (document.readyState === 'complete') {
-    skus = getHubConfigs();
+    sku = getHubConfigs();
+    sendSkusToBackground();
   }
 }
 

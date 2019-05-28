@@ -2034,7 +2034,7 @@ export default {
               }
               this.$set(trade, 'resigned', trade.resigned)
               this.$set(trade, 'order_status', 'RESIGNED')
-              this.detailedItem = trade
+              Object.assign(this.detailedItem, trade)
               this.$store.dispatch('setAPILastResponse', respBody)
               this.$Message.success('退回订单成功！')
               this.resignModal = false
