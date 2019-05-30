@@ -195,7 +195,10 @@
                 </thead>
                 <tbody v-for="(item, index) in detailedItem.orders.order" :key="index">
                   <tr @click="orderClick(item)" :style="{cursor: getSubOrderStatus(item).text === '待下单' ? 'pointer': 'default'}">
-                    <td>{{item.oid_str}}</td>
+                    <td>
+                      {{item.oid_str}}
+                      <div class="small font-grey" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已发货'">{{subOrderShipmentInfo(item)?`${getMoment(subOrderShipmentInfo(item).time).format('YYYY-MM-DD hh:mm:ss')} ${subOrderShipmentInfo(item).company_code} ${subOrderShipmentInfo(item).logis_number}`:'未知'}}</div>
+                    </td>
                     <td>
                       <span :style="{color: getSubOrderStatus(item).color}">{{getSubOrderStatus(item).text}}</span>
                       <div v-if="item.refund_id">
@@ -226,7 +229,7 @@
                     </td>
                     <td v-else></td>
                   </tr>
-                  <tr v-if="['service'].indexOf($store.getters.user.role) < 0 && ((item.history_purchase && item.history_purchase.length) || item.outer_iid ||
+                  <tr v-if="['service'].indexOf($store.getters.user.role) < 0 && (((item.history_purchase && item.history_purchase.length) || item.outer_iid) &&
                             (getSubOrderStatus(item).text === '待下单' ||
                             (getSubOrderStatus(item).text === '已退单' &&
                             ['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1)))" class="history-purchase">
@@ -456,6 +459,7 @@
 import {
   focusOrCreateTab, sleepES6, getQueryString
 } from '../../../static/common'
+import moment from 'moment'
 export default {
   name: 'trade-list',
   props: ['orderFinished', 'orderFailed', 'logisUpdateItem', 'shopList', 'addressList', 'searchByTid'],
@@ -864,6 +868,9 @@ export default {
     }
   },
   methods: {
+    getMoment (dt) {
+      return moment(dt)
+    },
     refreshList () {
       this.initTableColumns()
       this.initDataTable().then(async (result) => {
@@ -1047,6 +1054,10 @@ export default {
             {
               label: '已发货',
               value: 'WAIT_BUYER_CONFIRM_GOODS'
+            },
+            {
+              label: '拆单发货',
+              value: 'SELLER_CONSIGNED_PART'
             },
             {
               label: '已完成',
@@ -1459,16 +1470,39 @@ export default {
         }
       }
       if (exist.length) {
-        return {
-          color: 'green',
-          text: '已下单'
+        if (exist[0].shipped) {
+          return {
+            color: 'green',
+            text: '已发货'
+          }
+        } else {
+          return {
+            color: 'green',
+            text: '已下单'
+          }
         }
       } else {
-        return {
-          color: 'blue',
-          text: '待下单'
+        if (sub.is_daifa) {
+          return {
+            color: 'yellow',
+            text: '代发货'
+          }
+        } else {
+          return {
+            color: 'blue',
+            text: '待下单'
+          }
         }
       }
+    },
+    subOrderShipmentInfo (sub) {
+      let shipped = this.detailedItem.ordered.filter((ordered, index) => {
+        return ordered.oid_str === sub.oid_str && !ordered.dismiss
+      })
+      if (shipped.length) {
+        shipped = shipped[0].shipped
+      }
+      return shipped
     },
     getOrderStatus (s) {
       switch (s) {
@@ -1518,6 +1552,8 @@ export default {
           return '待发货'
         case 'WAIT_BUYER_CONFIRM_GOODS':
           return '已发货'
+        case 'SELLER_CONSIGNED_PART':
+          return '拆单发货'
         case 'TRADE_FINISHED':
           return '已完成'
         case 'TRADE_CLOSED':
@@ -1535,6 +1571,8 @@ export default {
         case 'WAIT_SELLER_SEND_GOODS':
           return 'blue'
         case 'WAIT_BUYER_CONFIRM_GOODS':
+          return 'yellow'
+        case 'SELLER_CONSIGNED_PART':
           return 'yellow'
         case 'TRADE_FINISHED':
           return 'green'

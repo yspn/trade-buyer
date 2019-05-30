@@ -44,13 +44,8 @@ window.onload = () => {
     // }
     console.log('获取历史下单：' + response)
   })
-<<<<<<< HEAD
-// }
-})
-=======
 }
 // })
->>>>>>> 0d55118372864be64cc4d0e3450618b789a243d0
 
 window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   cookieResponse(request, sender, sendResponse)
@@ -58,6 +53,9 @@ window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   historyBoughtResponse(request, sender, sendResponse)
   userRoleResponse(request, sender, sendResponse)
 })
+window.addEventListener('message', function(e) {
+  console.log(e.data)
+}, false)
 
 const cookieResponse = (request, sender, sendResponse) => {
   if (request.cmd === 'get_cookies_response') {
@@ -616,6 +614,7 @@ function selectSku (skuProperty, skuName) {
         if (propSelections.length > 1 && propLi.find('a span').text().trim() === skuName) {
           console.log(skuName + ' clicked')
           propLi.click()
+          propLi.addClass('tb-selected')
         }
       })
     }
@@ -625,3 +624,21 @@ function selectSku (skuProperty, skuName) {
 function selectNumber (num) {
   $('#J_IptAmount').val(num)
 }
+
+// 向页面注入JS
+function injectItemJs(jsPath)
+{
+    jsPath = jsPath || '../static/inject_item.js'
+    var temp = document.createElement('script')
+    temp.setAttribute('type', 'text/javascript')
+    // 获得的地址类似：chrome-extension://ihcokhadfjfchaeagdoclpnjdiokfakg/js/inject.js
+    temp.src = chrome.extension.getURL(jsPath)
+    temp.onload = function()
+    {
+      // 放在页面不好看，执行完后移除掉
+      this.parentNode.removeChild(this)
+    }
+    document.head.appendChild(temp)
+}
+
+injectItemJs()
