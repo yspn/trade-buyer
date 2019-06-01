@@ -197,7 +197,7 @@
                   <tr @click="orderClick(item)" :style="{cursor: getSubOrderStatus(item).text === '待下单' ? 'pointer': 'default'}">
                     <td>
                       {{item.oid_str}}
-                      <div class="small font-grey" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已发货'">{{subOrderShipmentInfo(item)?`${getMoment(subOrderShipmentInfo(item).time).format('YYYY-MM-DD hh:mm:ss')} ${subOrderShipmentInfo(item).company_code} ${subOrderShipmentInfo(item).logis_number}`:'未知'}}</div>
+                      <div class="small font-grey" v-if="!item.is_daixiao && getSubOrderStatus(item).text === '已发货'">{{subOrderShipmentInfo(item)?`${getMoment(subOrderShipmentInfo(item).time).format('YYYY-MM-DD HH:mm:ss')} ${subOrderShipmentInfo(item).company_code} ${subOrderShipmentInfo(item).logis_number}`:'未知'}}</div>
                     </td>
                     <td>
                       <span :style="{color: getSubOrderStatus(item).color}">{{getSubOrderStatus(item).text}}</span>
