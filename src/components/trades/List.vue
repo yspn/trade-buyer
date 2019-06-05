@@ -1484,7 +1484,7 @@ export default {
       } else {
         if (sub.is_daifa) {
           return {
-            color: 'yellow',
+            color: 'orange',
             text: '代发货'
           }
         } else {

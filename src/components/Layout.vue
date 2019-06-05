@@ -291,7 +291,6 @@ export default {
     await this.getCurrentVersion().then(() => {
       this.checkLatestVersion()
     })
-    console.log('v0528 14.37')
   },
   computed: {
   },
@@ -384,7 +383,7 @@ export default {
         return {
           requestHeaders: headers
         }
-      }, {urls: ['*://buyertrade.taobao.com/trade/itemlist/asyncBought.htm*']}, ['blocking', 'requestHeaders']) // , 'extraHeaders'
+      }, {urls: ['*://buyertrade.taobao.com/trade/itemlist/asyncBought.htm*']}, ['blocking', 'requestHeaders', 'extraHeaders']) // , 'extraHeaders', 'requestHeaders'
     },
     getTaobaoCookies (callback) {
       let arr = []
