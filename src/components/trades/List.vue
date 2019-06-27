@@ -1484,7 +1484,7 @@ export default {
       } else {
         if (sub.is_daifa) {
           return {
-            color: 'yellow',
+            color: 'orange',
             text: '代发货'
           }
         } else {
@@ -2397,59 +2397,59 @@ export default {
           let cityName = this.detailedItem.receiver_city
           let areaName = this.detailedItem.receiver_district
           let townName = this.detailedItem.receiver_town
-          let addressOriginal = null
-          await this.getAddressSuggestion(prov, city, this.detailedItem.receiver_address).then(async (addrLayer) => {
-            await (() => {
-              return new Promise((resolve, reject) => {
-                let names = addrLayer.fullname.split('/')
-                let provNameNew = names[0]
-                let cityNameNew = names[1]
-                let areaNameNew = names[2]
-                let townNameNew = names[3]
-                if (prov !== addrLayer.prov || city !== addrLayer.city || area !== addrLayer.area || town !== addrLayer.town) {
-                  this.$Modal.confirm({
-                    title: '地址建议',
-                    content: '地址是否改为：<br><b>' + provNameNew + ' / ' + cityNameNew + ' / ' + areaNameNew + ' / ' + townNameNew + '</b> ?',
-                    okText: '确认修改',
-                    cancelText: '不修改',
-                    onOk: () => {
-                      addressOriginal = {
-                        fullName: this.detailedItem.receiver_name,
-                        prov: prov,
-                        city: city,
-                        area: area,
-                        town: town,
-                        provName: provName,
-                        cityName: cityName,
-                        areaName: areaName,
-                        townName: townName,
-                        addressDetail: this.detailedItem.receiver_address
-                      }
-                      prov = addrLayer.prov
-                      city = addrLayer.city
-                      area = addrLayer.area
-                      town = addrLayer.town
-                      provName = provNameNew
-                      cityName = cityNameNew
-                      areaName = areaNameNew
-                      townName = townNameNew
-                      resolve()
-                    },
-                    onCancel: function () {
-                      resolve()
-                    }
-                  })
-                } else {
-                  resolve()
-                }
-              })
-            })()
-          }).catch((err) => {
-            console.log(err)
-            this.$Message.error('获取建议地址失败')
-          })
+          // let addressOriginal = null
+          // await this.getAddressSuggestion(prov, city, this.detailedItem.receiver_address).then(async (addrLayer) => {
+          //   await (() => {
+          //     return new Promise((resolve, reject) => {
+          //       let names = addrLayer.fullname.split('/')
+          //       let provNameNew = names[0]
+          //       let cityNameNew = names[1]
+          //       let areaNameNew = names[2]
+          //       let townNameNew = names[3]
+          //       if (prov !== addrLayer.prov || city !== addrLayer.city || area !== addrLayer.area || town !== addrLayer.town) {
+          //         this.$Modal.confirm({
+          //           title: '地址建议',
+          //           content: '地址是否改为：<br><b>' + provNameNew + ' / ' + cityNameNew + ' / ' + areaNameNew + ' / ' + townNameNew + '</b> ?',
+          //           okText: '确认修改',
+          //           cancelText: '不修改',
+          //           onOk: () => {
+          //             addressOriginal = {
+          //               fullName: this.detailedItem.receiver_name,
+          //               prov: prov,
+          //               city: city,
+          //               area: area,
+          //               town: town,
+          //               provName: provName,
+          //               cityName: cityName,
+          //               areaName: areaName,
+          //               townName: townName,
+          //               addressDetail: this.detailedItem.receiver_address
+          //             }
+          //             prov = addrLayer.prov
+          //             city = addrLayer.city
+          //             area = addrLayer.area
+          //             town = addrLayer.town
+          //             provName = provNameNew
+          //             cityName = cityNameNew
+          //             areaName = areaNameNew
+          //             townName = townNameNew
+          //             resolve()
+          //           },
+          //           onCancel: function () {
+          //             resolve()
+          //           }
+          //         })
+          //       } else {
+          //         resolve()
+          //       }
+          //     })
+          //   })()
+          // }).catch((err) => {
+          //   console.log(err)
+          //   this.$Message.error('获取建议地址失败')
+          // })
           let receiverModel = {
-            addressOriginal: addressOriginal,
+            // addressOriginal: addressOriginal,
             country: '',
             prov: prov,
             provName: provName,
