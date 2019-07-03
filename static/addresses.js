@@ -1,4 +1,4 @@
-{
+var addresses = {
     152522: [
         "\u963f\u5df4\u560e\u65d7",
         "152500",
@@ -28443,4 +28443,8 @@
         "bu cheng",
         "Putrajaya"
     ]
+}
+
+module.exports = {
+    addresses
 }

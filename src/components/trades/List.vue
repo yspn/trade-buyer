@@ -459,6 +459,7 @@
 import {
   focusOrCreateTab, sleepES6, getQueryString
 } from '../../../static/common'
+import {addresses} from './../../../static/addresses.js'
 import moment from 'moment'
 export default {
   name: 'trade-list',
@@ -493,6 +494,7 @@ export default {
       tableHeight: 500,
       detailed: false,
       detailedItem: {},
+      countryList: [],
       provList: [],
       cityList: [],
       areaList: [],
@@ -595,6 +597,7 @@ export default {
   },
   mounted () {
     this.syncShopList()
+    // console.log(this.getTBAddressDB('410000'))
     if (this.searchByTid) {
       this.searchBy = 'tid_str'
       this.keyword = this.searchByTid
@@ -868,6 +871,23 @@ export default {
     }
   },
   methods: {
+    /**
+     * 处理淘宝四级地址数据库
+     */
+    getTBAddressDB (parentCode) {
+      let list = []
+      Object.keys(addresses).forEach((key) => {
+        // console.log(key, addresses[key])
+        let addr = addresses[key]
+        if (addr[1] === parentCode) {
+          list.push({
+            name: addr[0],
+            code: key
+          })
+        }
+      })
+      return list
+    },
     getMoment (dt) {
       return moment(dt)
     },
@@ -2321,14 +2341,15 @@ export default {
           }
           var prov, city, area, town
           if (!this.provList || !this.provList.length) {
-            await this.$http.get('../../../static/address/provinces.json')
-              .then((dataP) => {
-                this.provList = dataP.data
-              })
-              .catch(err => {
-                console.log(err)
-                this.$Message.error('无法获取省/自治区/直辖市数据库')
-              })
+            this.provList = this.getTBAddressDB('1')
+            // await this.$http.get('../../../static/address/provinces.json')
+            //   .then((dataP) => {
+            //     this.provList = dataP.data
+            //   })
+            //   .catch(err => {
+            //     console.log(err)
+            //     this.$Message.error('无法获取省/自治区/直辖市数据库')
+            //   })
           }
           try {
             prov = this.provList.filter((p) => {
@@ -2338,60 +2359,69 @@ export default {
             console.log(e)
             this.$Message.error('省/自治区/直辖市填写错误！')
           }
-          if (!this.cityList || !this.cityList.length) {
-            await this.$http.get('../../../static/address/cities.json')
-              .then((dataC) => {
-                this.cityList = dataC.data
-              })
-              .catch(err => {
-                console.log(err)
-                this.$Message.error('无法获取城市数据库')
-              })
-          }
+          this.cityList = this.getTBAddressDB(prov)
+          // if (!this.cityList || !this.cityList.length) {
+          //   await this.$http.get('../../../static/address/cities.json')
+          //     .then((dataC) => {
+          //       this.cityList = dataC.data
+          //     })
+          //     .catch(err => {
+          //       console.log(err)
+          //       this.$Message.error('无法获取城市数据库')
+          //     })
+          // }
           try {
             city = this.cityList.filter((p) => {
               return p.name.indexOf(this.detailedItem.receiver_city.trim()) >= 0
             })[0].code
+            console.log(city, this.cityList)
           } catch (e) {
             console.log(e)
             this.$Message.error('城市填写错误！')
           }
-          if (!this.areaList || !this.areaList.length) {
-            await this.$http.get('../../../static/address/areas.json')
-              .then((dataA) => {
-                this.areaList = dataA.data
-              })
-              .catch(err => {
-                console.log(err)
-                this.$Message.error('无法获取区/县数据库')
-              })
-          }
+          this.areaList = this.getTBAddressDB(city)
+          // if (!this.areaList || !this.areaList.length) {
+          //   await this.$http.get('../../../static/address/areas.json')
+          //     .then((dataA) => {
+          //       this.areaList = dataA.data
+          //     })
+          //     .catch(err => {
+          //       console.log(err)
+          //       this.$Message.error('无法获取区/县数据库')
+          //     })
+          // }
           try {
             area = this.areaList.filter((p) => {
               return p.name.indexOf(this.detailedItem.receiver_district.trim()) >= 0
             })[0].code
+            console.log(area, this.areaList)
           } catch (e) {
             console.log(e)
             this.$Message.error('区/县填写错误！')
           }
-          if (!this.townList || !this.townList.length) {
-            await this.$http.get('../../../static/address/streets.json')
-              .then((dataS) => {
-                this.townList = dataS.data
-              })
-              .catch(err => {
-                console.log(err)
-                this.$Message.error('无法获取街道/乡镇数据库')
-              })
-          }
-          try {
-            town = this.townList.filter((p) => {
-              return p.parent_code === area && p.name.indexOf(this.detailedItem.receiver_town.trim()) >= 0
-            })[0].code.substr(0, 9)
-          } catch (e) {
-            console.log(e)
-            this.$Message.error('街道/乡镇填写错误！')
-          }
+          this.townList = this.getTBAddressDB(area)
+          // if (!this.townList || !this.townList.length) {
+          //   await this.$http.get('../../../static/address/streets.json')
+          //     .then((dataS) => {
+          //       this.townList = dataS.data
+          //     })
+          //     .catch(err => {
+          //       console.log(err)
+          //       this.$Message.error('无法获取街道/乡镇数据库')
+          //     })
+          // }
+          // try {
+          //   town = this.townList.filter((p) => {
+          //     return p.name.indexOf(this.detailedItem.receiver_town.trim()) >= 0
+          //   })[0].code
+          //   console.log(town, this.townList)
+          //   // town = this.townList.filter((p) => {
+          //   //   return p.parent_code === area && p.name.indexOf(this.detailedItem.receiver_town.trim()) >= 0
+          //   // })[0].code.substr(0, 9)
+          // } catch (e) {
+          //   console.log(e)
+          //   this.$Message.error('街道/乡镇填写错误！')
+          // }
           this.processReceiverPhone()
           let provName = this.detailedItem.receiver_state
           let cityName = this.detailedItem.receiver_city
