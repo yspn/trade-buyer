@@ -2921,4 +2921,7 @@ export default {
     }
   }
 }
+.ivu-layout {
+  overflow: auto !important;
+}
 </style>
