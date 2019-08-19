@@ -18,4 +18,3 @@ window.chrome.browserAction.onClicked.addListener((tab) => {
   //   listenGetCookies(request)
   //   sendResponse('ok')
   // })
-  

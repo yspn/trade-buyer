@@ -151,7 +151,7 @@ var data = function (zipData) {
 //   urldecode
 // }
 
-module.exports = urlencode;
+// module.exports = urlencode;
   
 //   module.exports.decode = urldecode;
   

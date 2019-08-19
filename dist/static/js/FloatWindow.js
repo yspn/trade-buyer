@@ -9,11 +9,11 @@ $(document).ready(function () {
       $('#oneKeyOrder_orderInfo').attr('style', 'width:' + plunginWith + 'px;')
     }
   })
-  setTimeout(function () {
-    if (addressAdded && addressAdded.result) {
-      $('#oneKeyOrder_orderReceiver').addClass('added')
-    }
-  }, 5000)
+  // setTimeout(function () {
+  //   if (addressAdded && addressAdded.result) {
+  //     $('#oneKeyOrder_orderReceiver').addClass('added')
+  //   }
+  // }, 5000)
 })
 
 window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
