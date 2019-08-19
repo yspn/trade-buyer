@@ -2224,7 +2224,8 @@ export default {
               if (json.data.url && json.data.url.indexOf('punish') > -1) {
                 common.focusOrCreateTMDTab(json.data.url)
               }
-              reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
+              // reject(json.ret && json.ret[0] ? new Error(json.ret[0]) : new Error('API_ERROR'))
+              resolve()
             }
           })
           .catch(err => {

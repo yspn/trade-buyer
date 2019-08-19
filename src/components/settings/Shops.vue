@@ -182,6 +182,33 @@
         <Button type="error" size="large" @click="submitDelete">确认</Button>
       </div>
     </Modal>
+    <Modal
+      v-model="losslimitModal"
+      title="店铺亏损点设置"
+      :mask-closable="false"
+      :transfer="false">
+      <div class="modal-content">
+        <Form ref="losslimitForm" :model="losslimitModel" :rules="ruleValidateLossLimit" :label-width="120">
+          <FormItem label="店铺名称">
+            <p>{{losslimitModel.shopname}}</p>
+          </FormItem>
+          <FormItem label="亏损点" prop="limit">
+            <Input v-model="losslimitModel.limit"></Input>
+            <p>
+              <ol>
+                <li>可输入数字或百分比，如不限制则输入“0”或“-1”</li>
+                <li>当输入数字时，表示允许单笔订单最大亏损金额（元）</li>
+                <li>当输入百分比时，表示允许单笔订单最大亏损比例（%）</li>
+              </ol>
+            </p>
+          </FormItem>
+        </Form>
+      </div>
+      <div slot="footer">
+        <Button size="large" @click="losslimitModal=false">关闭</Button>
+        <Button type="success" size="large" @click="submitLossLimit">提交</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -236,6 +263,13 @@ export default {
       if (value === '' && this.translinkModel.appkey !== '') {
         this.$refs.newForm.validateField('appkey')
         callback(new Error('转链信息请填写完整'))
+      } else {
+        callback()
+      }
+    }
+    const validateLossLimit = (rule, value, callback) => {
+      if (value === '' || ((value.indexOf('%') < 0 || isNaN(value)) && value !== '0' && value !== '-1')) {
+        callback(new Error('亏损点设置不正确，应为数字或百分比，如不设置请填“0”或“-1”'))
       } else {
         callback()
       }
@@ -348,12 +382,37 @@ export default {
             return h('span', {}, params.row.pid)
           }
         },
+        { title: '亏损点',
+          key: 'limit',
+          sortable: true,
+          render: (h, params) => {
+            return h('span', {}, params.row.limit)
+          }
+        },
         {
           title: '操作',
           key: 'action',
           fixed: 'right',
           render: (h, params) => {
             return h('Button-group', [
+              h('Button', {
+                props: {
+                  type: 'ghost',
+                  size: 'small'
+                },
+                style: {
+                },
+                on: {
+                  click: async () => {
+                    this.losslimitModal = true
+                    this.losslimitModel = {
+                      shopname: params.row.name,
+                      shopid: params.row.id,
+                      limit: params.row.limit || -1
+                    }
+                  }
+                }
+              }, '亏损点'),
               h('Button', {
                 props: {
                   type: 'ghost',
@@ -477,10 +536,21 @@ export default {
           { validator: validateTransLinkPidAll, trigger: 'blur' }
         ]
       },
+      ruleValidateLossLimit: {
+        limit: [
+          { validator: validateLossLimit, trigger: 'blur' }
+        ]
+      },
       deleteModal: false,
       deleteModel: {
         id: null,
         name: ''
+      },
+      losslimitModal: false,
+      losslimitModel: {
+        shopname: '',
+        shopid: '',
+        limit: -1
       },
       shopTagDic: ['男装', '女装', '男鞋', '女鞋', '内衣', '童装', '童鞋', '收纳整理', '宠物', '餐饮具', '家居饰品', '流行饰品', '家具', '园艺', '成人', '车品', '3C'],
       shopTagInOp: '' // 当前操作中的tag(增删改)
@@ -982,6 +1052,44 @@ export default {
           this.$store.dispatch('setAPILastResponse', err)
           reject(err)
         })
+      })
+    },
+    submitLossLimit () {
+      this.$refs['losslimitForm'].validate((valid) => {
+        if (valid) {
+          this.apiItem = {
+            apiHost: '',
+            apiService: 'shops',
+            apiAction: 'setshoplosslimit',
+            apiQuery: {}
+          }
+          this.apiData = {
+            shopid: this.losslimitModel.shopid,
+            limit: this.losslimitModel.limit
+          }
+          this.$store.dispatch('setAPIStore', this.apiItem)
+          var apiUrl = this.$store.getters.apiUrl
+          return new Promise(async (resolve, reject) => {
+            await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+              var respBody = response.data
+              if (respBody.status === 'fail') {
+                this.$Message.error('设置失败！(' + respBody.message + ')')
+                reject(new Error('设置失败！(' + respBody.message + ')'))
+              } else {
+                this.$Message.success('设置成功!')
+                this.$store.dispatch('setAPILastResponse', respBody)
+                this.losslimitModal = false
+                this.losslimitModel = {}
+                resolve(respBody.data)
+              }
+            }).catch(err => {
+              this.$store.dispatch('setAPILastResponse', err)
+              reject(err)
+            })
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
       })
     },
     addNewTagSpec () {

@@ -166,11 +166,12 @@ const getOrdersFees = (order) => {
     let orderNum = oneKeyOrderInstance.orders.order.filter((item) => {
       return item.oid_str === orderInfo.oid
     })[0].num
-    postFee = Math.round(parseFloat($('.order-order').find('.select-price').text()) * 100, 0)
-    itemUrl = $('.order-order').find('.info-title').prop('href')
-    num = $('.order-order').find('input.amount').val()
-    buyerFee = Math.round(parseFloat($('.order-payInfo .realPay-price').text()) * 100, 0)
-    shopSeller = $('.order-order').find('.shop-seller a').text()
+    postFee = Math.round(parseFloat($('.select-price').text()) * 100, 0)
+    itemUrl = $('.info-title').prop('href')
+    num = $('input.amount').val()
+    var realPay = $('.order-payInfo .realPay-price').text() || $('.realpay--price').text()
+    buyerFee = Math.round(parseFloat(realPay) * 100, 0)
+    shopSeller = $('.shop-seller a').text()
     console.log('tradePayment:' + tradePayment)
     console.log('orderedPayedTotal:' +orderedPayedTotal)
     console.log('postFee:' + (postFee / 100))
@@ -226,22 +227,31 @@ const getOrdersFeesOnload = (order) => {
   let orderNum = oneKeyOrderInstance.orders.order.filter((item) => {
     return item.oid_str === orderInfo.oid
   })[0].num
-  postFee = Math.round(parseFloat($('.order-order').find('.select-price').text()) * 100, 0)
-  itemUrl = $('.order-order').find('.info-title').prop('href')
-  num = $('.order-order').find('input.amount').val()
-  buyerFee = Math.round(parseFloat($('.order-payInfo .realPay-price').text()) * 100, 0)
-  shopSeller = $('.order-order').find('.shop-seller a').text()
+  postFee = Math.round(parseFloat($('.select-price').text()) * 100, 0)
+  itemUrl = $('.info-title').prop('href')
+  num = $('input.amount').val()
+  var realPay = $('.order-payInfo .realPay-price').text() || $('.realpay--price').text()
+  buyerFee = Math.round(parseFloat(realPay) * 100, 0)
+  shopSeller = $('.shop-seller a').text()
   console.log('tradePayment:' + tradePayment)
   console.log('orderedPayedTotal:' + orderedPayedTotal)
-  console.log('postFee:' + (postFee / 100), $('.order-order').find('.select-price').text())
-  console.log('buyerFee:' + (buyerFee / 100), $('.order-payInfo .realPay-price').text())
+  console.log('postFee:' + (postFee / 100))
+  console.log('buyerFee:' + (buyerFee / 100))
   console.log('orderNum:' + orderNum)
   console.log('num:' + num)
   console.log('shopSeller:' + shopSeller)
   if (tradePayment <= orderedPayedTotal + buyerFee / 100) {
-    $('.payInfo-wrapper .order-realPay').after($('<h2 class=\'loss-alert\'>【亏损预警】预计亏损：¥' + (tradePayment - orderedPayedTotal - buyerFee / 100).toFixed(2) + '元</h2>'))
+    if ($('.order-payInfo .order-realPay').length) {
+      $('.order-payInfo .order-realPay').after($('<h2 class=\'loss-alert\'>【亏损预警】预计亏损：¥' + (tradePayment - orderedPayedTotal - buyerFee / 100).toFixed(2) + '元</h2>'))
+    } else {
+      $('.order-payInfo').after($('<h2 class=\'loss-alert\'>【亏损预警】预计亏损：¥' + (tradePayment - orderedPayedTotal - buyerFee / 100).toFixed(2) + '元</h2>'))
+    }
   } else {
-    $('.payInfo-wrapper .order-realPay').after($('<h2 class=\'benefit-info\'>【利润】预计利润：¥' + (tradePayment - orderedPayedTotal - buyerFee / 100).toFixed(2) + '元</h2>'))
+    if ($('.order-payInfo .order-realPay').length) {
+      $('.order-payInfo .order-realPay').after($('<h2 class=\'benefit-info\'>【利润】预计利润：¥' + (tradePayment - orderedPayedTotal - buyerFee / 100).toFixed(2) + '元</h2>'))
+    } else {
+      $('.order-payInfo').after($('<h2 class=\'benefit-info\'>【利润】预计利润：¥' + (tradePayment - orderedPayedTotal - buyerFee / 100).toFixed(2) + '元</h2>'))
+    }
   }
   if (orderNum !== parseInt(num)) {
   }
