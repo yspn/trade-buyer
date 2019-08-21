@@ -304,10 +304,10 @@ const checkOriginalAddress = () => {
       addressSelectedFullname = addressSelected.find('.addr-hd span.name').text().trim()
     }
     // console.log(addressSelectedAreas)
-    if (addressSelectedAreas.length < 3 || fullArea.length < 3) {
-      alert('地址错误！请刷新页面重试!')
-      return false
-    }
+    // if (addressSelectedAreas.length < 3 || fullArea.length < 3) {
+    //   alert('地址错误！请刷新页面重试!')
+    //   return false
+    // }
     if (fullArea[0].indexOf(addressSelectedAreas[0]) < 0 || fullArea[1].indexOf(addressSelectedAreas[1]) < 0 ||
       fullArea[2].indexOf(addressSelectedAreas[2]) < 0 || fullArea[3].indexOf(addressSelectedAreas[3]) < 0 ||
       addressSelectedDetail !== orderInfo.receiver.addressDetail.trim() || addressSelectedFullname !== orderInfo.receiver.fullName.trim()) {
