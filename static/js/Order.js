@@ -289,7 +289,7 @@ const checkOriginalAddress = () => {
       // 淘宝收款台
       // 先检测页面版本，.order-address对象如果有id="addressPC_1"则为风控的模式页面
       let orderAddressPC1Obj = $('.order-address#addressPC_1')
-      if (orderAddressPC1Obj && orderAddressPC1Obj.size()) {
+      if (orderAddressPC1Obj && orderAddressPC1Obj instanceof Array && orderAddressPC1Obj.length) {
         addressList = $('.order-address .address-list .addr-item-wrapper')
         addressSelected = $('.order-address .address-list .addr-item-wrapper.addr-selected')
         addressSelectedAreas = [
@@ -311,7 +311,7 @@ const checkOriginalAddress = () => {
       // 天猫收款台
       // 先检测页面版本，.order-address对象如果有id="addressPC_1"则为风控的模式页面
       let orderAddressPC1Obj = $('.order-address#addressPC_1')
-      if (orderAddressPC1Obj && orderAddressPC1Obj.size()) {
+      if (orderAddressPC1Obj && orderAddressPC1Obj instanceof Array && orderAddressPC1Obj.length) {
         addressList = $('.order-address .address-list .addr-item-wrapper')
         addressSelected = $('.order-address .address-list .addr-item-wrapper.addr-selected')
         addressSelectedAreas = [
