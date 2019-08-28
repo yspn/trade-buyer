@@ -229,7 +229,12 @@ const getOrdersFeesOnload = (order) => {
   })[0].num
   postFee = Math.round(parseFloat($('.select-price').text()) * 100, 0)
   itemUrl = $('.info-title').prop('href')
-  num = $('input.amount').val()
+  if ($('input.amount').length) {
+    num = $('input.amount').val()
+  } else {
+    num = $('.order-quantity input').val()
+  }
+  
   var realPay = $('.order-payInfo .realPay-price').text() || $('.realpay--price').text()
   buyerFee = Math.round(parseFloat(realPay) * 100, 0)
   shopSeller = $('.shop-seller a').text()
@@ -286,22 +291,54 @@ const checkOriginalAddress = () => {
     let addressSelectedFullname = ''
     let fullArea = orderInfo.receiver.fullArea.split('/')
     if (window.location.host.toLowerCase().indexOf('tmall') < 0) {
-      addressList = $('.order-address .address-list li')
-      addressSelected = addressList.first().find('label.addressInfo .user-address')
-      addressSelectedAreas = addressSelected.find('span').eq(0).text().trim().split(' ')
-      addressSelectedDetail = addressSelected.find('span').eq(1).text().trim()
-      addressSelectedFullname = addressSelected.find('span').eq(3).text().trim()
+      // 淘宝收款台
+      // 先检测页面版本，.order-address对象如果有id="addressPC_1"则为风控的模式页面
+      let orderAddressPC1Obj = $('.order-address#addressPC_1')
+      if (orderAddressPC1Obj && orderAddressPC1Obj instanceof Array && orderAddressPC1Obj.length) {
+        addressList = $('.order-address .address-list .addr-item-wrapper')
+        addressSelected = $('.order-address .address-list .addr-item-wrapper.addr-selected')
+        addressSelectedAreas = [
+          addressSelected.find('.next-radio-label').find('span.provinceName').text().trim(),
+          addressSelected.find('.next-radio-label').find('span.cityName').text().trim(),
+          addressSelected.find('.next-radio-label').find('span.areaName').text().trim(),
+          addressSelected.find('.next-radio-label').find('span.townName').text().trim()
+        ]
+        addressSelectedDetail = addressSelected.find('.next-radio-label').find('span.addressDetail').text().trim()
+        // addressSelectedFullname = addressSelected.find('.next-radio-label').find('span.townName').text().trim()
+      } else {
+        addressList = $('.order-address .address-list li')
+        addressSelected = addressList.first().find('label.addressInfo .user-address')
+        addressSelectedAreas = addressSelected.find('span').eq(0).text().trim().split(' ')
+        addressSelectedDetail = addressSelected.find('span').eq(1).text().trim()
+        addressSelectedFullname = addressSelected.find('span').eq(3).text().trim()
+      }
     } else {
-      addressList = $('.order-address .list .addr')
-      addressSelected = addressList.first().find('div.inner')
-      addressSelectedAreas = [
-        addressSelected.find('.addr-hd span.prov').text().trim(),
-        addressSelected.find('.addr-hd span.city').text().trim(),
-        addressSelected.find('.addr-bd span.dist').text().trim(),
-        addressSelected.find('.addr-bd span.town').text().trim()
-      ]
-      addressSelectedDetail = addressSelected.find('.addr-bd span.street').text().trim()
-      addressSelectedFullname = addressSelected.find('.addr-hd span.name').text().trim()
+      // 天猫收款台
+      // 先检测页面版本，.order-address对象如果有id="addressPC_1"则为风控的模式页面
+      let orderAddressPC1Obj = $('.order-address#addressPC_1')
+      if (orderAddressPC1Obj && orderAddressPC1Obj instanceof Array && orderAddressPC1Obj.length) {
+        addressList = $('.order-address .address-list .addr-item-wrapper')
+        addressSelected = $('.order-address .address-list .addr-item-wrapper.addr-selected')
+        addressSelectedAreas = [
+          addressSelected.find('.addr-hd span').eq(0).text().trim(),
+          addressSelected.find('.addr-hd span').eq(1).text().trim(),
+          addressSelected.find('.addr-bd span').eq(0).text().trim(),
+          addressSelected.find('.addr-bd span').eq(1).text().trim()
+        ]
+        addressSelectedDetail = addressSelected.find('.addr-bd span').eq(2).text().trim()
+        // addressSelectedFullname = addressSelected.find('.next-radio-label').find('span.townName').text().trim()
+      } else {
+        addressList = $('.order-address .list .addr')
+        addressSelected = addressList.first().find('div.inner')
+        addressSelectedAreas = [
+          addressSelected.find('.addr-hd span.prov').text().trim(),
+          addressSelected.find('.addr-hd span.city').text().trim(),
+          addressSelected.find('.addr-bd span.dist').text().trim(),
+          addressSelected.find('.addr-bd span.town').text().trim()
+        ]
+        addressSelectedDetail = addressSelected.find('.addr-bd span.street').text().trim()
+        addressSelectedFullname = addressSelected.find('.addr-hd span.name').text().trim()
+      }
     }
     // console.log(addressSelectedAreas)
     // if (addressSelectedAreas.length < 3 || fullArea.length < 3) {
@@ -310,7 +347,7 @@ const checkOriginalAddress = () => {
     // }
     if (fullArea[0].indexOf(addressSelectedAreas[0]) < 0 || fullArea[1].indexOf(addressSelectedAreas[1]) < 0 ||
       fullArea[2].indexOf(addressSelectedAreas[2]) < 0 || fullArea[3].indexOf(addressSelectedAreas[3]) < 0 ||
-      addressSelectedDetail !== orderInfo.receiver.addressDetail.trim() || addressSelectedFullname !== orderInfo.receiver.fullName.trim()) {
+      addressSelectedDetail !== orderInfo.receiver.addressDetail.trim()) {
       let r = confirm('警告：当前收货地址与订单地址不一致！确定下单么？')
       if (r === true) {
         return true
