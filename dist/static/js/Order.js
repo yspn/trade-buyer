@@ -229,7 +229,12 @@ const getOrdersFeesOnload = (order) => {
   })[0].num
   postFee = Math.round(parseFloat($('.select-price').text()) * 100, 0)
   itemUrl = $('.info-title').prop('href')
-  num = $('input.amount').val()
+  if ($('input.amount').length) {
+    num = $('input.amount').val()
+  } else {
+    num = $('.order-quantity input').val()
+  }
+  
   var realPay = $('.order-payInfo .realPay-price').text() || $('.realpay--price').text()
   buyerFee = Math.round(parseFloat(realPay) * 100, 0)
   shopSeller = $('.shop-seller a').text()
@@ -315,10 +320,10 @@ const checkOriginalAddress = () => {
         addressList = $('.order-address .address-list .addr-item-wrapper')
         addressSelected = $('.order-address .address-list .addr-item-wrapper.addr-selected')
         addressSelectedAreas = [
-          addressSelected.find('.addr-hd span').eq(0).text().trim(),
-          addressSelected.find('.addr-hd span').eq(1).text().trim(),
-          addressSelected.find('.addr-bd span').eq(0).text().trim(),
-          addressSelected.find('.addr-bd span').eq(1).text().trim()
+          addressSelected.querySelectorAll('.addr-hd span')[0].innerText.trim(),
+          addressSelected.querySelectorAll('.addr-hd span')[1].innerText.trim(),
+          addressSelected.querySelectorAll('.addr-bd span')[0].innerText.trim(),
+          addressSelected.querySelectorAll('.addr-bd span')[1].innerText.trim()
         ]
         addressSelectedDetail = addressSelected.find('.addr-bd span').eq(2).text().trim()
         // addressSelectedFullname = addressSelected.find('.next-radio-label').find('span.townName').text().trim()
@@ -340,6 +345,7 @@ const checkOriginalAddress = () => {
     //   alert('地址错误！请刷新页面重试!')
     //   return false
     // }
+    console.log(addressSelectedAreas)
     if (fullArea[0].indexOf(addressSelectedAreas[0]) < 0 || fullArea[1].indexOf(addressSelectedAreas[1]) < 0 ||
       fullArea[2].indexOf(addressSelectedAreas[2]) < 0 || fullArea[3].indexOf(addressSelectedAreas[3]) < 0 ||
       addressSelectedDetail !== orderInfo.receiver.addressDetail.trim()) {
@@ -353,7 +359,7 @@ const checkOriginalAddress = () => {
       return true
     }
   } catch (e) {
-    alert('地址错误！请刷新页面重试!\r\n' + e.message)
+    alert('地址错误！请刷新页面重试!1\r\n' + e.message)
     return false
   }
 }

@@ -2393,13 +2393,20 @@ export default {
           try {
             area = this.areaList.filter((p) => {
               return p.name.indexOf(this.detailedItem.receiver_district.trim()) >= 0
-            })[0].code
+            })
+            if (area.length) {
+              area = area[0].code
+            } else {
+              // 类似东莞等地不设区的市
+              area = null
+            }
             console.log(area, this.areaList)
           } catch (e) {
             console.log(e)
             this.$Message.error('区/县填写错误！')
           }
-          this.townList = this.getTBAddressDB(area)
+          // 若为不设区的市，则调用市级代码
+          this.townList = area ? this.getTBAddressDB(area) : this.getTBAddressDB(city)
           // if (!this.townList || !this.townList.length) {
           //   await this.$http.get('../../../static/address/streets.json')
           //     .then((dataS) => {

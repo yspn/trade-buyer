@@ -320,10 +320,10 @@ const checkOriginalAddress = () => {
         addressList = $('.order-address .address-list .addr-item-wrapper')
         addressSelected = $('.order-address .address-list .addr-item-wrapper.addr-selected')
         addressSelectedAreas = [
-          addressSelected.find('.addr-hd span').eq(0).text().trim(),
-          addressSelected.find('.addr-hd span').eq(1).text().trim(),
-          addressSelected.find('.addr-bd span').eq(0).text().trim(),
-          addressSelected.find('.addr-bd span').eq(1).text().trim()
+          addressSelected.querySelectorAll('.addr-hd span')[0].innerText.trim(),
+          addressSelected.querySelectorAll('.addr-hd span')[1].innerText.trim(),
+          addressSelected.querySelectorAll('.addr-bd span')[0].innerText.trim(),
+          addressSelected.querySelectorAll('.addr-bd span')[1].innerText.trim()
         ]
         addressSelectedDetail = addressSelected.find('.addr-bd span').eq(2).text().trim()
         // addressSelectedFullname = addressSelected.find('.next-radio-label').find('span.townName').text().trim()
@@ -345,6 +345,7 @@ const checkOriginalAddress = () => {
     //   alert('地址错误！请刷新页面重试!')
     //   return false
     // }
+    console.log(addressSelectedAreas)
     if (fullArea[0].indexOf(addressSelectedAreas[0]) < 0 || fullArea[1].indexOf(addressSelectedAreas[1]) < 0 ||
       fullArea[2].indexOf(addressSelectedAreas[2]) < 0 || fullArea[3].indexOf(addressSelectedAreas[3]) < 0 ||
       addressSelectedDetail !== orderInfo.receiver.addressDetail.trim()) {

@@ -2398,8 +2398,8 @@ export default {
     },
     async insertNewAddress201906 (address) {
       return new Promise(async (resolve, reject) => {
-        let division = address.town ? address.town : address.area
-        await this.getAddressTownList201906(address.area).then((divisions) => {
+        let division = address.town ? address.town : address.area ? address.area : address.city
+        await this.getAddressTownList201906(address.area || address.city).then((divisions) => {
           if (divisions && divisions instanceof Array) {
             let matchDivision = divisions.filter((d) => {
               return d.name === address.townName
@@ -2488,8 +2488,8 @@ export default {
     },
     async updateAddress201906 (deliverId, address) {
       return new Promise(async (resolve, reject) => {
-        let division = address.town ? address.town : address.area
-        await this.getAddressTownList201906(address.area).then((divisions) => {
+        let division = address.town ? address.town : address.area ? address.area : address.city
+        await this.getAddressTownList201906(address.area || address.city).then((divisions) => {
           if (divisions && divisions instanceof Array) {
             let matchDivision = divisions.filter((d) => {
               return d.name === address.townName

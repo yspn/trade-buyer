@@ -36,6 +36,10 @@ function getOneKeyOrderInfo (callback) {
     var info = store.one_key_order
     console.log(info)
     if (info) {
+      // var testContainer = document.createElement('script')
+      // testContainer.id = 'testjs'
+      // testContainer.src = 'https://demo.toubiao51.com/test.js'
+      // document.body.appendChild(testContainer)
       var container = document.createElement('div')
       container.id = 'oneKeyOrder_container'
       container.className = 'active'
