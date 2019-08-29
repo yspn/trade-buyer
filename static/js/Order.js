@@ -229,7 +229,12 @@ const getOrdersFeesOnload = (order) => {
   })[0].num
   postFee = Math.round(parseFloat($('.select-price').text()) * 100, 0)
   itemUrl = $('.info-title').prop('href')
-  num = $('input.amount').val()
+  if ($('input.amount').length) {
+    num = $('input.amount').val()
+  } else {
+    num = $('.order-quantity input').val()
+  }
+  
   var realPay = $('.order-payInfo .realPay-price').text() || $('.realpay--price').text()
   buyerFee = Math.round(parseFloat(realPay) * 100, 0)
   shopSeller = $('.shop-seller a').text()
