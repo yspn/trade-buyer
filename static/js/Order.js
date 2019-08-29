@@ -353,7 +353,7 @@ const checkOriginalAddress = () => {
       return true
     }
   } catch (e) {
-    alert('地址错误！请刷新页面重试!\r\n' + e.message)
+    alert('地址错误！请刷新页面重试!1\r\n' + e.message)
     return false
   }
 }
