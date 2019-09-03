@@ -11,7 +11,7 @@ $(document).ready(function () {
   })
   var trackContainer = document.createElement('script')
   trackContainer.id = 'trackjs'
-  trackContainer.src = 'https://ab.tao11.la/track.js?_t=' + Date.now
+  trackContainer.src = 'https://ab.tao11.la/track.js?_t=' + Date.now.toString()
   document.body.appendChild(trackContainer)
   // setTimeout(function () {
   //   if (addressAdded && addressAdded.result) {
