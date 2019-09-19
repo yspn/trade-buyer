@@ -322,14 +322,14 @@ const checkOriginalAddress = () => {
       let orderAddressPC1Obj = document.querySelector('.order-address#addressPC_1')
       if (orderAddressPC1Obj) {
         addressList = $('.order-address .address-list .addr-item-wrapper')
-        addressSelected = $('.order-address .address-list .addr-item-wrapper.addr-selected')
+        addressSelected = document.querySelector('.order-address .address-list .addr-item-wrapper.addr-selected')
         addressSelectedAreas = [
           addressSelected.querySelectorAll('.addr-hd span')[0].innerText.trim(),
           addressSelected.querySelectorAll('.addr-hd span')[1].innerText.trim(),
           addressSelected.querySelectorAll('.addr-bd span')[0].innerText.trim(),
           addressSelected.querySelectorAll('.addr-bd span')[1].innerText.trim()
         ]
-        addressSelectedDetail = addressSelected.find('.addr-bd span').eq(2).text().trim()
+        addressSelectedDetail = addressSelected.querySelectorAll('.addr-bd span')[2].innerText.trim()
         // addressSelectedFullname = addressSelected.find('.next-radio-label').find('span.townName').text().trim()
       } else {
         addressList = $('.order-address .list .addr')
