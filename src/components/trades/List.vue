@@ -1983,7 +1983,7 @@ export default {
                 this.$Message.error('解除订单关联失败！(' + respBody.message + ')')
               } else {
                 let trade = this.data.filter((item) => { // this.data
-                  return item._id === this.detailedItem._id || this.detailedItem.id
+                  return item.id === this.detailedItem._id || this.detailedItem.id
                 })[0]
                 let dismissModel = {
                   oid: sub.oid_str,
