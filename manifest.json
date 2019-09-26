@@ -103,7 +103,7 @@
     }
   ],
   "options_page": "controls.html",
-  "content_security_policy": "script-src 'self' http://localhost:8080 'unsafe-eval'; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://g.alicdn.com https://*.alibaba.com https://*.aliapp.org http://localhost:8080 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
     "changelog.txt",
     "./static/115.js",
