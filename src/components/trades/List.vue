@@ -457,7 +457,7 @@
 
 <script>
 import {
-  focusOrCreateTab, sleepES6, getQueryString
+  focusOrCreateTab, sleepES6, getQueryString, getYchAtiCookie
 } from '../../../static/common'
 import {addresses} from './../../../static/addresses.js'
 import moment from 'moment'
@@ -3214,7 +3214,9 @@ export default {
           apiQuery: {}
         }
         this.apiData = {
-          session: this.$store.getters.session
+          session: this.$store.getters.session,
+          ati: getYchAtiCookie(),
+          url: window.location.href
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
         var apiUrl = this.$store.getters.apiUrl

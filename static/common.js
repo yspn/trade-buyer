@@ -259,6 +259,21 @@ const sendMessageToContentScript = (targetUrl, message, callback) => {
   })
 }
 
+/**
+ * 获取御城河孔明锁cookie
+ */
+const getYchAtiCookie = () => {
+  let cookies = document.cookie.split(';')
+  let atiItem = cookies.filter((c) => {
+    return c.split('=')[0] === '_ati'
+  })
+  if (atiItem.length) {
+    atiItem = atiItem[0]
+    return atiItem.split('=')[1]
+  }
+  return ''
+}
+
 module.exports = {
   sleepES6,
   setQueryConfig,
@@ -270,5 +285,6 @@ module.exports = {
   encodeUnicode,
   decodeUnicode,
   sendMessageToCurrentContentScript,
-  sendMessageToContentScript
+  sendMessageToContentScript,
+  getYchAtiCookie
 }
