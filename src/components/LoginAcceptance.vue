@@ -8,7 +8,7 @@
 
 <script>
 import {
-  getQueryString
+  getQueryString, getYchAtiCookie
 } from '../../static/common'
 export default {
   name: 'login-main',
@@ -44,7 +44,9 @@ export default {
           apiQuery: {}
         }
         this.apiData = {
-          code: code
+          code: code,
+          ati: getYchAtiCookie(),
+          url: window.location.href
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
         var apiUrl = this.$store.getters.apiUrl

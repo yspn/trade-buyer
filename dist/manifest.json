@@ -2,7 +2,7 @@
   "name": "一键下单2.0(alpha)",
   "manifest_version": 2,
   "version": "2.1.2",
-  "version_name": "v2.1.2 build 201909210001",
+  "version_name": "v2.1.2 build 201909280001",
   "description": "淘宝店群一键下单插件",
   "icons": {
     "16": "./static/logo.png",
@@ -94,7 +94,7 @@
     }
   ],
   "options_page": "controls.html",
-  "content_security_policy": "script-src 'self' http://localhost:8080 http://g.tbcdn.cn 'unsafe-eval'; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://g.alicdn.com https://*.alibaba.com https://*.aliapp.org http://localhost:8080 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
     "changelog.txt",
     "controls.html",
