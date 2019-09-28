@@ -168,11 +168,7 @@ const getOrdersFees = (order) => {
     })[0].num
     postFee = Math.round(parseFloat($('.select-price').text()) * 100, 0)
     itemUrl = $('.info-title').prop('href')
-    if ($('input.amount').length) {
-      num = $('input.amount').val()
-    } else {
-      num = $('.order-quantity input').val()
-    }
+    num = $('input.amount').val()
     var realPay = $('.order-payInfo .realPay-price').text() || $('.realpay--price').text()
     buyerFee = Math.round(parseFloat(realPay) * 100, 0)
     shopSeller = $('.shop-seller a').text()
@@ -297,8 +293,8 @@ const checkOriginalAddress = () => {
     if (window.location.host.toLowerCase().indexOf('tmall') < 0) {
       // 淘宝收款台
       // 先检测页面版本，.order-address对象如果有id="addressPC_1"则为风控的模式页面
-      let orderAddressPC1Obj = document.querySelector('.order-address#addressPC_1')
-      if (orderAddressPC1Obj) {
+      let orderAddressPC1Obj = $('.order-address#addressPC_1')
+      if (orderAddressPC1Obj && orderAddressPC1Obj instanceof Array && orderAddressPC1Obj.length) {
         addressList = $('.order-address .address-list .addr-item-wrapper')
         addressSelected = $('.order-address .address-list .addr-item-wrapper.addr-selected')
         addressSelectedAreas = [
@@ -319,17 +315,17 @@ const checkOriginalAddress = () => {
     } else {
       // 天猫收款台
       // 先检测页面版本，.order-address对象如果有id="addressPC_1"则为风控的模式页面
-      let orderAddressPC1Obj = document.querySelector('.order-address#addressPC_1')
-      if (orderAddressPC1Obj) {
+      let orderAddressPC1Obj = $('.order-address#addressPC_1')
+      if (orderAddressPC1Obj && orderAddressPC1Obj instanceof Array && orderAddressPC1Obj.length) {
         addressList = $('.order-address .address-list .addr-item-wrapper')
-        addressSelected = document.querySelector('.order-address .address-list .addr-item-wrapper.addr-selected')
+        addressSelected = $('.order-address .address-list .addr-item-wrapper.addr-selected')
         addressSelectedAreas = [
           addressSelected.querySelectorAll('.addr-hd span')[0].innerText.trim(),
           addressSelected.querySelectorAll('.addr-hd span')[1].innerText.trim(),
           addressSelected.querySelectorAll('.addr-bd span')[0].innerText.trim(),
           addressSelected.querySelectorAll('.addr-bd span')[1].innerText.trim()
         ]
-        addressSelectedDetail = addressSelected.querySelectorAll('.addr-bd span')[2].innerText.trim()
+        addressSelectedDetail = addressSelected.find('.addr-bd span').eq(2).text().trim()
         // addressSelectedFullname = addressSelected.find('.next-radio-label').find('span.townName').text().trim()
       } else {
         addressList = $('.order-address .list .addr')
