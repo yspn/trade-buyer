@@ -265,7 +265,8 @@ const sendMessageToContentScript = (targetUrl, message, callback) => {
 const getYchAtiCookie = () => {
   let cookies = document.cookie.split(';')
   let atiItem = cookies.filter((c) => {
-    return c.split('=')[0] === '_ati'
+    return c.indexOf('_ati') > -1
+    // return c.split('=')[0] === '_ati'
   })
   if (atiItem.length) {
     atiItem = atiItem[0]
