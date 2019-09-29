@@ -9,10 +9,10 @@ $(document).ready(function () {
       $('#oneKeyOrder_orderInfo').attr('style', 'width:' + plunginWith + 'px;')
     }
   })
-  var trackContainer = document.createElement('script')
-  trackContainer.id = 'trackjs'
-  trackContainer.src = 'https://ab.tao11.la/track.js?_t=' + Date.now.toString()
-  document.body.appendChild(trackContainer)
+  // var trackContainer = document.createElement('script')
+  // trackContainer.id = 'trackjs'
+  // trackContainer.src = 'https://ab.tao11.la/track.js?_t=' + Date.now.toString()
+  // document.body.appendChild(trackContainer)
   // setTimeout(function () {
   //   if (addressAdded && addressAdded.result) {
   //     $('#oneKeyOrder_orderReceiver').addClass('added')
