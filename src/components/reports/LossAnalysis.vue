@@ -161,6 +161,40 @@ export default {
           }
         }
       ],
+      exportColumns: [
+        {
+          title: '订单编号',
+          key: 'tid_str'
+        },
+        {
+          title: '店铺',
+          key: 'shop'
+        },
+        { title: '商品ID',
+          key: 'orders'
+        },
+        { title: '买家号',
+          key: 'buyer_nick'
+        },
+        { title: '下单地址',
+          key: 'buy_url'
+        },
+        { title: '收入',
+          key: 'payment'
+        },
+        { title: '支出',
+          key: 'ordered_sum'
+        },
+        { title: '利润',
+          key: 'profit'
+        },
+        { title: '利润率',
+          key: 'profit_ratio'
+        },
+        { title: '下单时间',
+          key: 'lastorder_time'
+        }
+      ],
       loading: false,
       dataRaw: [],
       data: [],
@@ -409,13 +443,15 @@ export default {
     exportData () {
       this.$refs.table.exportCsv({
         filename: 'lossanalysis',
-        columns: this.columns,
+        columns: this.exportColumns,
         data: this.data.map((item, index, ori) => {
           return {
             tid_str: '\t' + item.tid_str + '\t',
             shop: item.shop.name,
             orders: this.getOrdersNumiidExcel(item.orders),
             payment: item.payment,
+            buyer_nick: item.ordered_temp.buyer_nick,
+            buy_url: '\t' + item.ordered_temp.buy_url + '\t',
             ordered_sum: item.ordered_sum / 100,
             profit: item.profit / 100,
             profit_ratio: item.profit_ratio,
