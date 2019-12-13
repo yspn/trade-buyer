@@ -88,7 +88,7 @@ function getOneKeyOrderInfo (callback) {
           '<div class=\'oneKeyOrder_orderRight\'>' +
           '<div class=\'oneKeyOrder_orderDetail\'>' + info.orders.order[i].sku_properties_name + '</div>' +
           '<span class=\'oneKeyOrder_orderNum\'>数量:' + info.orders.order[i].num + '件</span>' +
-          '<span class=\'oneKeyOrder_orderTotalFee\'>¥' + info.orders.order[i].total_fee + '</span>' +
+          '<span class=\'oneKeyOrder_orderTotalFee\'>¥' + info.orders.order[i].payment + '</span>' +
           '</div>' +
           '<div class=\'oneKeyOrder_purchased\' data-oid=' + info.orders.order[i].oid_str + '>' +
           '</div>' +
