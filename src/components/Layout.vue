@@ -813,7 +813,7 @@ export default {
           // order_status: {
           //   $in: ['PARTLY_ORDERED', 'ORDERED']
           // },
-          limit$: 10000
+          limit$: 100000
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
         var apiUrl = this.$store.getters.apiUrl
