@@ -17,6 +17,7 @@
         <Button type="ghost" icon="ios-search" @click="searchRemote"></Button>
       </div>
       <Button-group>
+        <Button type="ghost" @click="assignBatchModal=true" v-if="['god', 'boss'].indexOf($store.getters.user.role) > -1">批量分配</Button>
         <Button type="ghost" icon="document" @click="$router.push('/guarantee/new/step1')" v-if="$store.getters.role==='bidder'">新增</Button>
         <Button type="ghost" @click="reset">重置</Button>
         <Button type="ghost" icon="ios-refresh-empty" @click="refreshList">刷新</Button>
@@ -405,6 +406,33 @@
       </div>
     </Modal>
     <Modal
+      v-model="assignBatchModal"
+      title="批量分配给买手..."
+      :mask-closable="false"
+      :transfer="false">
+      <div class="modal-content">
+        <Form ref="assignBatchForm" :model="assignBatchModel" :rules="assignBatchValidate" :label-width="80">
+          <FormItem label="选择买手" prop="userid">
+            <Select placeholder="选择买手" filterable @on-change="assignBatchBuyerSelect">
+              <Option value="">请选择买手</Option>
+              <Option :value="buyer.id" v-for="(buyer, index) in buyerSelectList" :key="index">{{buyer.name}}({{getShopName(buyer.shopid)}})</Option>
+            </Select>
+          </FormItem>
+        </Form>
+      </div>
+      <div slot="footer">
+        <Poptip
+          confirm
+          title="确认分配订单么？"
+          @on-ok="doAssignBatchToBuyer">
+          <Button size="large" type="error">
+            提交
+          </Button>
+        </Poptip>
+        <Button type="default" size="large" @click="assignBatchModal=false">取消</Button>
+      </div>
+    </Modal>
+    <Modal
       v-model="joinModal"
       title="关联订单"
       :mask-closable="false"
@@ -530,6 +558,16 @@ export default {
       },
       assignValidate: {
         buyerid: [
+          { required: true, message: '买手不能为空', trigger: 'blur' }
+        ]
+      },
+      assignBatchModal: false,
+      assignBatchModel: {
+        userid: '',
+        username: ''
+      },
+      assignBatchValidate: {
+        userid: [
           { required: true, message: '买手不能为空', trigger: 'blur' }
         ]
       },
@@ -855,6 +893,11 @@ export default {
     'assignModal': function (newVal) {
       if (newVal) {
         this.syncBuyerListByShopId(this.detailedItem.shop.id)
+      }
+    },
+    'assignBatchModal': function (newVal) {
+      if (newVal) {
+        this.syncBuyerListByShopId()
       }
     },
     'separateLogis': function (newVal) {
@@ -2223,6 +2266,55 @@ export default {
               this.$Message.success('分配订单成功！')
               this.assignModal = false
               this.assignModel = {}
+            }
+          }).catch(err => {
+            // console.log(err)
+            this.$store.dispatch('setAPILastResponse', err)
+            this.$Message.error('分配订单失败！(' + err + ')')
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
+      })
+    },
+    assignBatchBuyerSelect (value) {
+      let buyer = this.buyerSelectList.filter((item) => {
+        return item.id === value
+      })
+      if (buyer && buyer.length) {
+        buyer = buyer[0]
+        this.assignBatchModel = buyer
+      }
+    },
+    async doAssignBatchToBuyer () {
+      this.$refs['assignBatchForm'].validate(async (valid) => {
+        if (valid) {
+          this.apiItem = {
+            apiHost: '',
+            apiService: 'trades',
+            apiAction: 'assignbatchtobuyer',
+            apiQuery: {}
+          }
+          let tradeIds = this.dataRaw.map((item) => {
+            return item._id
+          })
+          this.apiData = {
+            tradeids: tradeIds,
+            userid: this.assignBatchModel.userid,
+            name: this.assignBatchModel.name
+          }
+          this.$store.dispatch('setAPIStore', this.apiItem)
+          var apiUrl = this.$store.getters.apiUrl
+          await this.$http.post(apiUrl, this.apiData).then(response => {
+            var respBody = response.data
+            if (respBody.status === 'fail') {
+              this.$Message.error('分配订单失败！(' + respBody.message + ')')
+            } else {
+              this.refreshList()
+              this.$store.dispatch('setAPILastResponse', respBody)
+              this.$Message.success('分配订单成功！')
+              this.assignBatchModal = false
+              this.assignBatchModel = {}
             }
           }).catch(err => {
             // console.log(err)

@@ -200,7 +200,8 @@ export default {
       currentTBNick: '',
       checkTBConnectionTask: null,
       godGroup: 0,
-      curLastMsgId: null // 本次发货查询最后一条消息的ID，将在全部完成后调用setbuyerlogismsgid
+      curLastMsgId: null, // 本次发货查询最后一条消息的ID，将在全部完成后调用setbuyerlogismsgid
+      traceOrderOnceModePage: 0
     }
   },
   watch: {
@@ -800,7 +801,7 @@ export default {
         }
       }
     },
-    getUnpostTrades () {
+    getUnpostTrades (pageIndex = 0) {
       return new Promise((resolve, reject) => {
         this.apiItem = {
           apiHost: '',
@@ -813,7 +814,8 @@ export default {
           // order_status: {
           //   $in: ['PARTLY_ORDERED', 'ORDERED']
           // },
-          limit$: 100000
+          limit$: 50,
+          skip$: 50 * pageIndex
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
         var apiUrl = this.$store.getters.apiUrl
@@ -1409,47 +1411,101 @@ export default {
     },
     traceOrderOnce () {
       if (this.autoTracerMode === '模式1') {
-        this.traceOrderOnceMode1()
+        this.traceOrderOnceMode1(0)
       } else {
-        this.traceOrderOnceMode2()
+        this.traceOrderOnceMode2(0)
       }
     },
-    async traceOrderOnceMode1 () {
-      await this.getUnpostTrades().then(async (trades) => {
-        this.unPostTrades = trades.datalist
+    async traceOrderOnceMode1 (pageIndex) {
+      await this.traceOrderOnceMode1_Pager_Process(pageIndex).then(() => {
+        return this.traceOrderOnceMode1(pageIndex + 1)
       }).catch(err => {
-        this.$Notice.error({
-          title: '跟踪发货出错啦！',
-          desc: err
-        })
-      })
-      let lastMsgId = 0
-      await this.getBuyerLastLogisMsgId(this.buyerNick).then((res) => {
-        if (res.last_msg_id) {
-          lastMsgId = res.last_msg_id ? res.last_msg_id : 0
+        if (err.message === 'EOF') {
+          this.$Notice.success({
+            title: '跟踪发货执行完毕！',
+            desc: ''
+          })
         }
-      }).catch((err) => {
-        this.$Notice.error({
-          title: '跟踪发货出错啦！',
-          desc: '无法获取消息ID.' + err.message
-        })
       })
-      let mToken = this.cookiesArr.filter((item) => {
-        return item.name === '_tb_token_'
-      })[0].value.split('_')[0]
-      // console.log(lastMsgId, mToken)
-      this.curLastMsgId = null // 本次发货查询最后一条消息的ID，将在全部完成后调用setbuyerlogismsgid
-      let curPage = 1
-      await this.tracerBuyerLogisMsg(this.buyerNick, mToken, curPage, lastMsgId).then(() => {
-        this.$Notice.success({
-          title: '跟踪发货执行完毕！',
-          desc: ''
+      // await this.getUnpostTrades().then(async (trades) => {
+      //   this.unPostTrades = trades.datalist
+      // }).catch(err => {
+      //   this.$Notice.error({
+      //     title: '跟踪发货出错啦！',
+      //     desc: err
+      //   })
+      // })
+      // let lastMsgId = 0
+      // await this.getBuyerLastLogisMsgId(this.buyerNick).then((res) => {
+      //   if (res.last_msg_id) {
+      //     lastMsgId = res.last_msg_id ? res.last_msg_id : 0
+      //   }
+      // }).catch((err) => {
+      //   this.$Notice.error({
+      //     title: '跟踪发货出错啦！',
+      //     desc: '无法获取消息ID.' + err.message
+      //   })
+      // })
+      // let mToken = this.cookiesArr.filter((item) => {
+      //   return item.name === '_tb_token_'
+      // })[0].value.split('_')[0]
+      // // console.log(lastMsgId, mToken)
+      // this.curLastMsgId = null // 本次发货查询最后一条消息的ID，将在全部完成后调用setbuyerlogismsgid
+      // let curPage = 1
+      // await this.tracerBuyerLogisMsg(this.buyerNick, mToken, curPage, lastMsgId).then(() => {
+      //   this.$Notice.success({
+      //     title: '跟踪发货执行完毕！',
+      //     desc: ''
+      //   })
+      // }).catch(err => {
+      //   console.log(err)
+      //   this.$Notice.error({
+      //     title: '跟踪发货出错啦！',
+      //     desc: err.message
+      //   })
+      // })
+    },
+    async traceOrderOnceMode1_Pager_Process (pageIndex) {
+      return new Promise(async (resolve, reject) => {
+        await this.getUnpostTrades(pageIndex).then(async (trades) => {
+          this.unPostTrades = trades.datalist
+          if (trades.datalist.length === 0) {
+            reject(new Error('EOF'))
+          }
+        }).catch(err => {
+          this.$Notice.error({
+            title: '跟踪发货出错啦！',
+            desc: err
+          })
         })
-      }).catch(err => {
-        console.log(err)
-        this.$Notice.error({
-          title: '跟踪发货出错啦！',
-          desc: err.message
+        let lastMsgId = 0
+        await this.getBuyerLastLogisMsgId(this.buyerNick).then((res) => {
+          if (res.last_msg_id) {
+            lastMsgId = res.last_msg_id ? res.last_msg_id : 0
+          }
+        }).catch((err) => {
+          this.$Notice.error({
+            title: '跟踪发货出错啦！',
+            desc: '无法获取消息ID.' + err.message
+          })
+        })
+        let mToken = this.cookiesArr.filter((item) => {
+          return item.name === '_tb_token_'
+        })[0].value.split('_')[0]
+        // console.log(lastMsgId, mToken)
+        this.curLastMsgId = null // 本次发货查询最后一条消息的ID，将在全部完成后调用setbuyerlogismsgid
+        let curPage = 1
+        await this.tracerBuyerLogisMsg(this.buyerNick, mToken, curPage, lastMsgId).then(() => {
+          this.$Notice.success({
+            title: '跟踪发货执行完毕！',
+            desc: ''
+          })
+        }).catch(err => {
+          console.log(err)
+          this.$Notice.error({
+            title: '跟踪发货出错啦！',
+            desc: err.message
+          })
         })
       })
     },
@@ -1606,31 +1662,67 @@ export default {
           })
       })
     },
-    async traceOrderOnceMode2 () {
-      await this.getUnpostTrades().then(async (trades) => {
-        this.unPostTrades = trades.datalist
+    async traceOrderOnceMode2 (pageIndex) {
+      await this.traceOrderOnceMode2_Pager_Process(pageIndex).then(() => {
+        return this.traceOrderOnceMode2(pageIndex + 1)
       }).catch(err => {
-        this.$Notice.error({
-          title: '跟踪发货出错啦！',
-          desc: err
-        })
-      })
-      await this.searchTBSendOrders(100, 1).then(async (orders) => {
-        this.autoTracer(orders, this.unPostTrades).then(() => {
+        if (err.message === 'EOF') {
           this.$Notice.success({
             title: '跟踪发货执行完毕！',
             desc: ''
+          })
+        }
+      })
+      // await this.getUnpostTrades().then(async (trades) => {
+      //   this.unPostTrades = trades.datalist
+      // }).catch(err => {
+      //   this.$Notice.error({
+      //     title: '跟踪发货出错啦！',
+      //     desc: err
+      //   })
+      // })
+      // await this.searchTBSendOrders(100, 1).then(async (orders) => {
+      //   this.autoTracer(orders, this.unPostTrades).then(() => {
+      //   }).catch(err => {
+      //     this.$Notice.error({
+      //       title: '跟踪发货出错啦！(淘宝端)',
+      //       desc: err
+      //     })
+      //   })
+      // }).catch(err => {
+      //   this.$Notice.error({
+      //     title: '跟踪发货出错啦！(淘宝端)',
+      //     desc: err
+      //   })
+      // })
+    },
+    async traceOrderOnceMode2_Pager_Process (pageIndex) {
+      return new Promise(async (resolve, reject) => {
+        await this.getUnpostTrades(pageIndex).then(async (trades) => {
+          this.unPostTrades = trades.datalist
+          if (trades.datalist.length === 0) {
+            reject(new Error('EOF'))
+          }
+        }).catch(err => {
+          this.$Notice.error({
+            title: '跟踪发货出错啦！',
+            desc: err
+          })
+        })
+        await this.searchTBSendOrders(100, 1).then(async (orders) => {
+          this.autoTracer(orders, this.unPostTrades).then(() => {
+            resolve()
+          }).catch(err => {
+            this.$Notice.error({
+              title: '跟踪发货出错啦！(淘宝端)',
+              desc: err
+            })
           })
         }).catch(err => {
           this.$Notice.error({
             title: '跟踪发货出错啦！(淘宝端)',
             desc: err
           })
-        })
-      }).catch(err => {
-        this.$Notice.error({
-          title: '跟踪发货出错啦！(淘宝端)',
-          desc: err
         })
       })
     },
