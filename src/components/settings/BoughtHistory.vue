@@ -99,6 +99,21 @@
         <Button type="error" size="large" @click="submitDeleteBulk">确认</Button>
       </div>
     </Modal>
+    <Modal
+      v-model="setAutoOrderModal"
+      title="设置自动下单"
+      :mask-closable="false"
+      :transfer="false">
+      <div class="modal-content">
+        当前商品ID：{{autoOrderNumiid}}<br>
+        自动下单状态：{{autoOrderStatus}}
+      </div>
+      <div slot="footer">
+        <Button size="large" @click="resetAutoOrderTemp">关闭</Button>
+        <Button type="error" size="large" @click="unsetAutoOrder" v-if="autoOrderStatus===true">取消设置</Button>
+        <Button type="primary" size="large" @click="setAutoOrder" v-else>设置</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -170,8 +185,56 @@ export default {
           key: 'action',
           fixed: 'right',
           render: (h, params) => {
-            return h('Button-group', [
-              h('Button', {
+            let buttons = [h('Button', {
+              props: {
+                type: 'ghost',
+                size: 'small'
+              },
+              style: {
+              },
+              on: {
+                click: async () => {
+                  this.editModal = true
+                  this.editModel = {
+                    id: params.row._id,
+                    numIid: params.row.num_iid,
+                    buyerFee: params.row.buyer_fee,
+                    postFee: params.row.post_fee,
+                    buyUrl: params.row.buy_url
+                  }
+                }
+              }
+            }, '修改'),
+            h('Button', {
+              props: {
+                type: 'ghost',
+                size: 'small'
+              },
+              style: {
+              },
+              on: {
+                click: async () => {
+                  this.deleteModal = true
+                  this.deleteModel = params.row
+                }
+              }
+            }, '删除'),
+            h('Button', {
+              props: {
+                type: 'ghost',
+                size: 'small'
+              },
+              style: {
+              },
+              on: {
+                click: async () => {
+                  this.deleteBulkModal = true
+                  this.deleteBulkNumiid = this.getNumIid(params.row.buy_url)
+                }
+              }
+            }, '批量删除')]
+            if (this.$store.getters.user.role === 'god') {
+              buttons.push(h('Button', {
                 props: {
                   type: 'ghost',
                   size: 'small'
@@ -180,46 +243,14 @@ export default {
                 },
                 on: {
                   click: async () => {
-                    this.editModal = true
-                    this.editModel = {
-                      id: params.row._id,
-                      numIid: params.row.num_iid,
-                      buyerFee: params.row.buyer_fee,
-                      postFee: params.row.post_fee,
-                      buyUrl: params.row.buy_url
-                    }
+                    this.setAutoOrderModal = true
+                    this.autoOrderNumiid = params.row.num_iid
+                    this.autoOrderBuyUrl = this.getNumIid(params.row.buy_url)
                   }
                 }
-              }, '修改'),
-              h('Button', {
-                props: {
-                  type: 'ghost',
-                  size: 'small'
-                },
-                style: {
-                },
-                on: {
-                  click: async () => {
-                    this.deleteModal = true
-                    this.deleteModel = params.row
-                  }
-                }
-              }, '删除'),
-              h('Button', {
-                props: {
-                  type: 'ghost',
-                  size: 'small'
-                },
-                style: {
-                },
-                on: {
-                  click: async () => {
-                    this.deleteBulkModal = true
-                    this.deleteBulkNumiid = this.getNumIid(params.row.buy_url)
-                  }
-                }
-              }, '批量删除')
-            ])
+              }, '自动下单'))
+            }
+            return h('Button-group', buttons)
           }
         }
       ],
@@ -273,7 +304,11 @@ export default {
         id: null
       },
       deleteBulkModal: false,
-      deleteBulkNumiid: ''
+      deleteBulkNumiid: '',
+      setAutoOrderModal: false,
+      autoOrderNumiid: '',
+      autoOrderBuyUrl: '',
+      autoOrderStatus: null
     }
   },
   created () {
@@ -311,6 +346,11 @@ export default {
     },
     'sort': function (newVal) {
       this.refreshList()
+    },
+    'autoOrderNumiid': function (newVal) {
+      if (newVal) {
+        this.checkAutoOrder(newVal)
+      }
     }
   },
   methods: {
@@ -584,6 +624,104 @@ export default {
           })
         })
       }
+    },
+    resetAutoOrderTemp () {
+      this.autoOrderStatus = null
+      this.autoOrderNumiid = ''
+      this.autoOrderBuyUrl = ''
+      this.setAutoOrderModal = false
+    },
+    checkAutoOrder (numIid) {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'autoorder',
+        apiAction: 'checksku',
+        apiQuery: {}
+      }
+      this.apiData = {
+        num_iid: numIid.toString()
+      }
+      if (this.autoOrderBuyUrl) {
+        this.apiData.buy_url = this.autoOrderBuyUrl
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            reject(new Error('失败！(' + respBody.message + ')'))
+          } else {
+            this.$store.dispatch('setAPILastResponse', respBody)
+            this.autoOrderStatus = respBody.data.in
+            resolve(respBody.data.in)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
+    setAutoOrder () {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'autoorder',
+        apiAction: 'addsku',
+        apiQuery: {}
+      }
+      this.apiData = {
+        num_iid: this.autoOrderNumiid.toString(),
+        buy_url: this.autoOrderBuyUrl
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            this.$Message.error('设置失败！(' + respBody.message + ')')
+            reject(new Error('失败！(' + respBody.message + ')'))
+          } else {
+            this.$Message.success('设置成功！')
+            this.$store.dispatch('setAPILastResponse', respBody)
+            this.resetAutoOrderTemp()
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
+    unsetAutoOrder () {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'autoorder',
+        apiAction: 'deletesku',
+        apiQuery: {}
+      }
+      this.apiData = {
+        num_iid: this.autoOrderNumiid.toString()
+      }
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            this.$Message.error('设置失败！(' + respBody.message + ')')
+            reject(new Error('失败！(' + respBody.message + ')'))
+          } else {
+            this.$Message.success('设置成功！')
+            this.$store.dispatch('setAPILastResponse', respBody)
+            this.resetAutoOrderTemp()
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
     }
   }
 }
