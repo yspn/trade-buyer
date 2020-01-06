@@ -12,6 +12,7 @@
       <Button-group>
         <Button type="ghost" icon="document" @click="newModal=true" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">新增</Button>
         <Button type="ghost" icon="ios-refresh-empty" @click="refreshList">刷新</Button>
+        <Button type="ghost" @click="batchAddAutoOrderModal = true">批量设置自动下单</Button>
       </Button-group>
     </div>
     <Table stripe :loading="loading" :height="tableHeight" :columns="columns" :data="dataViewPage" ref="table"></Table>
