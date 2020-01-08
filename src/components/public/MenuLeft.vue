@@ -34,6 +34,7 @@
       <MenuItem name="3-5" v-if="['god', 'boss'].indexOf($store.getters.user.role) > -1">店铺设置</MenuItem>
       <MenuItem name="3-6" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">店铺黑名单</MenuItem>
       <MenuItem name="3-7" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">历史下单管理</MenuItem>
+      <MenuItem name="3-10" v-if="['god'].indexOf($store.getters.user.role) > -1">自动下单商品</MenuItem>
       <MenuItem name="3-8" v-if="['god', 'boss', 'manager'].indexOf($store.getters.user.role) > -1">代发商品</MenuItem>
       <MenuItem name="3-9" v-if="['god'].indexOf($store.getters.user.role) > -1">店群管理</MenuItem>
       <MenuItem name="3-4" v-if="['god', 'boss'].indexOf($store.getters.user.role) > -1">导入订单</MenuItem>
@@ -115,6 +116,9 @@ export default {
           break
         case '3-9':
           path = '/groups'
+          break
+        case '3-10':
+          path = '/autoorder'
           break
       }
       this.$router.push({path: path})

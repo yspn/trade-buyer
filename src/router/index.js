@@ -17,6 +17,7 @@ import Daifa from '@/components/settings/Daifa'
 import Users from '@/components/settings/Users'
 import BlackListShops from '@/components/settings/BlackListShops'
 import BoughtHistoryList from '@/components/settings/BoughtHistory'
+import AutoOrderSettings from '@/components/settings/AutoOrderSettings'
 import ReportProfit from '@/components/reports/Profits'
 import ReportLossAnalysis from '@/components/reports/LossAnalysis'
 import BuyerReport from '@/components/reports/BuyerReport'
@@ -116,6 +117,11 @@ export default new Router({
           path: '/reports/buyerreport',
           name: 'buyer-report',
           component: BuyerReport
+        },
+        {
+          path: '/autoorder',
+          name: 'autoorder_list',
+          component: AutoOrderSettings
         }
       ]
     },
