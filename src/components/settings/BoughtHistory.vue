@@ -12,6 +12,7 @@
       <Button-group>
         <Button type="ghost" icon="document" @click="newModal=true" v-if="['god', 'boss'].indexOf($store.getters.user.role)>-1">新增</Button>
         <Button type="ghost" icon="ios-refresh-empty" @click="refreshList">刷新</Button>
+        <Button type="ghost" @click="batchAddAutoOrderModal = true">批量设置自动下单</Button>
       </Button-group>
     </div>
     <Table stripe :loading="loading" :height="tableHeight" :columns="columns" :data="dataViewPage" ref="table"></Table>
@@ -112,6 +113,19 @@
         <Button size="large" @click="resetAutoOrderTemp">关闭</Button>
         <Button type="error" size="large" @click="unsetAutoOrder" v-if="autoOrderStatus===true">取消设置</Button>
         <Button type="primary" size="large" @click="setAutoOrder" v-else>设置</Button>
+      </div>
+    </Modal>
+    <Modal
+      v-model="batchAddAutoOrderModal"
+      title="批量设置自动下单"
+      :mask-closable="false"
+      :transfer="false">
+      <div class="modal-content">
+        确认批量设置本页的记录吗？
+      </div>
+      <div slot="footer">
+        <Button size="large" @click="batchAddAutoOrderModal=false">取消</Button>
+        <Button type="error" size="large" @click="submitBatchAddAutoOrder">确认</Button>
       </div>
     </Modal>
   </div>
@@ -308,7 +322,8 @@ export default {
       setAutoOrderModal: false,
       autoOrderNumiid: '',
       autoOrderBuyUrl: '',
-      autoOrderStatus: null
+      autoOrderStatus: null,
+      batchAddAutoOrderModal: false
     }
   },
   created () {
@@ -715,6 +730,39 @@ export default {
             this.$Message.success('设置成功！')
             this.$store.dispatch('setAPILastResponse', respBody)
             this.resetAutoOrderTemp()
+            resolve(respBody.data)
+          }
+        }).catch(err => {
+          this.$store.dispatch('setAPILastResponse', err)
+          reject(err)
+        })
+      })
+    },
+    submitBatchAddAutoOrder () {
+      this.apiItem = {
+        apiHost: '',
+        apiService: 'autoorder',
+        apiAction: 'batchaddsku',
+        apiQuery: {}
+      }
+      this.apiData = this.dataRaw.map((item) => {
+        return {
+          num_iid: item.num_iid,
+          buy_url: item.buy_url
+        }
+      })
+      this.$store.dispatch('setAPIStore', this.apiItem)
+      var apiUrl = this.$store.getters.apiUrl
+      return new Promise(async (resolve, reject) => {
+        await this.$http.post(apiUrl, this.apiData).then(async (response) => {
+          var respBody = response.data
+          if (respBody.status === 'fail') {
+            this.$Message.error('设置失败！(' + respBody.message + ')')
+            reject(new Error('失败！(' + respBody.message + ')'))
+          } else {
+            this.$Message.success('设置成功！')
+            this.$store.dispatch('setAPILastResponse', respBody)
+            this.batchAddAutoOrderModal = false
             resolve(respBody.data)
           }
         }).catch(err => {
