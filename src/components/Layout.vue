@@ -814,8 +814,8 @@ export default {
           // order_status: {
           //   $in: ['PARTLY_ORDERED', 'ORDERED']
           // },
-          limit$: 50,
-          skip$: 50 * pageIndex
+          limit$: 5000,
+          skip$: 5000 * pageIndex
         }
         this.$store.dispatch('setAPIStore', this.apiItem)
         var apiUrl = this.$store.getters.apiUrl
