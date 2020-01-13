@@ -219,6 +219,7 @@ const getOrdersFees = (order) => {
 }
 const getOrdersFeesOnload = (order) => {
   var postFee, itemUrl, num, buyerFee, shopSeller
+  var skuList
   var tradePayment = oneKeyOrderInstance.payment
   var orderedPayedTotal = 0
   if (oneKeyOrderInstance.ordered) {
@@ -228,6 +229,23 @@ const getOrdersFeesOnload = (order) => {
       orderedPayedTotal += item.buyer_fee / 100
     })
   }
+  var orders = $('.item-row')
+  $(orders).each((index, order) => {
+    var sku = $(this).find('.info-sku p')
+    $(sku).each((skuindex, skuItem) => {
+      var skuName = $(this).find('.hd').innerText.trim().replace(':', '')
+      var skuValue = $(this).find('.bd').innerText.trim()
+      skuList.push({
+        name: skuName,
+        value: skuValue
+      })
+      console.log({
+        name: skuName,
+        value: skuValue
+      })
+    })
+  })
+  console.log(skuList)
   let orderNum = oneKeyOrderInstance.orders.order.filter((item) => {
     return item.oid_str === orderInfo.oid
   })[0].num
