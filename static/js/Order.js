@@ -14,6 +14,7 @@ window.onload = () => {
 
 $(document).ready(function () {
   window.document.querySelector('.go-btn').style.display = 'none'
+  getSkuList()
   window.chrome.runtime.sendMessage({ cmd: 'get_orderinfo' }, (response) => {
     if (response !== 'ok') {
       // window.setTimeout(function () {
@@ -163,6 +164,7 @@ const getOrdersFees = (order) => {
         orderedPayedTotal += item.buyer_fee / 100
       })
     }
+    var skuList = getSkuList()
     let orderNum = oneKeyOrderInstance.orders.order.filter((item) => {
       return item.oid_str === orderInfo.oid
     })[0].num
@@ -213,13 +215,13 @@ const getOrdersFees = (order) => {
       num: num,
       buyerFee: buyerFee,
       buyUrl: itemUrl,
-      buyerPostFee: postFee
+      buyerPostFee: postFee,
+      skuList: skuList
     }
   // }
 }
 const getOrdersFeesOnload = (order) => {
   var postFee, itemUrl, num, buyerFee, shopSeller
-  var skuList
   var tradePayment = oneKeyOrderInstance.payment
   var orderedPayedTotal = 0
   if (oneKeyOrderInstance.ordered) {
@@ -229,23 +231,7 @@ const getOrdersFeesOnload = (order) => {
       orderedPayedTotal += item.buyer_fee / 100
     })
   }
-  var orders = $('.item-row')
-  $(orders).each((index, order) => {
-    var sku = $(this).find('.info-sku p')
-    $(sku).each((skuindex, skuItem) => {
-      var skuName = $(this).find('.hd').innerText.trim().replace(':', '')
-      var skuValue = $(this).find('.bd').innerText.trim()
-      skuList.push({
-        name: skuName,
-        value: skuValue
-      })
-      console.log({
-        name: skuName,
-        value: skuValue
-      })
-    })
-  })
-  console.log(skuList)
+  var skuList = getSkuList()
   let orderNum = oneKeyOrderInstance.orders.order.filter((item) => {
     return item.oid_str === orderInfo.oid
   })[0].num
@@ -290,7 +276,8 @@ const getOrdersFeesOnload = (order) => {
     num: num,
     buyerFee: buyerFee,
     buyUrl: itemUrl,
-    buyerPostFee: postFee
+    buyerPostFee: postFee,
+    skuList: skuList
   }
 }
 
@@ -384,4 +371,23 @@ const checkOriginalAddress = () => {
     alert('地址错误！请刷新页面重试!1\r\n' + e.message)
     return false
   }
+}
+
+const getSkuList = () => {
+  console.log('getting sku list')
+  var skuList = []
+  var orders = $('.item-row')
+  $(orders).each(function () {
+    var sku = $(this).find('.info-sku p')
+    $(sku).each(function () {
+      var skuName = $(this).find('.hd').text().trim().replace(':', '').replace('：', '')
+      var skuValue = $(this).find('.bd').text().trim()
+      skuList.push({
+        name: skuName,
+        value: skuValue
+      })
+    })
+  })
+  console.log(skuList)
+  return skuList
 }
