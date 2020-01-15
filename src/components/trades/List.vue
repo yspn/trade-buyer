@@ -3050,7 +3050,8 @@ export default {
               buyerTid: bought.buyerTid,
               buyerFee: bought.buyerFee,
               buyUrl: getQueryString('id', bought.buyUrl),
-              buyerPostFee: bought.buyerPostFee
+              buyerPostFee: bought.buyerPostFee,
+              skuList: bought.skuList
             }
           }
           this.$store.dispatch('setAPIStore', this.apiItem)
